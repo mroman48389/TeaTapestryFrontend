@@ -1,12 +1,43 @@
-# React + Vite
+# TeaTapestryFrontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> UI for the Tea Tapestry app.
 
-Currently, two official plugins are available:
+# Purpose
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> Allows users to learn about the world of tea, explore tea via interactive pages, and share their tea journeys with others.
 
-## Expanding the ESLint configuration
+# Stack
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+> TypeScript, React, Tailwind CSS, HTML, CSS, shadcn, Material UI, Redux, React Router, Framer Motion, Jest, React Testing Library, ESLint 
+
+# Features
+
+- Responsive layout, semantically correct HTML, and a11y-friendly accessible design.
+- State management with Redux.
+- Routing with React Router.
+- Animated highlighting with Framer Motion.
+- Unit and integration tests with Jest and React Testing Library.
+- Linting with ESLint.
+- 100% testing coverage.
+
+# Installation and Setup
+
+	git clone https://github.com/mroman48389/TeaTapestryFrontend.git
+	Set-Location TeaTapestryFrontend
+	npm install
+	npm run dev
+	
+# Testing
+
+	npm run test
+
+# Versioning
+
+- **Major** (`v2`, `v3`, etc.): Breaking changes.
+- **Minor** (`v1.1`, `v1.2`, etc.): New features and minor updates.
+- **Patch** (`v1.0.1`, `v1.0.2`, etc.): Bug fixes.
+
+# Changelog
+
+> **v1.0.0**
+> - Initial release with app bar, sidebar, footer, and content area.
