@@ -43,5 +43,6 @@ createRoot(rootElement).render(
                 </SWRConfig>
             </BrowserRouter>
         </Provider>
-    </StrictMode>,
+    </StrictMode>
 );
+

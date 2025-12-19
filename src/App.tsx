@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { RootState } from "./store/store";
 import { setSelectedPageID } from "./store/selectedPageSlice";
+import { fetchTeaProfiles } from "./store/teaProfilesSlice";
+import type { AppDispatch } from "./store/store";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -39,9 +41,13 @@ export default function App() {
     /* Use Redux store instead to prevent App from completely re-rendering. */
     // const [selectedPageID, setSelectedPageID] = useState<PageID>(pageIDs.home);
     const selectedPageID = useSelector((state: RootState) => state.selectedPage);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const location = useLocation();
+
+    useEffect(() => {
+        dispatch(fetchTeaProfiles());
+    }, [dispatch]);
 
     /* Reset scroll to the top if the user navigates to a new page. */
     useEffect(() => {
