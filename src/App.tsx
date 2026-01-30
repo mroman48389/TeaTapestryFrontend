@@ -54,9 +54,12 @@ export default function App() {
         window.scrollTo(0, 0);
     }, [location.pathname]);
 
-    /* Memoize the page selection handler to prevent unnecessary re-renders of memoized child components.
-        Without useCallback, this function would be re-created on every render, causing props like onSelectPage
-        to change and triggering re-renders in components like NavSidebarListItem (even when their visual state hasn't changed). */
+    /* useCallback is like useMemo for functions. Memoize the page selection handler 
+       to prevent unnecessary re-renders of memoized child components.
+       Without useCallback, this function would be re-created on every render, 
+       causing props like onSelectPage to change and triggering re-renders in 
+       components like NavSidebarListItem (even when their visual state 
+       hasn't changed). */
     const handleSetSelectedPageID = useCallback((id: PageID) => {
         dispatch(setSelectedPageID(id));
     }, [dispatch]);

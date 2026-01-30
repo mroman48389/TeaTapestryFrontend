@@ -31,6 +31,9 @@
 
 	npx jest --coverage
 
+	This script clears Jest's cache before generating coverage.  
+	See 'docs/testing/coverage-notes.md'.
+
 ## Versioning
 
 - **Major** (`v2`, `v3`, etc.): Breaking changes.

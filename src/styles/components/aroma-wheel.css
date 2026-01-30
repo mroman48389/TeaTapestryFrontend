@@ -1,0 +1,3 @@
+@utility aroma-arc-path {
+    @apply focus:outline-0 focus-visible:outline-0;
+}

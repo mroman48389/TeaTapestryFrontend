@@ -6,6 +6,20 @@ import { renderWithRouter, createMemoizedComponentWithSpy } from "@/utils/test-u
 
 import { pageIDs } from "@/constants/pages";
 
+/* DEFUNCT
+
+   These tests were intentionally disabled because NavListItem does not contain 
+   meaningful logic that benefits from unit testing, and it is it not expected to going
+   foward. This testing suite is being left in as defunct in case that changes. 
+   The tests below focus on implementation details (ex: memoization, callback wiring) 
+   rather than user-visible behavior.
+
+   Users never interact with NavListItem in isolation; they interact with the 
+   parent navigation components where the real behavior occurs. Testing should 
+   be performed at that level instead.
+
+*/
+
 describe("NavListItem", () => {
 
     /* Unit tests */

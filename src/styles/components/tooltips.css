@@ -1,0 +1,37 @@
+@utility tooltip {
+    /* Layout and positioning of the element we're hovering over (ex, button). */
+    @apply relative inline-block;
+
+    /* Default state of pseudo-element. */
+    &::after {
+        /* This allows us to specify the text for the tooltip via
+           a datatip property on the element we're hovering over. */
+        content: attr(data-tip);
+        
+        /* Layout and positioning. Classic horizontal centering pattern:
+
+           left-1/2: Left edge of tooltip will start halfway across 
+           the parent component. 
+           
+           -translate-x-1/2: Shift the tooltip left by 50% of its own
+           width.
+        */
+        @apply absolute left-1/2 -translate-x-1/2;
+
+        /* Text */
+        @apply bg-dark-mahogany-brown text-white text-xs 
+            px-2 py-1 rounded 
+            whitespace-nowrap 
+            opacity-0 pointer-events-none;
+        
+        /* Effects */
+        @apply transition-opacity duration-400 ease-in-out;
+
+        bottom: 125%; /* position above the element */
+    }
+
+    /* On hover effects for pseudo-element: Make tooltip solid. */
+    &:hover::after {
+        @apply opacity-100;
+    }
+}

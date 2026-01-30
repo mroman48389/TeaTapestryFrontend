@@ -2,6 +2,19 @@ import { render, screen } from "@testing-library/react";
 
 import { renderWithRouter, createMemoizedComponentWithSpy, setUpMatchMediaMock} from "./test-utils";
 
+/* DEFUNCT
+
+   These tests were intentionally disabled because they target internal test utilities 
+   (ex: renderWithRouter, createMemoizedComponentWithSpy, setUpMatchMediaMock) rather 
+   than the application itself. Test utilities are implementation details of the 
+   test environment, not part of the production codebase, and testing them does not 
+   increase confidence in Tea Tapestry’s behavior or correctness. The test utilities are
+   not user-visible, do not contain business logic, and are not part of the app’s 
+   runtime behavior. Future testing efforts should focus on components, hooks, and 
+   flows that affect real user interactions and application state.
+
+*/
+
 const TestDivArrowFunction = () => <div data-testid="test-div-arrow-function">Test div arrow function</div>;
 
 function TestDivNamed() {
