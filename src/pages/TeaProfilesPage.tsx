@@ -236,23 +236,29 @@ export default function TeaProfilesPage() {
     // return <pre>{JSON.stringify(data, null, 2)}</pre>;
 
     return (
-        <div
-            style={{
-                maxWidth: 640,
-                aspectRatio: '1 / 1',
-                overflow: 'hidden',
-                touchAction: 'none', // required for pinch-zoom
-            }}
-        >
-            <AromaWheel
-                data={aromaWheelData}
-                size={640}
-                gapAngleRad={0.02}
-                interactive={interactive}
-                // onAromaClick={(aroma, category) => {
-                //     // zoom-out + tapestry logic here
-                // }}
-            />
-        </div>
+        <>
+            <h1 className="title--hero">
+                Tea profiles
+            </h1>
+
+            <div
+                style={{
+                    maxWidth: 640,
+                    aspectRatio: '1 / 1',
+                    overflow: 'hidden',
+                    touchAction: 'none', // required for pinch-zoom
+                }}
+            >
+                <AromaWheel
+                    data={aromaWheelData}
+                    size={640}
+                    gapAngleRad={0.02}
+                    interactive={interactive}
+                    // onAromaClick={(aroma, category) => {
+                    //     // zoom-out + tapestry logic here
+                    // }}
+                />
+            </div>
+        </>
     );
 }

@@ -6,6 +6,7 @@
 @import "./styles/base.css";
 @import "./styles/theme.css";
 @import "./styles/utilities.css";
+@import "./styles/components/typography.css";
 
 @import "./styles/components/app.css";
 @import "./styles/components/main.css";
@@ -18,6 +19,7 @@
 @import "./styles/components/tooltips.css";
 @import "./styles/components/twisted-threads-underline.css";
 @import "./styles/components/aroma-wheel.css";
+
 
 /* 
 

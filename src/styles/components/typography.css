@@ -1,0 +1,43 @@
+/* Titles */
+
+@utility title--hero {
+    @apply font-heading text-wood-bowl-brown;
+
+    font-size: var(--text-hero);
+    line-height: var(--leading-hero);
+    letter-spacing: var(--tracking-hero); 
+}
+
+@utility title--heading {
+    @apply font-heading text-wood-bowl-brown;
+
+    font-size: var(--text-heading);
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+}
+
+@utility title--subheading {
+    @apply font-heading text-dark-mahogany-brown;
+
+    font-size: var(--text-subheading);
+    line-height: var(--leading-subheading);
+    letter-spacing: var(--tracking-body);
+}
+
+/* Text */
+
+@utility text--body {
+    @apply font-body text-wood-bowl-brown;
+
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    letter-spacing: var(--tracking-body);
+}
+
+@utility text--small {
+    @apply font-body text-dark-mahogany-brown;
+
+    font-size: var(--text-small);
+    line-height: var(--leading-small);
+    letter-spacing: var(--tracking-small);
+}

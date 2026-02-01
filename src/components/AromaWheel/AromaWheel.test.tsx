@@ -150,7 +150,10 @@ describe("AromaWheel minimal", () => {
 
     it("Unit test: Renders the SVG with the correct aria-label.", () => {
         renderAromaWheel();
-        expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+
+        // Role was removed to address Axe accessibility concerns.
+        //expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+        expect(screen.getByLabelText(/tea aroma wheel/i)).toBeInTheDocument();
     });
 
     it("Unit test: Renders category labels with correct test IDs and expected aroma category name.", () => {
@@ -181,7 +184,11 @@ describe("AromaWheel minimal", () => {
 
     it("Unit test: Renders AromaWheel with empty aroma category data without breaking.", () => {
         renderAromaWheel({ data: { categories: [] } });
-        expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+
+        // Role was removed to address Axe accessibility concerns.
+        //expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+        expect(screen.getByLabelText(/tea aroma wheel/i)).toBeInTheDocument();
+        
         expect(screen.queryByTestId(/category-label-text-/)).toBeNull();
     });
 
@@ -199,7 +206,9 @@ describe("AromaWheel minimal", () => {
             },
         });
 
-        expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+        // Role was removed to address Axe accessibility concerns.
+        //expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+        expect(screen.getByLabelText(/tea aroma wheel/i)).toBeInTheDocument();
     });
 
     /********************************   Hover events   *********************************/

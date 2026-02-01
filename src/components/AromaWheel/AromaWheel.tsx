@@ -518,6 +518,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
                         onClick={interactive ? () => handleAromaArcClick(arc) : undefined}
                         tabIndex={interactive ? 0 : -1}
                         role={interactive ? 'button' : undefined}
+                        aria-label={`${arc.aroma.name} aroma`}
                         onKeyDown={interactive ? (e) => handleAromaKeyDown(e) : undefined}
                     />
 
@@ -658,7 +659,8 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
                 className={className}
                 style={{ width: '100%', height: '100%', ...style }}
                 viewBox={`0 0 ${size} ${size}`}
-                role="img"
+                // Causes accessibility warning
+                // role="img"
                 aria-label="Tea aroma wheel"
             >
                 <g 

@@ -21,22 +21,22 @@
     --font-heading: "Cabin", ui-sans-serif, system-ui, sans-serif;
 
     /* Text sizes */
-    --text-body: 1rem;        /* 16px */
     --text-small: 0.875rem;   /* 14px */
+    --text-body: 1rem;        /* 16px */
     --text-subheading: 1.125rem; /* 18px */
     --text-heading: 1.5rem;   /* 24px */
     --text-hero: 2.25rem;     /* 36px */
 
     /* Line heights */
-    --leading-body: 1.625;    /* relaxed for paragraphs */
     --leading-small: 1.25;    /* tighter for UI labels */
+    --leading-body: 1.625;    /* relaxed for paragraphs */
     --leading-subheading: 1.375;
     --leading-heading: 1.25;
     --leading-hero: 1.1;
 
     /* Letter spacing */
-    --tracking-body: 0em;        /* normal */
     --tracking-small: 0.02em;    /* slightly wide for small text */
+    --tracking-body: 0em;        /* normal */
     --tracking-heading: -0.01em; /* tighten headings */
     --tracking-hero: -0.015em;
 

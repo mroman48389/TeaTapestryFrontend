@@ -55,6 +55,8 @@ describe("AromaWheel arc null path tests", () => {
 
         renderAromaWheel({ data: data });
 
-        expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+        // Role was removed to address Axe accessibility concerns.
+        //expect(screen.getByRole("img", { name: /tea aroma wheel/i })).toBeInTheDocument();
+        expect(screen.getByLabelText(/tea aroma wheel/i)).toBeInTheDocument();
     });
 });
