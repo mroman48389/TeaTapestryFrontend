@@ -79,39 +79,10 @@ function getFocusColor(baseColor: string): string {
     return newColor.toString();
 }
 
-/* ---------------------- COMPONENT ---------------------- */
+/* ---------------------------------------- COMPONENT ------------------------------------------ */
 
-/* 
-   This component uses the pattern for domain widgets. A domain 
-   widget is a reusable component whose behavior is defined by a specific domain like 
-   Tea Tapestry's and not standard HTML. button:HTML::AromaWheel:TeaTapestry. A domain
-   widget is a self-contained interactive module that expresses a concept, sort of like a
-   mini app. In this case, that concept is different categories of tea aromas. Domain
-   widgets 
+/* Domain widget component for visualizing tea aromas. See docs/patterns/component.md */
 
-       1. have their own APIs (ex: onAromaClick, data, gapAngleRad)
-       2. have internal logic or geometry
-       3. have custom event semantics (ex: hovering over a category). 
-       4. are not tied to, or extensions of, single HTML elements
-       5. accept domain-specific props like "interactive" rather than arbitrary HTML 
-          props like onScroll, tabIndex. 
-
-   A second pattern is UI primitives, which we have used for many components like 
-   TopNavbar and NavSidebarToggle. These 
-   
-       1. wrap particular HTML elements like <button> and <nav> and extend their functionality.  
-       2. are typically smaller 
-       3. accept all native props for the element they are wrapping
-       4. do not have domain logic or custom events
-       5. do not have special geometry or visualization logic
-   
-   Finally, we have the route component pattern, such as TeaProfilesPage. These are 
-   
-       1. not meant for reuse
-       2. not based on UI primitives
-       3. are areas to orchestrate data fetching, layouts, and child components.
-
-*/
 export const AromaWheel: React.FC<AromaWheelProps> = ({
     data,
     size = 500,
@@ -617,7 +588,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
     const clockwiseBtn = 
         <TouchButton
             data-testid="rotate-clockwise-btn"
-            buttonClassName="btn tooltip cursor-pointer px-4 py-2"
+            buttonClassName="btn rectangle-btn-border tooltip px-4 py-2"
             buttonTip="Rotate clockwise"
             onMouseDown={() => startRotating(1)} 
             onMouseUp={stopRotating} 
@@ -632,7 +603,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
     const counterclockwiseBtn = 
         <TouchButton
             data-testid="rotate-counterclockwise-btn"
-            buttonClassName="btn tooltip ml-[5px] cursor-pointer px-4 py-2"
+            buttonClassName="btn rectangle-btn-border tooltip ml-[5px] px-4 py-2"
             buttonTip="Rotate counterclockwise"
             onMouseDown={() => startRotating(-1)} 
             onMouseUp={stopRotating} 
@@ -644,10 +615,16 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
             <RotateLeft className="rotate-[50deg]"/>
         </TouchButton>;
 
-    /* The padding on the parent div is needed so the aroma arcs don't get cut off when
+    /* There is a lot happening in AromaWheel, so we assign it the region role and 
+       "Aroma wheel" description for  accessibility. Screen readers will have a named area 
+       they can jump directly to and the user will know the controls are related.
+ 
+       The padding on the parent div is needed so the aroma arcs don't get cut off when
        they pop out of the wheel. */
     return (
         <div 
+            role="region"
+            aria-roledescription="Aroma wheel"
             style={{ 
                 position: "relative", 
                 width: size,
@@ -674,7 +651,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
                 </g>
             </svg>
 
-            <div className="absolute bottom-2.5 left-2.5 flex gap-2">
+            <div className="absolute bottom-2.5 left-2.5 flex gap-0">
                 {clockwiseBtn}
                 {counterclockwiseBtn}
             </div>

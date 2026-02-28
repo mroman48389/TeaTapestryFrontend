@@ -19,6 +19,29 @@
     }
 }
 
+@utility rectangle-btn-border {
+    /* Make the top and left border a bit lighter to give depth. */
+    @apply border-2 border-t-wood-bowl-brown/40 border-l-wood-bowl-brown/40 border-b-wood-bowl-brown border-r-wood-bowl-brown; 
+    @apply shadow-[0_2px_0_0_rgba(0,0,0,0.4)];
+
+    /* When the button is pressed, remove the shaddow and make all the borders the same to give the impression
+       that button is being pressed in. */
+    &:active { 
+        @apply shadow-none;
+        @apply border-t-wood-bowl-brown border-l-wood-bowl-brown; 
+    }
+}
+
+@utility circle-btn-border {
+    /* Borders look strange on circular buttons if they're not the same all the way around, so give a simple border. */
+    @apply border-1 border-wood-bowl-brown rounded-full;
+    @apply shadow-[0_2px_0_rgba(0,0,0,0.4)];
+
+    &:active {
+        @apply shadow-none;
+    }
+}
+
 @utility top-navbar-btn {
     /* Layout and positioning. Relative so we can absolutely position underlines and they will not de-center 
        nav items vertically. */

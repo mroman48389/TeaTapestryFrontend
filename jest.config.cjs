@@ -101,6 +101,7 @@ module.exports = {
         "!src/vite-env.d.ts",
         "!src/store/**",
         "!src/components/AromaWheel/AromaWheelTypes.ts",
+        "!src/data/**",
 
         /* Routing shells, layout containers, wiring points, and
            presentational components with no business logic. No branching, 
@@ -110,6 +111,8 @@ module.exports = {
         "!src/pages/**", 
         "!src/App.tsx", 
         "!src/main.tsx",
+        "!src/components/Skeleton.tsx",
+        "!src/components/LoadableArea.tsx",
         "!src/components/Button.tsx", 
         "!src/components/Footer.tsx", 
         "!src/components/NavListItem.tsx", 
@@ -125,7 +128,8 @@ module.exports = {
         "!src/**/*.test.{ts,tsx}",
         
         /* Other files that don't benefit from testing. */
-        "!src/hooks/useFetch.ts",
+        "!src/hooks/integration/**",
+        "!src/utils/utils.ts",
         "!src/utils/log-utils.ts",
         "!src/utils/fetcher.ts",
         "!src/utils/svg-utils.ts"

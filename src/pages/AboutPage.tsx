@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-import useFetch from "@/hooks/useFetch";
+import useFetch from "@/hooks/integration/useFetch";
 // import {log} from "./../utils/log-utils";
 import { VersionResponse } from "@/types/serverResponses";
 

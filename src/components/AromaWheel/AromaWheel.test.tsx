@@ -67,86 +67,51 @@ import { AromaCategories } from "@/types/aromas";
 
 */
 
-interface RotationTestParams {
-    testId: string;
-    startEvent: "mouseDown" | "touchStart";
-    stopEvent: "mouseUp" | "touchEnd";
+/* Wrap sample aroma category data in a function to ensure each test
+    gets its own fresh copy. () => ({}) will impliticly return
+    the content while () => { ... } requires an explicit return inside
+    the {}. Implicit is nice because we can't accidentally forget the
+    return. */
+const getSampleAromaCatData = (): AromaCategories => ({
+    categories: [
+        {
+            id: "cat-1",
+            name: "Floral",
+            color: "#ff0000",
+            aromas: [
+                { id: "aro-1", name: "Rose" },
+                { id: "aro-2", name: "Jasmine" },
+            ],
+        },
+        {
+            id: "cat-2",
+            name: "Fruity",
+            color: "#00ff00",
+            aromas: [{ 
+                id: "aro-3", name: "Peach" 
+            }],
+        },
+    ],
+});
+
+/* This render helper's job is to pass props appropriately to AromaWheel. 
+   AromaWheel handles most default props, so we only need to pass in a 
+   couple of relevant ones depending on the test. 
+
+   By using Partial here, any time we call renderAromaWheel, we only 
+   need to pass in the subset of AromaWheel props we actually care about 
+   for the test. Default to {} so we don't need to pass in any by default. */
+function renderAromaWheel(
+    propOverrides: Partial<React.ComponentProps<typeof AromaWheel>> = {}
+) {
+    /* If AromaCategories data was passed in, used that, otherwise use 
+        sample data. The AromaWheel generally needs at least some sample
+        data for us to do meaningful tests on it. */
+    const data = propOverrides.data ?? getSampleAromaCatData();
+    return render(<AromaWheel data={data} {...propOverrides}/>);
 }
 
-function testRotationInteraction({
-    testId,
-    startEvent,
-    stopEvent,
-}: RotationTestParams) {
-    const btn = screen.getByTestId(testId);
-    const group = screen.getByTestId("aroma-wheel-rotation-group");
-
-    const initialTransform = group.getAttribute("transform");
-
-    fireEvent[startEvent](btn);
-    /* Causes React state updates, so must be wrapped with act. */
-    act(() => jest.advanceTimersByTime(200));
-
-    const middleTransform = group.getAttribute("transform");
-    expect(middleTransform).not.toBe(initialTransform);
-
-    fireEvent[stopEvent](btn);
-    /* Causes React state updates, so must be wrapped with act. */
-    act(() => jest.advanceTimersByTime(200));
-
-    /* Verify that the rotation has fully stopped and the transform is
-        stable. */
-    const finalTransformBefore = group.getAttribute("transform");
-
-    /* Wait for any pending updates. Causes React state updates, so must be wrapped with act. */
-    act(() => jest.advanceTimersByTime(50));
-
-    const finalTransformAfter = group.getAttribute("transform");
-    expect(finalTransformAfter).toBe(finalTransformBefore);
-}
-
-describe("AromaWheel minimal", () => {
-    /* Wrap sample aroma category data in a function to ensure each test
-       gets its own fresh copy. () => ({}) will impliticly return
-       the content while () => { ... } requires an explicit return inside
-       the {}. Implicit is nice because we can't accidentally forget the
-       return. */
-    const getSampleAromaCatData = (): AromaCategories => ({
-        categories: [
-            {
-                id: "cat-1",
-                name: "Floral",
-                color: "#ff0000",
-                aromas: [
-                    { id: "aro-1", name: "Rose" },
-                    { id: "aro-2", name: "Jasmine" },
-                ],
-            },
-            {
-                id: "cat-2",
-                name: "Fruity",
-                color: "#00ff00",
-                aromas: [{ 
-                    id: "aro-3", name: "Peach" 
-                }],
-            },
-        ],
-    });
-
-    /* Wrap the render of the AromaWheel in a function to reduce code
-       repetition below. By using Partial here, any time we call 
-       renderAromaWheel, we only need to pass in the subset of AromaWheel props
-       we actually care about for the test. Default to {} so we don't need to
-       pass in any by default. */
-    function renderAromaWheel(
-        propOverrides: Partial<React.ComponentProps<typeof AromaWheel>> = {}
-    ) {
-        /* If AromaCategories data was passed in, used that, otherwise use 
-           sample data. The AromaWheel generally needs at least some sample
-           data for us to do meaningful tests on it. */
-        const data = propOverrides.data ?? getSampleAromaCatData();
-        return render(<AromaWheel data={data} {...propOverrides}/>);
-    }
+describe("AromaWheel: Basic rendering.", () => {
 
     it("Unit test: Renders the SVG with the correct aria-label.", () => {
         renderAromaWheel();
@@ -211,7 +176,9 @@ describe("AromaWheel minimal", () => {
         expect(screen.getByLabelText(/tea aroma wheel/i)).toBeInTheDocument();
     });
 
-    /********************************   Hover events   *********************************/
+});
+
+describe("AromaWheel: Hover events.", () => {
 
     it("Unit test: Calls onAromaHoverChange when hovering and leaving an aroma arc.", () => {
         const data = getSampleAromaCatData();
@@ -284,7 +251,9 @@ describe("AromaWheel minimal", () => {
         expect(onAromaHoverChange).toHaveBeenCalledWith(aroma, aromaCat);
     });
 
-    /********************************   Click events   *********************************/
+});
+
+describe("AromaWheel: Click events.", () => {
 
     it("Unit test: Calls onAromaClick when an aroma arc is clicked.", () => {
         const onAromaClick = jest.fn();
@@ -316,7 +285,9 @@ describe("AromaWheel minimal", () => {
         expect(category.id).toBe("cat-1");
     });
 
-     /********************************   Keyboard events   *********************************/
+});
+
+describe("AromaWheel: Keyboard events.", () => {
 
     it("Integration test: Enter and Space keys trigger onAromaClick for focused aroma.", () => {
         const onAromaClick = jest.fn();
@@ -433,11 +404,56 @@ describe("AromaWheel minimal", () => {
         expect(onCategoryHoverChange).not.toHaveBeenCalled();
     });
 
-    /*****************************   Rotation events   *********************************/
+});
+
+describe("AromaWheel: Press-and-hold navigation.", () => {
+    beforeEach(() => { 
+        jest.useFakeTimers(); 
+    }); 
+    
+    afterEach(() => { 
+        jest.useRealTimers(); 
+    });
+
+    interface RotationTestParams {
+        testId: string;
+        startEvent: "mouseDown" | "touchStart";
+        stopEvent: "mouseUp" | "touchEnd";
+    }
+
+    function testRotationInteraction({
+        testId,
+        startEvent,
+        stopEvent,
+    }: RotationTestParams) {
+        const btn = screen.getByTestId(testId);
+        const group = screen.getByTestId("aroma-wheel-rotation-group");
+
+        const initialTransform = group.getAttribute("transform");
+
+        fireEvent[startEvent](btn);
+        /* Causes React state updates, so must be wrapped with act. */
+        act(() => jest.advanceTimersByTime(200));
+
+        const middleTransform = group.getAttribute("transform");
+        expect(middleTransform).not.toBe(initialTransform);
+
+        fireEvent[stopEvent](btn);
+        /* Causes React state updates, so must be wrapped with act. */
+        act(() => jest.advanceTimersByTime(200));
+
+        /* Verify that the rotation has fully stopped and the transform is
+            stable. */
+        const finalTransformBefore = group.getAttribute("transform");
+
+        /* Wait for any pending updates. Causes React state updates, so must be wrapped with act. */
+        act(() => jest.advanceTimersByTime(50));
+
+        const finalTransformAfter = group.getAttribute("transform");
+        expect(finalTransformAfter).toBe(finalTransformBefore);
+    }
 
     it("Integration test: Rotates when holding clockwise button and stops when released.", () => {
-        jest.useFakeTimers();
-
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -448,9 +464,6 @@ describe("AromaWheel minimal", () => {
     });
 
     it("Integration test: Starts rotating on touch for clockwise button and stops when touch stops.", () => {
-
-        jest.useFakeTimers();
-
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -461,8 +474,6 @@ describe("AromaWheel minimal", () => {
     });
 
     it("Integration test: Rotates when holding counterclockwise button and stops when released.", () => {
-        jest.useFakeTimers();
-
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -473,8 +484,6 @@ describe("AromaWheel minimal", () => {
     });
 
     it("Integration test: Starts rotating on touch for counterclockwise button and stops when touch stops.", () => {
-        jest.useFakeTimers();
-
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -485,7 +494,6 @@ describe("AromaWheel minimal", () => {
     });
 
     it("Integration test: Rotation internal logic.", () => {
-        jest.useFakeTimers();
         renderAromaWheel();
 
         const btn = screen.getByTestId("rotate-clockwise-btn");
@@ -498,6 +506,6 @@ describe("AromaWheel minimal", () => {
 
         fireEvent.mouseDown(btn);
         fireEvent.mouseUp(btn);
-
     });
+
 });

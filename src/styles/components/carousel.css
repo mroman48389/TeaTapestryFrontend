@@ -1,0 +1,18 @@
+@utility carousel-shape {
+    @apply w-64 h-80 rounded-xl;
+}
+
+@utility slide {
+    @apply absolute outline-none cursor-pointer;
+    @apply focus-visible:ring-2 focus-visible:ring-amber-400;
+    @apply focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950;
+}
+
+@utility carousel-nav-button {
+    @apply btn circle-btn-border tooltip;    
+    @apply w-10 h-10; 
+    @apply text-2xl;
+
+    /* prevents malforming when the screen shrinks */
+    @apply shrink-0;
+}
