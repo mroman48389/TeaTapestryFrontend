@@ -562,7 +562,7 @@ function CarouselInner<T>(
                         tabIndex={0}
                         aria-current="true"
                         aria-label={`Item ${itemIndex + 1} of ${actualItemCount}`}
-                        onClick={ () => onSlideClick?.(item, itemIndex)}
+                        onClick={() => onSlideClick?.(item, itemIndex)}
                         className="slide"
                         style={{
                             zIndex: transform.zIndex,

@@ -11,11 +11,13 @@ import { useMeasure } from "@/hooks/integration/useMeasure";
 import clsx from "clsx";
 
 import { TeaProfilesResponse } from "@/types/serverResponses";
+import { TeaProfiles } from "@/schemas/teaProfiles";
 import { Skeleton } from "@/components/Skeleton";
 import { LoadableArea } from "@/components/LoadableArea";
 import { AromaWheel } from "@/components/AromaWheel/AromaWheel";
 import { Carousel, CarouselHandle } from "@/components/Carousel/Carousel";
 import { aromaWheelData } from "@/data/aromaWheelData";
+import { Aroma, AromaCategory } from "@/types/aromas";
 
 interface Tea {
   id: string;
@@ -26,7 +28,7 @@ export default function TeaProfilesPage() {
     const { get } = useFetch(import.meta.env.VITE_API_URL);
 
     /* Note that SWR triggers multiple state transitions, so you will get multiple renders. */
-    const { isLoading, error } = useSWR<TeaProfilesResponse>("/api/v1/tea_profiles", get);
+    const { data: teaProfiles, isLoading, error } = useSWR<TeaProfilesResponse>("/api/v1/tea_profiles", get);
 
     const [interactive, setInteractive] = useState(true);
 
@@ -47,6 +49,35 @@ export default function TeaProfilesPage() {
         mql.addEventListener('change', update);
         return () => mql.removeEventListener('change', update);
     }, []);
+
+    const handleOnAromaClick = (aroma: Aroma, category: AromaCategory) => {
+        console.log("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");
+
+        const matchingTeaProfiles: TeaProfiles = [];
+
+        if (teaProfiles) {
+            for (let i = 0; i < teaProfiles?.length; i++) {
+                const aromas: string[] =[
+                    ...teaProfiles[i].liquor_aroma, 
+                    ...teaProfiles[i].liquor_taste, 
+                    ...teaProfiles[i].dry_leaf_aroma, 
+                    ...teaProfiles[i].wet_leaf_aroma,
+                ];
+
+                const aromaFoundInTeaProfile = aromas.some(teaProfilesAroma =>
+                    teaProfilesAroma.toLowerCase().includes(aroma.name.toLowerCase())
+                );
+
+                if (aromaFoundInTeaProfile) {
+                    matchingTeaProfiles.push(teaProfiles[i]);
+                }
+            }
+
+            if (matchingTeaProfiles.length > 0) {
+                console.log(matchingTeaProfiles);
+            }
+        }
+    };
 
     const teas: Tea[] = [
         { id: "1", name: "1 Long Jing" },
@@ -94,9 +125,9 @@ export default function TeaProfilesPage() {
                         size={Math.min(aromaWheelDivWidth, aromaWheelDefaultWidth)}
                         gapAngleRad={0.02}
                         interactive={interactive}
-                        // onAromaClick={(aroma, category) => {
-                        //     // zoom-out + tapestry logic here
-                        // }}
+                        onAromaClick={(aroma, category) => {
+                            handleOnAromaClick(aroma, category);
+                        }}
                     />
                 }
             </LoadableArea>

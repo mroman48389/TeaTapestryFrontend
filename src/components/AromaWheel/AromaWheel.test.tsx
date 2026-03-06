@@ -4,69 +4,6 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import { AromaWheel } from "./AromaWheel";
 import { AromaCategories } from "@/types/aromas";
 
-/*  TESTING GUIDELINES
-
-    Unit test:
-        1. Verifies internal logic of a unit of code.
-        2. Tests one small piece of code in isolation (ex: single function, class). 
-        3. Independent of databases, API calls, other classes, etc. Relies on mocks only.
-        4. Tend to be faster and have low cost.
-
-    Integration test:
-        1. Verifies behavior (user data flows, communication) between several units of code.
-        3. Tests how multiple pieces of code work together (ex: interactions between components).
-        3. Require dependencies beyond mocks.
-        4. Tend to be slower and have high cost.
-
-    This test suite serves as a model for how to write high‑value, maintainable,
-    resilient tests. 
-
-    1. Test behavior, not implementation details.
-        - Focus on what the user can see, do, or experience. Tests should
-          mimic user interactions as closely as possible.
-        - Avoid testing internal state, derived geometry, or d3 internals.
-        - Assert outcomes through DOM changes and callback invocations.
-
-    2. Use stable selectors (data-testid) only where necessary.
-        - Use test IDs when there is no reliable, user-facing selector. 
-          Elements with no roles, text, semantic meaning, or visibility are
-          good candidates.
-        - Conversely, do not use test IDs when you can use:
-              1. getByRole
-              2. getByLabelText
-              3. getByText
-              4. getByPlaceholderText
-              5. getByAltText
-              6. getByTitle
-        - SVG structures often lack semantic roles, so test IDs are used 
-          for arcs, labels, and rotation controls.
-        - Overuse of test IDs gets us further away from interacting with
-          the component the way a user would.
-
-    3. Prefer realistic interactions over manual state manipulation.
-        - Use fireEvent or user-event to simulate hover, click, and keyboard input.
-        - Let the component behave naturally rather than forcing state.
-
-    4. Cover meaningful user flows.
-        - Hovering aromas and categories
-        - Clicking arcs
-        - Keyboard navigation (Enter, Space, Arrow keys)
-        - Rotation behavior via press-and-hold buttons
-        - Interactive vs non-interactive mode
-
-    5. Do NOT test:
-        - Exact SVG path strings (this is d3's responsibility)
-        - Internal math or geometry
-        - React hook implementation details
-        - Visual styling or animation timing
-
-    6. Keep tests resilient and intention‑focused.
-        - Assert that rotation changes the transform, not the exact angle.
-        - Assert that callbacks fire with the correct domain objects.
-        - Assert that labels render, not their exact pixel positions.
-
-*/
-
 /* Wrap sample aroma category data in a function to ensure each test
     gets its own fresh copy. () => ({}) will impliticly return
     the content while () => { ... } requires an explicit return inside
