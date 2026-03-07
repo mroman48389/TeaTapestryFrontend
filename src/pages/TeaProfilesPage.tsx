@@ -18,6 +18,7 @@ import { AromaWheel } from "@/components/AromaWheel/AromaWheel";
 import { Carousel, CarouselHandle } from "@/components/Carousel/Carousel";
 import { aromaWheelData } from "@/data/aromaWheelData";
 import { Aroma, AromaCategory } from "@/types/aromas";
+import EmptyCup from "../assets/teacup mascots/empty-teacup.png";
 
 interface Tea {
   id: string;
@@ -31,6 +32,7 @@ export default function TeaProfilesPage() {
     const { data: teaProfiles, isLoading, error } = useSWR<TeaProfilesResponse>("/api/v1/tea_profiles", get);
 
     const [interactive, setInteractive] = useState(true);
+    const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles | null>(null);
 
     const carouselRef = useRef<CarouselHandle | null>(null);
     /* Allows us to fluidly resize the aroma wheel, which derives its internal geometry from
@@ -75,6 +77,10 @@ export default function TeaProfilesPage() {
 
             if (matchingTeaProfiles.length > 0) {
                 console.log(matchingTeaProfiles);
+                setTargetTeaProfiles(matchingTeaProfiles);
+            }
+            else {
+                setTargetTeaProfiles(null);
             }
         }
     };
@@ -133,6 +139,7 @@ export default function TeaProfilesPage() {
             </LoadableArea>
         </div>;
 
+
     const teaProfilesCarousel = 
         <div className="fade-in-component flex-1">
             <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
@@ -164,6 +171,19 @@ export default function TeaProfilesPage() {
             </LoadableArea>
         </div>;
 
+    const noMatchingTeaProfilesImg = 
+        <div className="fade-in-component flex-1">
+            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+                <div className="flex flex-col items-center">
+                    <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl">
+                        No tea profiles were found for that aroma.
+                    </h2>
+
+                    <img src={EmptyCup} alt="Empty teacup" className="h-auto w-60 object-contain"/>
+                </div>
+            </LoadableArea>
+        </div>;
+
     // console.log("Tea profiles response:", data);
     // return <pre>{JSON.stringify(data, null, 2)}</pre>;
 
@@ -186,7 +206,7 @@ export default function TeaProfilesPage() {
                 className={clsx( "flex items-center gap-[32px]", showInRow ? "flex-row" : "flex-col" )}
             >
                 {aromaWheel}
-                {teaProfilesCarousel}
+                {targetTeaProfiles ? teaProfilesCarousel : noMatchingTeaProfilesImg}
             </div>
         </>
     );
