@@ -1,11 +1,21 @@
-export default function PortalPage() {
+import UnderConstructionImg from "../assets/teacup mascots/construction-teacup.png";
 
+export default function PortalPage() {
+    const underConstructionImg = 
+        <div className="fade-in-component flex flex-col flex-1 items-center mt-5">
+            <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center">
+                This area is currently under construction. Please visit "Tea profiles" in the meantime.
+            </h2>
+
+            <img src={UnderConstructionImg} alt="Teacup with hardhat" className="h-auto w-100"/>
+        </div>;
+        
     return (
         <>
             <h1>Tea Tapestry</h1>
             <h2>Home</h2>
 
-            {/* <div className="bg-test-red w-128">Testtttttttttttttttttttttttttttttttttttttt</div> */}
+            {underConstructionImg}
         </>
     );
 }

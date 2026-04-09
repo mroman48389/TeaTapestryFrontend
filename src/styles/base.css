@@ -5,4 +5,10 @@
         /* Prevent space alotted to vertical scrollbar from going away when user clicks hamburger menu. */
         scrollbar-gutter: stable;
     }
+
+    a {
+        /* Make anchor pop by reducing opacity and bringing it up to 1 over 0.3s. */
+        opacity: 0.8;
+        transition: opacity 300ms;
+    }
 }

@@ -17,8 +17,8 @@ type NavListItemProps = {
 /* List item that can be used for navigation on the top navbar, nav sidebar, or hamburger menu sheet for mobile. */
 function NavListItem(props: NavListItemProps) {
     /* Create ref for direct access to anchor element so we can grab info from it (the offsetWidth DOM measurement). We 
-        Can't use useState to hold a DOM node directly, since React doesn't know when the DOM is ready. We'd end up
-        triggering unncessary re-renders if we tried. This reference will persist across renders. */
+       Can't use useState to hold a DOM node directly, since React doesn't know when the DOM is ready. We'd end up
+       triggering unncessary re-renders if we tried. This reference will persist across renders. */
     const textRef = useRef<HTMLAnchorElement>(null);
     const [textWidth, setTextWidth] = useState(0);
 

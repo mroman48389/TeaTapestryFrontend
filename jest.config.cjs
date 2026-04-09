@@ -118,6 +118,8 @@ module.exports = {
         "!src/components/NavListItem.tsx", 
         "!src/components/NavListItem.test.defunct.tsx", 
         "!src/components/TwistedThreadsUnderline.tsx",
+        "!src/components/TeaProfileCard.tsx",
+        "!src/components/HeroTitle.tsx",
 
         /* Testing files. These do not reflect the app's behavior */
         "!src/utils/test-utils.tsx",
@@ -132,6 +134,7 @@ module.exports = {
         "!src/utils/utils.ts",
         "!src/utils/log-utils.ts",
         "!src/utils/fetcher.ts",
-        "!src/utils/svg-utils.ts"
+        "!src/utils/svg-utils.ts",
+        "!src/utils/aromaWheelDataUtils.ts"
     ]
 };

@@ -3,6 +3,10 @@ import useSWR from "swr";
 import useFetch from "@/hooks/integration/useFetch";
 // import {log} from "./../utils/log-utils";
 import { VersionResponse } from "@/types/serverResponses";
+import { HeroTitle } from "@/components/HeroTitle";
+import { Pages, pageIDs } from "@/constants/pages";
+// import UnderConstructionImg from "../assets/teacup mascots/construction-teacup.png";
+import GreetingImg from "../assets/teacup mascots/waving-teacup-looking-straight-on.png";
 
 export default function AboutPage() {
     const { get } = useFetch(import.meta.env.VITE_API_URL);
@@ -11,9 +15,65 @@ export default function AboutPage() {
     if (isLoading) return <p>Loading version...</p>;
     if (error) return <p>Error loading version.</p>;
 
+    // const underConstructionImg = 
+    //     <div className="fade-in-component flex flex-col flex-1 items-center">
+    //         <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center mt-5">
+    //             This area is currently under construction. Please visit "Tea profiles" in the meantime.
+    //         </h2>
+
+    //         <img src={UnderConstructionImg} alt="Teacup with hardhat" className="h-auto w-100"/>
+    //     </div>;
+    
     return (
         <>
-            <p className="text-5xl text-amber-950">Version: {data?.version}</p>
+            <HeroTitle>{Pages[pageIDs.about].title}</HeroTitle>
+            
+            <img src={GreetingImg} alt="Teacup waving" className="h-65 w-auto mt-7"/>
+
+            <h2 className="title--heading mt-5">
+                Mission
+            </h2>
+
+            <p className="text--body mt-3">
+                Tea Tapestry aims to educate people about the world of tea, provide tools for exploring this fascinating world, 
+                and bring the tea community together to share their experiences and passion for all things tea!
+            </p>
+
+            <h2 className="title--heading mt-10">
+                Version
+            </h2>
+
+            <p className="text--body mt-3">{data?.version}</p>
+
+            <h2 className="title--heading mt-10">
+                Credits
+            </h2>
+
+            <p className="text--body mt-3">
+                Washi paper background used on tea profile cards by&nbsp;
+                
+                <a 
+                    className="underline" 
+                    target="_blank"
+                    href="https://unsplash.com/@360floralflaves?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+                >
+                    360floralflaves
+                </a> 
+                
+                &nbsp;on&nbsp; 
+                
+                <a 
+                    className="underline" 
+                    target="_blank"
+                    href="https://unsplash.com/photos/a-person-riding-a-snowboard-down-a-snow-covered-slope-2nKcZGDHpEs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+                >
+                    Unsplash
+                </a>
+
+                .
+            </p>
+
+            {/* {underConstructionImg} */}
         </>
     );
 }

@@ -228,7 +228,10 @@ describe("AromaWheel: Keyboard events.", () => {
 
     it("Integration test: Enter and Space keys trigger onAromaClick for focused aroma.", () => {
         const onAromaClick = jest.fn();
-        renderAromaWheel({ onAromaClick });
+        renderAromaWheel({ 
+            onAromaClick, 
+            focusedAromaId: "aro-1" 
+        });
 
         /* Aroma arc <path>s. */
         const aromaArc = screen.getByTestId("aroma-arc-path-cat-1-aro-1");
@@ -244,12 +247,19 @@ describe("AromaWheel: Keyboard events.", () => {
 
     it("Integration test: ArrowRight key moves focus to next aroma and calls onAromaHoverChange.", () => {
         const onAromaHoverChange = jest.fn();
-        renderAromaWheel({ onAromaHoverChange });
+        const onAromaClick = jest.fn();
+        const onFocusedAromaIdChange = jest.fn();
+
+        renderAromaWheel({         
+            onAromaHoverChange,
+            onAromaClick,
+            onFocusedAromaIdChange,
+            focusedAromaId: "aro-1"
+        });
 
         /* Aroma arc <path>s. */
         const startingArc = screen.getByTestId("aroma-arc-path-cat-1-aro-1");
 
-        fireEvent.click(startingArc);
         fireEvent.keyDown(startingArc, { key: "ArrowRight" });
 
         expect(onAromaHoverChange).toHaveBeenCalled();
@@ -261,22 +271,48 @@ describe("AromaWheel: Keyboard events.", () => {
            destructured. */
         const [nextAroma] = onAromaHoverChange.mock.calls.pop()!;
         expect(nextAroma.id).toBe("aro-2");
+
+        /* Moving to the next aroma should have called onAromaClick with an Aroma with id "aro-3" and 
+           some AromaCategory object (we don't care about the details of the latter for this test). */
+        expect(onAromaClick).toHaveBeenCalledWith(
+            expect.objectContaining({ id: "aro-2" }),
+            expect.any(Object)
+        );
+
+        /* Focus should now be on the next aroma. */
+        expect(onFocusedAromaIdChange).toHaveBeenCalledWith("aro-2");
     });
 
     it("Integration test: ArrowRight key moves focus to first aroma if the last aroma has focus.", () => {
         const onAromaHoverChange = jest.fn();
-        renderAromaWheel({ onAromaHoverChange });
+        const onAromaClick = jest.fn();
+        const onFocusedAromaIdChange = jest.fn();
+        renderAromaWheel({         
+            onAromaHoverChange,
+            onAromaClick,
+            onFocusedAromaIdChange,
+            focusedAromaId: "aro-3" // start on last aroma
+        });
 
         /* Aroma arc <path>s. */
         const startingArc = screen.getByTestId("aroma-arc-path-cat-2-aro-3");
 
-        fireEvent.click(startingArc);
         fireEvent.keyDown(startingArc, { key: "ArrowRight" });
 
         expect(onAromaHoverChange).toHaveBeenCalled();
 
         const [nextAroma] = onAromaHoverChange.mock.calls.pop()!;
         expect(nextAroma.id).toBe("aro-1");
+
+        /* Moving to the next aroma should have called onAromaClick with an Aroma with id "aro-1" and 
+           some AromaCategory object (we don't care about the details of the latter for this test). */
+        expect(onAromaClick).toHaveBeenCalledWith(
+            expect.objectContaining({ id: "aro-1" }),
+            expect.any(Object)
+        );
+
+        /* Focus should now be on the first aroma. */
+        expect(onFocusedAromaIdChange).toHaveBeenCalledWith("aro-1");
     });
 
     it("Integration test: ArrowRight key does not trigger aroma hover change if no aroma has focus.", () => {
@@ -294,16 +330,33 @@ describe("AromaWheel: Keyboard events.", () => {
     it("Integration test: ArrowLeft key wraps to last aroma.", () => {
         const data = getSampleAromaCatData();
         const onAromaHoverChange = jest.fn();
-        renderAromaWheel({ data, onAromaHoverChange });
+        const onAromaClick = jest.fn();
+        const onFocusedAromaIdChange = jest.fn();
+        renderAromaWheel({         
+                data,
+            onAromaHoverChange,
+            onAromaClick,
+            onFocusedAromaIdChange,
+            focusedAromaId: "aro-1", // start on first aroma 
+        });
 
         /* Aroma arc <path>s. */
         const firstArc = screen.getByTestId("aroma-arc-path-cat-1-aro-1");
 
-        fireEvent.click(firstArc);
         fireEvent.keyDown(firstArc, { key: "ArrowLeft" });
 
         const [lastAroma] = onAromaHoverChange.mock.calls.pop()!;
         expect(lastAroma.id).toBe("aro-3"); // last aroma in dataset
+
+        /* Moving to the next aroma should have called onAromaClick with an Aroma with id "aro-3" and 
+           some AromaCategory object (we don't care about the details of the latter for this test). */
+        expect(onAromaClick).toHaveBeenCalledWith(
+            expect.objectContaining({ id: "aro-3" }),
+            expect.any(Object)
+        );
+
+        /* Focus should now be on the last aroma. */
+        expect(onFocusedAromaIdChange).toHaveBeenCalledWith("aro-3");
     });
 
     it("Integration test: Does not call callbacks or handle keyboard events when interactive prop is false.", () => {

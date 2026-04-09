@@ -6,12 +6,12 @@ import { z } from "zod";
 /* For: validating/typing a single tea  profile or working with a tea profile 
    inside loops, handlers, components. 
    
-   Use .default([]) on optional arrays to avoid needing to check that they
+   Use .nullable().transform(val => val ?? []), on optional arrays to avoid needing to check that they
    are not null everywhere. */
 export const TeaProfileSchema = z.object({
     id: z.number(),
     name: z.string(),
-    alternative_names: z.array(z.string()).default([]),
+    alternative_names: z.array(z.string()).nullable().transform(val => val ?? []),
     tea_type: z.string(),
     cultivars: z.array(z.string()),
     processing: z.string().nullable(),
@@ -19,17 +19,17 @@ export const TeaProfileSchema = z.object({
     cultural_significance: z.string().nullable(),
     cultural_significance_source: z.string().nullable(),
     country_of_origin: z.string(),
-    subregions: z.array(z.string()).default([]),
+    subregions: z.array(z.string()).nullable().transform(val => val ?? []),
     avg_price_per_oz_usd: z.number().nullable(),
     liquor_appearance: z.array(z.string()),
     liquor_aroma: z.array(z.string()),
     liquor_taste: z.array(z.string()),
-    liquor_body_mouthfeel: z.array(z.string()).default([]),
-    body_effect: z.array(z.string()).default([]),
-    dry_leaf_appearance: z.array(z.string()).default([]),
-    dry_leaf_aroma: z.array(z.string()).default([]),
-    wet_leaf_appearance: z.array(z.string()).default([]),
-    wet_leaf_aroma: z.array(z.string()).default([]),
+    liquor_body_mouthfeel: z.array(z.string()).nullable().transform(val => val ?? []),
+    body_effect: z.array(z.string()).nullable().transform(val => val ?? []),
+    dry_leaf_appearance: z.array(z.string()).nullable().transform(val => val ?? []),
+    dry_leaf_aroma: z.array(z.string()).nullable().transform(val => val ?? []),
+    wet_leaf_appearance: z.array(z.string()).nullable().transform(val => val ?? []),
+    wet_leaf_aroma: z.array(z.string()).nullable().transform(val => val ?? []),
 });
 
 /* For: validating the entire response from the server and parsing it. */

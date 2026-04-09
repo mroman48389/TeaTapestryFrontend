@@ -36,6 +36,12 @@ export interface AromaWheelProps {
     style?: CSSProperties;
     className?: string;
 
+    /** Controlled state. */
+    /** The id of the aroma the user clicks on the wheel.  */
+    focusedAromaId?: string | null;
+    onFocusedAromaIdChange?: (id: string | null) => void;
+
+    /** Semantic events. */
     onAromaClick?: (aroma: Aroma, category: AromaCategory) => void;
     onCategoryClick?: (category: AromaCategory) => void;
     onAromaHoverChange?: (aroma: Aroma | null, category: AromaCategory | null) => void;
@@ -81,7 +87,8 @@ function getFocusColor(baseColor: string): string {
 
 /* ---------------------------------------- COMPONENT ------------------------------------------ */
 
-/* Domain widget component for visualizing tea aromas. See docs/patterns/component.md */
+/* Domain widget component for visualizing tea aromas. See docs/patterns/component.md. This is
+   an optionally controlled component, as the parent should pass in the focused aroma Id. */
 
 export const AromaWheel: React.FC<AromaWheelProps> = ({
     data,
@@ -91,16 +98,17 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
     interactive = true,
     style,
     className,
+    focusedAromaId = null,
+    onFocusedAromaIdChange,
     onAromaClick,
     onCategoryClick,
     onAromaHoverChange,
     onCategoryHoverChange,
 }) => {
-    /* Save the ids of the aroma that is currently hovered over and focused on, 
-       as well as the category that is currently hovered over. */
+    /* UI state that only matters to the aroma wheel. The focusedAromaId is semantic state needed for 
+       several components, so it is lifted up to the parent. */
     const [hoveredAromaId, setHoveredAromaId] = useState<string | null>(null);
     const [hoveredCategoryId, setHoveredCategoryId] = useState<string | null>(null);
-    const [focusedAromaId, setFocusedAromaId] = useState<string | null>(null);
     /* The user can rotate the wheel to make it easier to read certain sections. */
     const [rotationDeg, setRotationDeg] = useState(0);
     /*  Holds the ID of a setInterval timer used for continuous rotation.
@@ -110,6 +118,25 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
         A ref is used so the value persists across renders without triggering 
         re-renders, and because this is not UI state. */
     const rotateIntervalRef = useRef<number | null>(null);
+
+    /* Holds a table with references to the aroma arc paths so we can easily refocus on them if the
+       user clicks a rotate button after having previously focused on an aroma arc. After the aroma
+       arcs mount, this will look something like:
+
+           aromaArcPathRefs.current = {
+               "citrus": SVGPathElement,
+               "floral": SVGPathElement,
+               "honey": SVGPathElement,
+               ...
+           }
+
+       The object will start as
+
+           {
+               current: {}
+           }
+    */
+    const aromaArcPathRefs = useRef<Record<string, SVGPathElement | null>>({});
 
     /* debugging */
     //console.log("RAW PROPS RECEIVED:", { data, interactive, onAromaClick, onAromaHoverChange, onCategoryHoverChange, });
@@ -284,10 +311,10 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
             //console.log("HANDLE AROMA ARC CLICK INTERACTIVE CHECK RAN");
             if (!interactive) return;
 
-            setFocusedAromaId(arc.aroma.id);
+            onFocusedAromaIdChange?.(arc.aroma.id);
             onAromaClick?.(arc.aroma, arc.category);
         },
-        [interactive, onAromaClick]
+        [interactive, onFocusedAromaIdChange, onAromaClick]
     );
 
     const handleCategoryArcClick = useCallback(
@@ -313,7 +340,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
 
             const focusedAromaArc = aromaArcs.find( 
                 aromaArc => aromaArc.aroma.id === focusedAromaId
-             ); 
+            ); 
             if (!focusedAromaArc) return;
 
             /* Save key that was pressed. */
@@ -366,21 +393,20 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
 
                 const nextArc = aromaArcs[nextIdx];
 
-                setFocusedAromaId(nextArc.aroma.id);
+                onFocusedAromaIdChange?.(nextArc.aroma.id);
+                onAromaClick?.(nextArc.aroma, nextArc.category); 
                 setHoveredAromaId(nextArc.aroma.id);
                 setHoveredCategoryId(nextArc.category.id);
                 
                 onAromaHoverChange?.(nextArc.aroma, nextArc.category);
             }
         },
-        [interactive, focusedAromaId, aromaArcs, onAromaClick, onAromaHoverChange]
+        [interactive, focusedAromaId, onFocusedAromaIdChange, aromaArcs, onAromaClick, onAromaHoverChange]
     );
 
     function startRotating(direction: 1 | -1) {
         /* If the ref is not null, the wheel must be actively rotating. */
         if (rotateIntervalRef.current !== null) return;
-
-        setFocusedAromaId(null);
 
         /* Every rotation of the wheel causes the text to blur. So, 
            larger numbers will allow less precision for turning the wheel
@@ -394,9 +420,15 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
 
     function stopRotating() {
         if (rotateIntervalRef.current !== null) {
-            setFocusedAromaId(null);
             clearInterval(rotateIntervalRef.current);
             rotateIntervalRef.current = null;
+
+            /* Restore focus to the aroma arc if it was focused before the user 
+               started rotating the wheel. */
+            if (focusedAromaId) {
+                const el = aromaArcPathRefs.current[focusedAromaId];
+                el?.focus();
+            }
         }
     }
 
@@ -470,6 +502,32 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
             //     "onAromaHoverChange exists:", !!onAromaHoverChange 
             // );
 
+            /* React supports three ways to assign refs:
+                   
+                   1. Object refs (ref={someRef})
+                   2. Forwarded refs (ref={forwardRef(...)})
+                   3. Callback refs (ref={el => { ... }})
+                   
+                Below, we use a callback ref on each aroma arc <path> element. This lets us
+                dynamically store a reference to every arc DOM node in a lookup table.
+
+                The key is the aroma ID (a string), and the value is the actual SVGPathElement.
+                After all aroma arcs mount, the structure will look like:
+               
+                    aromaRefs.current = {
+                        "citrus": SVGPathElement,
+                        "floral": SVGPathElement,
+                        "honey": SVGPathElement,
+                        ...
+                    }
+
+               This will allow us to refocus on the aroma arc immediately (using focusedAromaId) if 
+               the user clicks the rotate button to rotate the aroma wheel. 
+
+               aromaArcPathRefs is the container that React keeps stable across renders and 
+               aromaArcPathRefs.current is the value stored in that container. The latter can be mutated 
+               freely without triggering re-renders.
+            */
             return (
                 <g
                     key={`aroma-arc-g-${arc.category.id}-${arc.aroma.id}`} 
@@ -478,6 +536,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
                 >
                     <path
                         data-testid={`aroma-arc-path-${arc.category.id}-${arc.aroma.id}`}
+                        ref={el => { aromaArcPathRefs.current[arc.aroma.id] = el }}
                         className="aroma-arc-path"
                         d={path}
                         fill={fill}

@@ -51,7 +51,7 @@
 
 @utility shadow-sidebar-fallback {
     box-shadow: var(--shadow-sidebar-fallback);
-  }
+}
 
 @utility shadow-sidebar {
     box-shadow: var(--shadow-sidebar);

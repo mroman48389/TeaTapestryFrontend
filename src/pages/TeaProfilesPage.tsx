@@ -9,9 +9,11 @@ import useFetch from "@/hooks/integration/useFetch";
 import { useMeasure } from "@/hooks/integration/useMeasure";
 // import {log} from "./../utils/log-utils";
 import clsx from "clsx";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 import { TeaProfilesResponse } from "@/types/serverResponses";
-import { TeaProfiles } from "@/schemas/teaProfiles";
+import { TeaProfiles, TeaProfile, TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
 import { Skeleton } from "@/components/Skeleton";
 import { LoadableArea } from "@/components/LoadableArea";
 import { AromaWheel } from "@/components/AromaWheel/AromaWheel";
@@ -19,55 +21,85 @@ import { Carousel, CarouselHandle } from "@/components/Carousel/Carousel";
 import { aromaWheelData } from "@/data/aromaWheelData";
 import { Aroma, AromaCategory } from "@/types/aromas";
 import EmptyCup from "../assets/teacup mascots/empty-teacup.png";
+import { MATCHING_MODE, MatchingMode } from "@/constants/app";
+import {getAromaName} from "@/utils/aromaWheelDataUtils";
+import { HeroTitle } from "@/components/HeroTitle";
+import { Pages, pageIDs } from "@/constants/pages";
+import { TeaProfileCard } from "@/components/TeaProfileCard";
 
-interface Tea {
-  id: string;
-  name: string;
-}
+// interface Tea {
+//   id: string;
+//   name: string;
+// }
 
 export default function TeaProfilesPage() {
     const { get } = useFetch(import.meta.env.VITE_API_URL);
 
     /* Note that SWR triggers multiple state transitions, so you will get multiple renders. */
-    const { data: teaProfiles, isLoading, error } = useSWR<TeaProfilesResponse>("/api/v1/tea_profiles", get);
+    const { data: teaProfiles, isLoading, error } = useSWR<TeaProfilesResponse>("/api/v1/tea_profiles", 
+        async (url: string) => {
+            const json = await get(url); // raw server data
+            return TeaProfilesResponseSchema.parse(json); // Zod runs here
+        }
+    );
+
+    // console.log(teaProfiles);
 
     const [interactive, setInteractive] = useState(true);
-    const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles | null>(null);
+    const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles>([]);
+    const [aromaMatchingMode, setAromaMatchingMode] = useState<MatchingMode>(MATCHING_MODE.FLAVOR_ONLY);
+    const [focusedAromaId, setFocusedAromaId] = useState<string | null>(null);
 
     const carouselRef = useRef<CarouselHandle | null>(null);
+
     /* Allows us to fluidly resize the aroma wheel, which derives its internal geometry from
        props passed to it. */
     const [aromaWheelDivRef, aromaWheelDivWidth] = useMeasure();
     /* Allows us to resize the aroma wheel when the carousel meets its minimum width so the
        carousel doesn't get cut off the screen before it needs to be. */
-    const [outermostDivRef, outermostDivWidth] = useMeasure();
+    const [outermostDivRef, outermostDivWidth] = useMeasure(); 
 
     useEffect(() => {
         const mql = window.matchMedia('(max-width: 768px)');
         const update = (e: MediaQueryList | MediaQueryListEvent) => {
-        setInteractive(!e.matches); // disable interactivity on small screens
+            setInteractive(!e.matches); // disable interactivity on small screens
         };
         update(mql);
         mql.addEventListener('change', update);
         return () => mql.removeEventListener('change', update);
     }, []);
 
-    const handleOnAromaClick = (aroma: Aroma, category: AromaCategory) => {
-        console.log("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");
+    /* Update the target tea profiles if the user changes the matching mode. */
+    useEffect(() => {
+        if (!focusedAromaId) return;
 
+        const aromaName = getAromaName(focusedAromaId);
+        if (!aromaName) return;
+
+        updateTargetTeaProfiles(aromaName);
+    }, [aromaMatchingMode, focusedAromaId]);
+
+    const updateTargetTeaProfiles = (aromaName: string) => {
         const matchingTeaProfiles: TeaProfiles = [];
 
         if (teaProfiles) {
             for (let i = 0; i < teaProfiles?.length; i++) {
-                const aromas: string[] =[
-                    ...teaProfiles[i].liquor_aroma, 
-                    ...teaProfiles[i].liquor_taste, 
-                    ...teaProfiles[i].dry_leaf_aroma, 
-                    ...teaProfiles[i].wet_leaf_aroma,
-                ];
+                let aromas: string[];
+                
+                if (aromaMatchingMode === MATCHING_MODE.FLAVOR_ONLY) {
+                    aromas = [...teaProfiles[i].liquor_taste];
+                }
+                else {
+                    aromas = [
+                        ...teaProfiles[i].liquor_aroma, 
+                        ...teaProfiles[i].liquor_taste, 
+                        ...teaProfiles[i].dry_leaf_aroma, 
+                        ...teaProfiles[i].wet_leaf_aroma,
+                    ];
+                }
 
                 const aromaFoundInTeaProfile = aromas.some(teaProfilesAroma =>
-                    teaProfilesAroma.toLowerCase().includes(aroma.name.toLowerCase())
+                    teaProfilesAroma.toLowerCase().includes(aromaName.toLowerCase())
                 );
 
                 if (aromaFoundInTeaProfile) {
@@ -80,19 +112,16 @@ export default function TeaProfilesPage() {
                 setTargetTeaProfiles(matchingTeaProfiles);
             }
             else {
-                setTargetTeaProfiles(null);
+                setTargetTeaProfiles([]);
             }
         }
     };
 
-    const teas: Tea[] = [
-        { id: "1", name: "1 Long Jing" },
-        { id: "2", name: "2 Tie Guan Yin" },
-        { id: "3", name: "3 Da Hong Pao" },
-        { id: "4", name: "4 Bai Hao Yin Zhen"},
-        { id: "5", name: "5 Jasmine Pearls"},
-        { id: "6", name: "6 Tai Ping Hou Kui"}
-    ];
+    const handleOnAromaClick = (aroma: Aroma, category: AromaCategory) => {
+        console.log("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");
+
+        updateTargetTeaProfiles(aroma.name);
+    };
 
     const aromaWheelDefaultWidth = 640;
     const carouselMinWidth = 368;
@@ -120,6 +149,49 @@ export default function TeaProfilesPage() {
     */
     const showInRow = outermostDivWidth >= aromaWheelDefaultWidth + carouselMinWidth + componentGap;
 
+    const matchTeasRadioGroup =
+        <fieldset className="border-2 border-wood-bowl-brown rounded-xl p-4 pt-2 mt-8 w-[325px]"> 
+            <legend className="text--body font-bold px-2"> 
+                Match teas by
+            </legend>
+
+            <RadioGroup 
+                value={aromaMatchingMode} 
+                onValueChange={(value) => setAromaMatchingMode(value as MatchingMode)}
+                className="flex justify-center gap-7 py-1"
+            >
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem 
+                        className="
+                            border-2
+                            border-wood-bowl-brown
+                            data-[state=checked]:bg-wood-bowl-brown
+                            data-[state=checked]:border-wood-bowl-brown
+                            data-[state=checked]:text-wood-bowl-brown
+                        " 
+                        id="flavor-only" 
+                        value={MATCHING_MODE.FLAVOR_ONLY} 
+                    />
+                    <Label className="text--small" htmlFor="flavor-only">Flavor only</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem 
+                        className="
+                            border-2
+                            border-wood-bowl-brown
+                            data-[state=checked]:bg-wood-bowl-brown
+                            data-[state=checked]:border-wood-bowl-brown
+                            data-[state=checked]:text-wood-bowl-brown
+                        " 
+                        id="full-aroma-profile" 
+                        value={MATCHING_MODE.FULL_AROMA_PROFILE}
+                    />
+                    <Label className="text--small" htmlFor="full-aroma-profile">Full aroma profile</Label>
+                </div>
+            </RadioGroup>
+        </fieldset>;
+
     const aromaWheel = 
         <div ref={aromaWheelDivRef} className="fade-in-component aspect-square w-full max-w-[640px]">
             <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
@@ -134,19 +206,63 @@ export default function TeaProfilesPage() {
                         onAromaClick={(aroma, category) => {
                             handleOnAromaClick(aroma, category);
                         }}
+                        focusedAromaId={focusedAromaId}
+                        onFocusedAromaIdChange={setFocusedAromaId}
                     />
                 }
             </LoadableArea>
         </div>;
+        
+    /* flex-1 tells this content to take up the remaining horizontal space in the row its in next to the aroma wheel.
+    
+       w-full is needed when the screen shrinks and this content becomes part of a flex column. Without it, the
+       carousel will look constricted because flex-1 will make it grow taller and not wider for flex column. 
+    */
+    // const teaProfilesCarousel = 
+    //     <div className="fade-in-component flex-1 w-full">
+    //         <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center">
+    //             Teas with this aroma.
+    //         </h2>
 
-
+    //         <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+    //             <Carousel<Tea>
+    //                 key="carousel"
+    //                 ref={carouselRef}
+    //                 slideContent={teas}
+    //                 ariaLabel="Teas with this aroma"
+    //                 loop
+    //                 onActiveIndexChange={(index) => {
+    //                     console.log("Active index:", index);
+    //                 }}
+    //                 onSlideClick={(tea, index) => {
+    //                     console.log("Clicked tea:", tea, "at index", index);
+    //                 }}
+    //                 renderSlide={({ item, isActive }) => (
+    //                     <div
+    //                         className={clsx(
+    //                             "carousel-shape",
+    //                             "border border-amber-500/60 bg-neutral-900/90 text-neutral-50 shadow-lg",
+    //                             "flex items-center justify-center",
+    //                             isActive ? "ring-2 ring-amber-400" : ""
+    //                         )}
+    //                     >
+    //                         {item.name}
+    //                     </div>
+    //                 )}
+    //             />
+    //         </LoadableArea>
+    //     </div>;
     const teaProfilesCarousel = 
-        <div className="fade-in-component flex-1">
+        <div className="fade-in-component flex-1 w-full">
+            <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center">
+                Teas with this aroma.
+            </h2>
+
             <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
-                <Carousel<Tea>
+                <Carousel<TeaProfile>
                     key="carousel"
                     ref={carouselRef}
-                    slideContent={teas}
+                    slideContent={targetTeaProfiles}
                     ariaLabel="Teas with this aroma"
                     loop
                     onActiveIndexChange={(index) => {
@@ -156,31 +272,25 @@ export default function TeaProfilesPage() {
                         console.log("Clicked tea:", tea, "at index", index);
                     }}
                     renderSlide={({ item, isActive }) => (
-                        <div
-                            className={clsx(
-                                "carousel-shape",
-                                "border border-amber-500/60 bg-neutral-900/90 text-neutral-50 shadow-lg",
-                                "flex items-center justify-center",
-                                isActive ? "ring-2 ring-amber-400" : ""
-                            )}
-                        >
-                            {item.name}
-                        </div>
+                        <TeaProfileCard teaProfile={item} isActive={isActive} />
                     )}
                 />
             </LoadableArea>
         </div>;
 
-    const noMatchingTeaProfilesImg = 
-        <div className="fade-in-component flex-1">
-            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
-                <div className="flex flex-col items-center">
-                    <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl">
-                        No tea profiles were found for that aroma.
-                    </h2>
 
-                    <img src={EmptyCup} alt="Empty teacup" className="h-auto w-60 object-contain"/>
-                </div>
+    /* flex-1 tells this content to take up the remaining horizontal space in the row its in next to the aroma wheel.
+    
+       mx-auto centers the img horizontally within its container.
+    */
+    const noMatchingTeaProfilesImg = 
+        <div className="fade-in-component flex flex-col flex-1 items-center">
+            <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center">
+                No tea profiles were found for that aroma.
+            </h2>
+
+            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+                <img src={EmptyCup} alt="Empty teacup" className="h-auto w-60 object-contain mx-auto"/>
             </LoadableArea>
         </div>;
 
@@ -197,16 +307,34 @@ export default function TeaProfilesPage() {
        instead of collapsing. */
     return (
         <>
-            <h1 className="title--hero">
-                Tea profiles
-            </h1>
+            <HeroTitle>{Pages[pageIDs.teaProfiles].title}</HeroTitle>
+
+            <p className="text--body mt-10">
+                Use the <strong>Aroma Wheel</strong> below to discover new teas to match your mood. Simply put,
+                an <strong>aroma</strong> is a sensation caused by volatile compounds that we taste and smell. The Aroma Wheel
+                has broader aroma categories at its center. Specific aromas belonging to those categories are in the outer 
+                ring. Click an aroma in the outer ring to view tea profiles associated with it. 
+            </p>
+
+            <p className="text--body mt-4">
+                Traditionally, aroma wheels capture all possible aroma sources, including the taste and smell of the liquor and 
+                the smell of the dry and wet leaves. Select <strong>"Full aroma profile"</strong> to view teas that match the 
+                selected aroma at any point of the tea experience. 
+            </p>
+
+            <p className="text--body mt-4">
+                Practically, we tend to care most about the flavor of our teas. Select <strong>"Flavor only"</strong> to view 
+                teas based primarily on their flavor. 
+            </p>
+
+            {matchTeasRadioGroup}
 
             <div 
                 ref={outermostDivRef} 
                 className={clsx( "flex items-center gap-[32px]", showInRow ? "flex-row" : "flex-col" )}
             >
                 {aromaWheel}
-                {targetTeaProfiles ? teaProfilesCarousel : noMatchingTeaProfilesImg}
+                {focusedAromaId ? ((targetTeaProfiles.length > 0) ? teaProfilesCarousel : noMatchingTeaProfilesImg) : null}
             </div>
         </>
     );

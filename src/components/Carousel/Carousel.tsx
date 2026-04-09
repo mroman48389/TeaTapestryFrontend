@@ -16,9 +16,11 @@ import { CarouselSlot, ALL_SLOTS, SlotTransform } from "./CarouselTypes";
  *
  * This component is a UI interaction component and is content-agnostic. 
  * 
- * @typeParam T - The type of each item in "slideContent". 
+ * @typeParam T - The type of each item in "slideContent". This controls the
+ * typing of the content. T should be the data type, not the UI type.
  *
  * @property slideContent - An array of one or more items to cycle through.
+ * This controls the content's data.
  * 
  * @property ariaLabel - Optional accessible name for the carousel. Useful
  * when multiple carousels appear on the same screen or when the parent
@@ -33,7 +35,25 @@ import { CarouselSlot, ALL_SLOTS, SlotTransform } from "./CarouselTypes";
  * @property onSlideClick - Optional handler invoked when a slide is clicked.
  * 
  * @property renderSlide - Render function for each slide. Receives the slide,
- * its index, and whether it is currently active.
+ * its index, and whether it is currently active. Use this to control the UI 
+ * of the content. Uses an object argument rather than positional arguments
+ * to keep the Carousel maintainable and reusable. Prevents argument ordering
+ * errors, allows us to easily add future fields, and gives us easy parameter 
+ * destructuring Standard for headless UI libraries.
+ * 
+ * The "index" argument is intentionally included even if the parent component
+ * does not currently use it. The carousel relies on stable item indices for
+ * several behaviors, and exposing the index keeps the API flexible for future
+ * features. Common uses include:
+ *
+ *     - generating unique keys or identifiers for slide content
+ *     - styling slides based on their position
+ *     - building pagination dots or "Slide X of Y" indicators
+ *     - analytics or telemetry about which slide was viewed or clicked
+ *     - enabling jump-to-slide controls or keyboard shortcuts
+ *
+ * Keeping "index" in the render callback preserves a consistent, extensible
+ * API, and avoids breaking changes as the carousel evolves.
  * 
  */
 export interface CarouselProps<T> {
@@ -840,7 +860,7 @@ function CarouselInner<T>(
             aria-label={ariaLabel}
             aria-live="polite"
             tabIndex={0}
-            className="flex touch-pan-y items-center justify-center gap-4"
+            className="flex touch-pan-y items-center justify-center gap-4 w-full"
         >
             {(actualItemCount > 1) && previousItemButton}
             {slideTrack}
