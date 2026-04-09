@@ -536,7 +536,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
                 >
                     <path
                         data-testid={`aroma-arc-path-${arc.category.id}-${arc.aroma.id}`}
-                        ref={el => { aromaArcPathRefs.current[arc.aroma.id] = el }}
+                        ref={el => { aromaArcPathRefs.current[arc.aroma.id] = el; }}
                         className="aroma-arc-path"
                         d={path}
                         fill={fill}

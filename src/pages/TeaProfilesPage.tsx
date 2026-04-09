@@ -2,7 +2,7 @@ import {
     useEffect, 
     useState, 
     useRef, 
-    // useCallback 
+    useCallback 
 } from "react";
 import useSWR from "swr";
 import useFetch from "@/hooks/integration/useFetch";
@@ -69,17 +69,7 @@ export default function TeaProfilesPage() {
         return () => mql.removeEventListener('change', update);
     }, []);
 
-    /* Update the target tea profiles if the user changes the matching mode. */
-    useEffect(() => {
-        if (!focusedAromaId) return;
-
-        const aromaName = getAromaName(focusedAromaId);
-        if (!aromaName) return;
-
-        updateTargetTeaProfiles(aromaName);
-    }, [aromaMatchingMode, focusedAromaId]);
-
-    const updateTargetTeaProfiles = (aromaName: string) => {
+    const updateTargetTeaProfiles = useCallback((aromaName: string) => {
         const matchingTeaProfiles: TeaProfiles = [];
 
         if (teaProfiles) {
@@ -115,7 +105,17 @@ export default function TeaProfilesPage() {
                 setTargetTeaProfiles([]);
             }
         }
-    };
+    }, [teaProfiles, aromaMatchingMode]);
+
+    /* Update the target tea profiles if the user changes the matching mode. */
+    useEffect(() => {
+        if (!focusedAromaId) return;
+
+        const aromaName = getAromaName(focusedAromaId);
+        if (!aromaName) return;
+
+        updateTargetTeaProfiles(aromaName);
+    }, [aromaMatchingMode, focusedAromaId, updateTargetTeaProfiles]);
 
     const handleOnAromaClick = (aroma: Aroma, category: AromaCategory) => {
         console.log("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");
@@ -150,8 +150,8 @@ export default function TeaProfilesPage() {
     const showInRow = outermostDivWidth >= aromaWheelDefaultWidth + carouselMinWidth + componentGap;
 
     const matchTeasRadioGroup =
-        <fieldset className="border-2 border-wood-bowl-brown rounded-xl p-4 pt-2 mt-8 w-[325px]"> 
-            <legend className="text--body font-bold px-2"> 
+        <fieldset className="border-wood-bowl-brown mt-8 w-[325px] rounded-xl border-2 p-4 pt-2"> 
+            <legend className="text--body px-2 font-bold"> 
                 Match teas by
             </legend>
 
@@ -163,11 +163,11 @@ export default function TeaProfilesPage() {
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem 
                         className="
-                            border-2
                             border-wood-bowl-brown
                             data-[state=checked]:bg-wood-bowl-brown
                             data-[state=checked]:border-wood-bowl-brown
                             data-[state=checked]:text-wood-bowl-brown
+                            border-2
                         " 
                         id="flavor-only" 
                         value={MATCHING_MODE.FLAVOR_ONLY} 
@@ -178,11 +178,11 @@ export default function TeaProfilesPage() {
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem 
                         className="
-                            border-2
                             border-wood-bowl-brown
                             data-[state=checked]:bg-wood-bowl-brown
                             data-[state=checked]:border-wood-bowl-brown
                             data-[state=checked]:text-wood-bowl-brown
+                            border-2
                         " 
                         id="full-aroma-profile" 
                         value={MATCHING_MODE.FULL_AROMA_PROFILE}
@@ -253,8 +253,8 @@ export default function TeaProfilesPage() {
     //         </LoadableArea>
     //     </div>;
     const teaProfilesCarousel = 
-        <div className="fade-in-component flex-1 w-full">
-            <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center">
+        <div className="fade-in-component w-full flex-1">
+            <h2 className="title--heading mb-3 text-center text-lg sm:text-xl md:text-2xl">
                 Teas with this aroma.
             </h2>
 
@@ -284,13 +284,13 @@ export default function TeaProfilesPage() {
        mx-auto centers the img horizontally within its container.
     */
     const noMatchingTeaProfilesImg = 
-        <div className="fade-in-component flex flex-col flex-1 items-center">
-            <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center">
+        <div className="fade-in-component flex flex-1 flex-col items-center">
+            <h2 className="title--heading mb-3 text-center text-lg sm:text-xl md:text-2xl">
                 No tea profiles were found for that aroma.
             </h2>
 
             <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
-                <img src={EmptyCup} alt="Empty teacup" className="h-auto w-60 object-contain mx-auto"/>
+                <img src={EmptyCup} alt="Empty teacup" className="mx-auto h-auto w-60 object-contain"/>
             </LoadableArea>
         </div>;
 
@@ -318,12 +318,12 @@ export default function TeaProfilesPage() {
 
             <p className="text--body mt-4">
                 Traditionally, aroma wheels capture all possible aroma sources, including the taste and smell of the liquor and 
-                the smell of the dry and wet leaves. Select <strong>"Full aroma profile"</strong> to view teas that match the 
+                the smell of the dry and wet leaves. Select <strong>&quot;Full aroma profile&quot;</strong> to view teas that match the 
                 selected aroma at any point of the tea experience. 
             </p>
 
             <p className="text--body mt-4">
-                Practically, we tend to care most about the flavor of our teas. Select <strong>"Flavor only"</strong> to view 
+                Practically, we tend to care most about the flavor of our teas. Select <strong>&quot;Flavor only&quot;</strong> to view 
                 teas based primarily on their flavor. 
             </p>
 

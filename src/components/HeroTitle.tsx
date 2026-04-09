@@ -19,7 +19,7 @@ export function HeroTitle({ children }: { children: React.ReactNode }) {
     }, []);
 
     return (
-        <h1 ref={titleRef} className="relative title--hero w-fit">
+        <h1 ref={titleRef} className="title--hero relative w-fit">
             {children}
             <TwistedThreadsUnderline width={titleWidth}/>
         </h1>

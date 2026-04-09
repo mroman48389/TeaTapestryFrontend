@@ -860,7 +860,7 @@ function CarouselInner<T>(
             aria-label={ariaLabel}
             aria-live="polite"
             tabIndex={0}
-            className="flex touch-pan-y items-center justify-center gap-4 w-full"
+            className="flex w-full touch-pan-y items-center justify-center gap-4"
         >
             {(actualItemCount > 1) && previousItemButton}
             {slideTrack}

@@ -97,24 +97,24 @@ export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCard
                         "ring-2 ring-amber-400/90",
                         "shadow-[0_0_0_4px_rgba(217,160,50,0.15),0_8px_24px_rgba(160,110,30,0.30)]",
                     ]
-                    : "opacity-75 cursor-auto"
+                    : "cursor-auto opacity-75"
             )}
             style={{ backgroundImage: `url(${WashiPaperBackground})` }}
         >
             {/* Extremely light overlay to soften the texture without hiding it. */}
-            <div className="absolute inset-0 bg-white/25 pointer-events-none rounded-xl" />
+            <div className="pointer-events-none absolute inset-0 rounded-xl bg-white/25" />
 
             {/* Inner vignette: slightly stronger on edges for paper feel. */}
-            <div className="absolute inset-0 rounded-xl pointer-events-none shadow-[inset_0_0_24px_rgba(100,60,20,0.12)]" />
+            <div className="pointer-events-none absolute inset-0 rounded-xl shadow-[inset_0_0_24px_rgba(100,60,20,0.12)]" />
 
             {/* Content wrapper */}
-            <div className="relative flex flex-col flex-1">
+            <div className="relative flex flex-1 flex-col">
 
                 {/* Header*/}
-                <div className="border-b border-amber-800/25 rounded-t-xl bg-amber-200/40 p-4 flex justify-between items-center">
+                <div className="flex items-center justify-between rounded-t-xl border-b border-amber-800/25 bg-amber-200/40 p-4">
                     <img src={TeaLeaf} alt="Tea leaf" width={50} className="scale-x-[-1]"/>
 
-                    <p className="title--subheading text-dark-mahogany-brown absolute left-1/2 -translate-x-1/2 text-center px-2 line-clamp-3">
+                    <p className="title--subheading text-dark-mahogany-brown absolute left-1/2 line-clamp-3 -translate-x-1/2 px-2 text-center">
                         {teaProfile.name}
                     </p>
 
@@ -126,13 +126,13 @@ export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCard
                     <p className="text--body text-dark-mahogany-brown line-clamp-3">
                         <strong>Alternative names: </strong>{alternativeNames}
                     </p>
-                    <p className="pt-2 text--body text-dark-mahogany-brown line-clamp-3">
+                    <p className="text--body text-dark-mahogany-brown line-clamp-3 pt-2">
                         <strong>Origin: </strong>{teaProfile.country_of_origin}
                     </p>
-                    <p className="pt-2 text--body text-dark-mahogany-brown line-clamp-3">
+                    <p className="text--body text-dark-mahogany-brown line-clamp-3 pt-2">
                         <strong>Type: </strong>{teaProfile.tea_type}
                     </p>
-                    <p className="pt-2 text--body text-dark-mahogany-brown line-clamp-3">
+                    <p className="text--body text-dark-mahogany-brown line-clamp-3 pt-2">
                         <strong>Flavor: </strong>{teaProfile.liquor_taste.join(", ")}
                     </p>
                 </div>

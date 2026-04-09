@@ -18,7 +18,7 @@ export default function AboutPage() {
     // const underConstructionImg = 
     //     <div className="fade-in-component flex flex-col flex-1 items-center">
     //         <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center mt-5">
-    //             This area is currently under construction. Please visit "Tea profiles" in the meantime.
+    //             {"This area is currently under construction. Please visit \"Tea profiles\" in the meantime."}
     //         </h2>
 
     //         <img src={UnderConstructionImg} alt="Teacup with hardhat" className="h-auto w-100"/>
@@ -28,7 +28,7 @@ export default function AboutPage() {
         <>
             <HeroTitle>{Pages[pageIDs.about].title}</HeroTitle>
             
-            <img src={GreetingImg} alt="Teacup waving" className="h-65 w-auto mt-7"/>
+            <img src={GreetingImg} alt="Teacup waving" className="mt-7 h-65 w-auto"/>
 
             <h2 className="title--heading mt-5">
                 Mission
@@ -55,7 +55,7 @@ export default function AboutPage() {
                 <a 
                     className="underline" 
                     target="_blank"
-                    href="https://unsplash.com/@360floralflaves?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+                    href="https://unsplash.com/@360floralflaves?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText" rel="noreferrer"
                 >
                     360floralflaves
                 </a> 
@@ -65,7 +65,7 @@ export default function AboutPage() {
                 <a 
                     className="underline" 
                     target="_blank"
-                    href="https://unsplash.com/photos/a-person-riding-a-snowboard-down-a-snow-covered-slope-2nKcZGDHpEs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+                    href="https://unsplash.com/photos/a-person-riding-a-snowboard-down-a-snow-covered-slope-2nKcZGDHpEs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText" rel="noreferrer"
                 >
                     Unsplash
                 </a>
