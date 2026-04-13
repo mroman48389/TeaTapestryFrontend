@@ -74,9 +74,9 @@
 
 # Steps for Writing Tests.
 
->     1. Define the component’s invariants.
+>     1. Define the component's invariants.
 >     
->         -Invariants are the rules that must always hold true for the component to be considered correct. They describe the component’s 
+>         -Invariants are the rules that must always hold true for the component to be considered correct. They describe the component's 
 >          public contract (the set of behaviors that must remain stable even if the implementation changes). They are comprised of one or
 >          more checks (which may be attributes, behaviors, or structural facts).
 > 

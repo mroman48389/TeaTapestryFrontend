@@ -86,3 +86,105 @@
 >    - (via events) parent --> props --> component --> callbacks --> parent
 >    - (via commands) parent --> ref --> component
 
+# Choosing a Component Signature Pattern
+
+> Different components patterns suggest different prop shapes depending on their purpose, level of reusability, and relationship to the DOM. This section documents the four patterns used in Tea Tapestry, why each exists, and how to choose the right one.
+
+## 1. Generic UI Components (with `<T>`)
+
+> For reusable UI primitives that must work with any data type. These components are not tied to domain models and must remain flexible and type‑safe.
+
+> Use this pattern when:
+>
+>    1. the component is a UI primitive
+>    2. the component must accept arbitrary data shapes
+>    3. the caller controls how items are labeled or compared
+>    4. the component must remain domain‑agnostic
+
+> Ex:
+
+     interface SelectProps<T> {
+         items: T[];
+         selected: T | null;
+         onSelect: (item: T) => void;
+         getLabel: (item: T) => string;
+     }
+ 
+     export function Select<T>({ items, selected, onSelect, getLabel }: SelectProps<T>) {
+         // ...
+     }
+
+> An example in TeaTapestry is ComboBox.
+
+## 2. Components Extending Native Elements
+
+> Used when a component is essentially a styled wrapper around a native HTML element and should accept all of that element’s props (Ex: className, id, aria-*, event handlers).
+
+> Use this pattern when:
+> 
+>    1. the component semantically is a native element
+>    2. you want to pass through all native props
+>    3. you want to add a small number of custom props
+>    4. the component is layout‑ or structure‑oriented
+
+> Ex:
+
+     type NavBarProps = {
+         collapsed: boolean;
+     } & React.ComponentPropsWithoutRef<"nav">;
+ 
+     export function NavBar({ collapsed, ...rest }: NavBarProps) {
+         return <nav {...rest}>...</nav>;
+     }
+
+> An example in TeaTapestry is Footer, which is essentially a slightly more involved `<nav>`.
+
+## 3. Inline Props for Small, Self‑Contained Components
+
+> Used when a component is simple, its props are not reused elsewhere, and defining a separate interface would add noise rather than clarity.
+
+> Use this pattern when:
+> 
+>    1. the component is small and self‑contained
+>    2. the props are simple and unlikely to grow
+>    3. the props are not reused by other components
+>    4. an interface would make the file more verbose without adding clarity
+
+> Ex:
+
+    export function LoadingState({
+        loading,
+        children,
+    }: {
+        loading: boolean;
+        children: React.ReactNode;
+    }) {
+        return loading ? "Loading…" : children;
+    }
+
+> An example in TeaTapestry is LoadableArea, which gracefully displays UI when a component is loading and handles errors on failure.
+
+## 4. Domain Components with a Props Interface
+
+> Used for components that represent domain concepts and have stable, meaningful props. An interface makes the contract explicit and easier to evolve.
+
+> Use this pattern when:
+> 
+>    1. the component expresses a domain concept
+>    2. the props are stable and descriptive
+>    3. the component is not meant to be generic
+>    4. the props may grow over time
+
+> Ex:
+
+    interface ProductCardProps {
+        product: Product;
+        highlighted: boolean;
+        onClick?: () => void;
+    }
+
+    export function ProductCard({ product, highlighted, onClick }: ProductCardProps) {
+        // ...
+    }
+
+> An example in TeaTapestry is TeaProfileCard, which is a domain-specific card that displays key fields of the tea profile data.

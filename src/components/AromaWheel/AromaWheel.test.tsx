@@ -50,7 +50,7 @@ function renderAromaWheel(
 
 describe("AromaWheel: Basic rendering.", () => {
 
-    it("Unit test: Renders the SVG with the correct aria-label.", () => {
+    test("Unit test: Renders the SVG with the correct aria-label.", () => {
         renderAromaWheel();
 
         // Role was removed to address Axe accessibility concerns.
@@ -58,7 +58,7 @@ describe("AromaWheel: Basic rendering.", () => {
         expect(screen.getByLabelText(/tea aroma wheel/i)).toBeInTheDocument();
     });
 
-    it("Unit test: Renders category labels with correct test IDs and expected aroma category name.", () => {
+    test("Unit test: Renders category labels with correct test IDs and expected aroma category name.", () => {
         const data = getSampleAromaCatData();
         renderAromaWheel({ data });
 
@@ -70,7 +70,7 @@ describe("AromaWheel: Basic rendering.", () => {
         }
     });
 
-    it("Unit test: Renders aroma labels with correct test IDs and expected aroma name.", () => {
+    test("Unit test: Renders aroma labels with correct test IDs and expected aroma name.", () => {
         const data = getSampleAromaCatData();
         renderAromaWheel({ data });
 
@@ -84,7 +84,7 @@ describe("AromaWheel: Basic rendering.", () => {
         }
     });
 
-    it("Unit test: Renders AromaWheel with empty aroma category data without breaking.", () => {
+    test("Unit test: Renders AromaWheel with empty aroma category data without breaking.", () => {
         renderAromaWheel({ data: { categories: [] } });
 
         // Role was removed to address Axe accessibility concerns.
@@ -94,7 +94,7 @@ describe("AromaWheel: Basic rendering.", () => {
         expect(screen.queryByTestId(/category-label-text-/)).toBeNull();
     });
 
-    it("Unit test: Renders AromaWheel with a category containing no aromas.", () => {
+    test("Unit test: Renders AromaWheel with a category containing no aromas.", () => {
         renderAromaWheel({ 
             data: { 
                 categories: [
@@ -117,7 +117,7 @@ describe("AromaWheel: Basic rendering.", () => {
 
 describe("AromaWheel: Hover events.", () => {
 
-    it("Unit test: Calls onAromaHoverChange when hovering and leaving an aroma arc.", () => {
+    test("Unit test: Calls onAromaHoverChange when hovering and leaving an aroma arc.", () => {
         const data = getSampleAromaCatData();
         const onAromaHoverChange = jest.fn();
         renderAromaWheel({ data, onAromaHoverChange });
@@ -139,7 +139,7 @@ describe("AromaWheel: Hover events.", () => {
         expect(onAromaHoverChange).toHaveBeenLastCalledWith(null, null);
     });
 
-    it("Unit test: Calls onCategoryHoverChange when hovering and leaving a category arc.", () => {
+    test("Unit test: Calls onCategoryHoverChange when hovering and leaving a category arc.", () => {
         const data = getSampleAromaCatData();
         const onCategoryHoverChange = jest.fn();
         renderAromaWheel({ data, onCategoryHoverChange });
@@ -160,7 +160,7 @@ describe("AromaWheel: Hover events.", () => {
         expect(onCategoryHoverChange).toHaveBeenLastCalledWith(null);
     });
 
-    it("Integration: hovering an aroma arc triggers onAromaHoverChange with correct aroma + category", () => {
+    test("Integration: hovering an aroma arc triggers onAromaHoverChange with correct aroma + category", () => {
         const data = getSampleAromaCatData();
 
         const onAromaHoverChange = jest.fn();
@@ -192,7 +192,7 @@ describe("AromaWheel: Hover events.", () => {
 
 describe("AromaWheel: Click events.", () => {
 
-    it("Unit test: Calls onAromaClick when an aroma arc is clicked.", () => {
+    test("Unit test: Calls onAromaClick when an aroma arc is clicked.", () => {
         const onAromaClick = jest.fn();
         renderAromaWheel({ onAromaClick, interactive: true});
 
@@ -208,7 +208,7 @@ describe("AromaWheel: Click events.", () => {
         expect(category.id).toBe("cat-1");
     });
 
-    it("Unit test: Calls onCategoryClick when a category arc is clicked.", () => {
+    test("Unit test: Calls onCategoryClick when a category arc is clicked.", () => {
         const onCategoryClick = jest.fn();
         renderAromaWheel({ onCategoryClick });
 
@@ -226,7 +226,7 @@ describe("AromaWheel: Click events.", () => {
 
 describe("AromaWheel: Keyboard events.", () => {
 
-    it("Integration test: Enter and Space keys trigger onAromaClick for focused aroma.", () => {
+    test("Integration test: Enter and Space keys trigger onAromaClick for focused aroma.", () => {
         const onAromaClick = jest.fn();
         renderAromaWheel({ 
             onAromaClick, 
@@ -245,7 +245,7 @@ describe("AromaWheel: Keyboard events.", () => {
         expect(onAromaClick).toHaveBeenCalledTimes(3);
     });
 
-    it("Integration test: ArrowRight key moves focus to next aroma and calls onAromaHoverChange.", () => {
+    test("Integration test: ArrowRight key moves focus to next aroma and calls onAromaHoverChange.", () => {
         const onAromaHoverChange = jest.fn();
         const onAromaClick = jest.fn();
         const onFocusedAromaIdChange = jest.fn();
@@ -283,7 +283,7 @@ describe("AromaWheel: Keyboard events.", () => {
         expect(onFocusedAromaIdChange).toHaveBeenCalledWith("aro-2");
     });
 
-    it("Integration test: ArrowRight key moves focus to first aroma if the last aroma has focus.", () => {
+    test("Integration test: ArrowRight key moves focus to first aroma if the last aroma has focus.", () => {
         const onAromaHoverChange = jest.fn();
         const onAromaClick = jest.fn();
         const onFocusedAromaIdChange = jest.fn();
@@ -315,7 +315,7 @@ describe("AromaWheel: Keyboard events.", () => {
         expect(onFocusedAromaIdChange).toHaveBeenCalledWith("aro-1");
     });
 
-    it("Integration test: ArrowRight key does not trigger aroma hover change if no aroma has focus.", () => {
+    test("Integration test: ArrowRight key does not trigger aroma hover change if no aroma has focus.", () => {
         const onAromaHoverChange = jest.fn();
         renderAromaWheel({ onAromaHoverChange });
 
@@ -327,7 +327,7 @@ describe("AromaWheel: Keyboard events.", () => {
         expect(onAromaHoverChange).not.toHaveBeenCalled();
     });
 
-    it("Integration test: ArrowLeft key wraps to last aroma.", () => {
+    test("Integration test: ArrowLeft key wraps to last aroma.", () => {
         const data = getSampleAromaCatData();
         const onAromaHoverChange = jest.fn();
         const onAromaClick = jest.fn();
@@ -359,7 +359,7 @@ describe("AromaWheel: Keyboard events.", () => {
         expect(onFocusedAromaIdChange).toHaveBeenCalledWith("aro-3");
     });
 
-    it("Integration test: Does not call callbacks or handle keyboard events when interactive prop is false.", () => {
+    test("Integration test: Does not call callbacks or handle keyboard events when interactive prop is false.", () => {
         const onAromaClick = jest.fn();
         const onAromaHoverChange = jest.fn();
         const onCategoryClick = jest.fn();
@@ -397,6 +397,7 @@ describe("AromaWheel: Keyboard events.", () => {
 });
 
 describe("AromaWheel: Press-and-hold navigation.", () => {
+
     beforeEach(() => { 
         jest.useFakeTimers(); 
     }); 
@@ -443,7 +444,7 @@ describe("AromaWheel: Press-and-hold navigation.", () => {
         expect(finalTransformAfter).toBe(finalTransformBefore);
     }
 
-    it("Integration test: Rotates when holding clockwise button and stops when released.", () => {
+    test("Integration test: Rotates when holding clockwise button and stops when released.", () => {
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -453,7 +454,7 @@ describe("AromaWheel: Press-and-hold navigation.", () => {
         });
     });
 
-    it("Integration test: Starts rotating on touch for clockwise button and stops when touch stops.", () => {
+    test("Integration test: Starts rotating on touch for clockwise button and stops when touch stops.", () => {
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -463,7 +464,7 @@ describe("AromaWheel: Press-and-hold navigation.", () => {
         });
     });
 
-    it("Integration test: Rotates when holding counterclockwise button and stops when released.", () => {
+    test("Integration test: Rotates when holding counterclockwise button and stops when released.", () => {
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -473,7 +474,7 @@ describe("AromaWheel: Press-and-hold navigation.", () => {
         });
     });
 
-    it("Integration test: Starts rotating on touch for counterclockwise button and stops when touch stops.", () => {
+    test("Integration test: Starts rotating on touch for counterclockwise button and stops when touch stops.", () => {
         renderAromaWheel();
 
         testRotationInteraction({ 
@@ -483,7 +484,7 @@ describe("AromaWheel: Press-and-hold navigation.", () => {
         });
     });
 
-    it("Integration test: Rotation internal logic.", () => {
+    test("Integration test: Rotation internal logic.", () => {
         renderAromaWheel();
 
         const btn = screen.getByTestId("rotate-clockwise-btn");

@@ -22,15 +22,11 @@ import { aromaWheelData } from "@/data/aromaWheelData";
 import { Aroma, AromaCategory } from "@/types/aromas";
 import EmptyCup from "../assets/teacup mascots/empty-teacup.png";
 import { MATCHING_MODE, MatchingMode } from "@/constants/app";
-import {getAromaName} from "@/utils/aromaWheelDataUtils";
+import { getAromaName, getAromaFromId } from "@/utils/aromaWheelDataUtils";
 import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
 import { TeaProfileCard } from "@/components/TeaProfileCard";
-
-// interface Tea {
-//   id: string;
-//   name: string;
-// }
+import { ComboBox } from "@/components/ComboBox/ComboBox";
 
 export default function TeaProfilesPage() {
     const { get } = useFetch(import.meta.env.VITE_API_URL);
@@ -45,7 +41,7 @@ export default function TeaProfilesPage() {
 
     // console.log(teaProfiles);
 
-    const [interactive, setInteractive] = useState(true);
+    const [isAromaWheelInteractive, setIsAromaWheelInteractive] = useState(true);
     const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles>([]);
     const [aromaMatchingMode, setAromaMatchingMode] = useState<MatchingMode>(MATCHING_MODE.FLAVOR_ONLY);
     const [focusedAromaId, setFocusedAromaId] = useState<string | null>(null);
@@ -59,13 +55,23 @@ export default function TeaProfilesPage() {
        carousel doesn't get cut off the screen before it needs to be. */
     const [outermostDivRef, outermostDivWidth] = useMeasure(); 
 
+    /* After the initial render, create a media query list (mql) to track the width of the screen. The
+       mql object will update automatically when the screen size changes. */
     useEffect(() => {
+        /* mql.matches will be true if the screen is <= 768px and false otherwise. */
         const mql = window.matchMedia('(max-width: 768px)');
-        const update = (e: MediaQueryList | MediaQueryListEvent) => {
-            setInteractive(!e.matches); // disable interactivity on small screens
+
+        const update = (mqlEvent: MediaQueryList | MediaQueryListEvent) => {
+            setIsAromaWheelInteractive(!mqlEvent.matches); 
         };
+
         update(mql);
+
+        /* If any action causes mql's value to change, run update to update isAromaWheelInteractive.
+           mql only has two possible states (true or false). */
         mql.addEventListener('change', update);
+
+        /* Prevent memory leaks when component unmounts. */
         return () => mql.removeEventListener('change', update);
     }, []);
 
@@ -149,9 +155,13 @@ export default function TeaProfilesPage() {
     */
     const showInRow = outermostDivWidth >= aromaWheelDefaultWidth + carouselMinWidth + componentGap;
 
+    /* Inlining this for now. It's small, not nested, only has a single piece of state, and simple. Not likely to
+       grow.
+       
+       Not sure why yet, but using a utility for RadioGroup's className doesn't seem to work. */
     const matchTeasRadioGroup =
-        <fieldset className="border-wood-bowl-brown mt-8 w-[325px] rounded-xl border-2 p-4 pt-2"> 
-            <legend className="text--body px-2 font-bold"> 
+        <fieldset className="radio-group-field-set w-[325px]">
+            <legend className="radio-group-legend"> 
                 Match teas by
             </legend>
 
@@ -160,30 +170,18 @@ export default function TeaProfilesPage() {
                 onValueChange={(value) => setAromaMatchingMode(value as MatchingMode)}
                 className="flex justify-center gap-7 py-1"
             >
-                <div className="flex items-center space-x-2">
+                <div className="radio-group-item-and-label">
                     <RadioGroupItem 
-                        className="
-                            border-wood-bowl-brown
-                            data-[state=checked]:bg-wood-bowl-brown
-                            data-[state=checked]:border-wood-bowl-brown
-                            data-[state=checked]:text-wood-bowl-brown
-                            border-2
-                        " 
+                        className="radio-group-item" 
                         id="flavor-only" 
                         value={MATCHING_MODE.FLAVOR_ONLY} 
                     />
                     <Label className="text--small" htmlFor="flavor-only">Flavor only</Label>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="radio-group-item-and-label">
                     <RadioGroupItem 
-                        className="
-                            border-wood-bowl-brown
-                            data-[state=checked]:bg-wood-bowl-brown
-                            data-[state=checked]:border-wood-bowl-brown
-                            data-[state=checked]:text-wood-bowl-brown
-                            border-2
-                        " 
+                        className="radio-group-item" 
                         id="full-aroma-profile" 
                         value={MATCHING_MODE.FULL_AROMA_PROFILE}
                     />
@@ -202,7 +200,7 @@ export default function TeaProfilesPage() {
                         data={aromaWheelData}
                         size={Math.min(aromaWheelDivWidth, aromaWheelDefaultWidth)}
                         gapAngleRad={0.02}
-                        interactive={interactive}
+                        interactive={isAromaWheelInteractive}
                         onAromaClick={(aroma, category) => {
                             handleOnAromaClick(aroma, category);
                         }}
@@ -294,6 +292,19 @@ export default function TeaProfilesPage() {
             </LoadableArea>
         </div>;
 
+    const aromaComboBox = 
+        <ComboBox
+            items={aromaWheelData.categories.flatMap(category => category.aromas)}
+            groups={Object.fromEntries(
+                aromaWheelData.categories.map(category => [category.name, category.aromas])
+            )}
+            selectedItem={getAromaFromId(focusedAromaId)}
+            onSelectItem={(aroma) => setFocusedAromaId(aroma.id)}
+            getItemName={(aroma) => aroma.name}
+            itemPlaceholderText="No aroma selected"
+            className="w-60"
+        />;
+
     // console.log("Tea profiles response:", data);
     // return <pre>{JSON.stringify(data, null, 2)}</pre>;
 
@@ -313,7 +324,7 @@ export default function TeaProfilesPage() {
                 Use the <strong>Aroma Wheel</strong> below to discover new teas to match your mood. Simply put,
                 an <strong>aroma</strong> is a sensation caused by volatile compounds that we taste and smell. The Aroma Wheel
                 has broader aroma categories at its center. Specific aromas belonging to those categories are in the outer 
-                ring. Click an aroma in the outer ring to view tea profiles associated with it. 
+                ring. Select an aroma in the outer ring to view tea profiles associated with it. 
             </p>
 
             <p className="text--body mt-4">
@@ -334,6 +345,7 @@ export default function TeaProfilesPage() {
                 className={clsx( "flex items-center gap-[32px]", showInRow ? "flex-row" : "flex-col" )}
             >
                 {aromaWheel}
+                {isAromaWheelInteractive ? null: aromaComboBox}
                 {focusedAromaId ? ((targetTeaProfiles.length > 0) ? teaProfilesCarousel : noMatchingTeaProfilesImg) : null}
             </div>
         </>

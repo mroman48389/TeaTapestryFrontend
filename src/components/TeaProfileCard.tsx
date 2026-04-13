@@ -4,7 +4,6 @@ import { TeaProfile } from "@/schemas/teaProfiles";
 import WashiPaperBackground from "../assets/washi-paper-background-682x1024.jpg";
 import TeaLeaf from "../assets/camellia-sinensis-tea-leaf-1064x682.png";
 
-//1024x682
 /**
  * Props for the TeaProfileCard component.
  *
@@ -27,7 +26,7 @@ interface TeaProfileCardProps {
 }
 
 export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCardProps) {
-    console.log(teaProfile.name);
+    // console.log(teaProfile.name);
 
     // if((teaProfile.alternative_names === null) || (teaProfile.liquor_taste === null)) {
     //     console.log(teaProfile.alternative_names);

@@ -26,3 +26,24 @@ Object.defineProperty(window, 'matchMedia', {
       dispatchEvent: jest.fn(),
    }),
 });
+
+/* JSDOM does not implement ResizeObserver, which Radix UI components rely on for
+   layout measurement (Ex: Popover, Command). Tests that open these components
+   will throw errors unless ResizeObserver is defined, so we provide a minimal no-op
+   polyfill that satisfies Radix without performing real layout work. */
+class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+}
+
+(global as any).ResizeObserver = ResizeObserver;
+
+/* JSDOM does not implement scrollIntoView, which Radix UI's Command component
+   calls when navigating or filtering items. A no-op mock prevents tests from
+   crashing without affecting behavior. */
+window.HTMLElement.prototype.scrollIntoView = function () {};
+
+/* JSDOM does not implement scrollTo, which Radix UI may call when filtering or
+   managing scroll position inside CommandList. A no-op mock prevents crashes. */
+window.HTMLElement.prototype.scrollTo = function () {};

@@ -1,3 +1,4 @@
+import { Aroma } from "@/types/aromas";
 import { aromaWheelData } from "@/data/aromaWheelData";
 
 /* Small mapping object that holds aroma id-aroma name 
@@ -15,4 +16,15 @@ for (const category of aromaWheelData.categories) {
 
 export function getAromaName(id: string): string | undefined {
     return aromaNameById[id];
+}
+
+export function getAromaFromId(aromaId: string | null): Aroma | null {
+    if (!aromaId) return null;
+
+    for (const category of aromaWheelData.categories) {
+        const aroma = category.aromas.find(aroma => aroma.id === aromaId);
+        if (aroma) return aroma;
+    }
+
+    return null;
 }

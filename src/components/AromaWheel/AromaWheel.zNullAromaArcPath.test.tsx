@@ -34,7 +34,7 @@ import { AromaWheel, AromaWheelProps } from "./AromaWheel";
 
 describe("AromaWheel arc null path tests", () => {
 
-    it("Unit test: Renders wheel if arc generator generates bad paths.", () => {
+    test("Unit test: Renders wheel if arc generator generates bad paths.", () => {
         
         function renderAromaWheel(props: AromaWheelProps) { 
             return render(<AromaWheel {...props} />); 

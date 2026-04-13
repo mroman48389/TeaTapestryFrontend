@@ -548,7 +548,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
                         onClick={interactive ? () => handleAromaArcClick(arc) : undefined}
                         tabIndex={interactive ? 0 : -1}
                         role={interactive ? 'button' : undefined}
-                        aria-label={`${arc.aroma.name} aroma`}
+                        aria-label={interactive ? `${arc.aroma.name} aroma` : undefined}
                         onKeyDown={interactive ? (e) => handleAromaKeyDown(e) : undefined}
                     />
 

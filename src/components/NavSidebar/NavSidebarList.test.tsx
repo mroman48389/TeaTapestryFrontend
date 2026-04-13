@@ -7,8 +7,10 @@ import { renderWithRouter } from "@/utils/test-utils";
 import { pageIDs } from "@/constants/pages";
 
 describe("NavSidebarList", () => {
-    it("Renders the NavSidebarList.", () => {
+
+    test("Renders the NavSidebarList.", () => {
         renderWithRouter(<NavSidebarList open={true} selectedPageID={pageIDs.whatIsTea} onSelectPage={() => {}}/>);
         expect(screen.getByTestId("nav-sidebar-list")).toBeInTheDocument();
     });
+    
 });

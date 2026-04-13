@@ -1,0 +1,28 @@
+@utility radio-group-field-set {
+    @apply mt-8 p-4 pt-2;
+    @apply border-wood-bowl-brown rounded-xl border-2;
+}
+
+@utility radio-group-legend {
+    @apply px-2;
+    @apply text--body font-bold;
+}
+
+/* @utility radio-group-main {
+    @apply flex justify-center gap-7 py-1;
+} */
+
+@utility radio-group-item-and-label {
+    @apply flex items-center space-x-2;
+}
+
+@utility radio-group-item {
+    @apply border-2;
+
+    @apply border-wood-bowl-brown;
+
+    @apply data-[state=checked]:bg-wood-bowl-brown 
+        data-[state=checked]:border-wood-bowl-brown 
+        data-[state=checked]:text-wood-bowl-brown;
+                    
+}

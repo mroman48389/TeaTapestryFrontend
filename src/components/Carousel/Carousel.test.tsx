@@ -102,7 +102,7 @@ const renderCarousel = (opts?: {
 
 describe("Carousel: Basic rendering.", () => {
 
-    it("Unit test: Renders as a region.", () => {
+    test("Unit test: Renders as a region.", () => {
         /* To behave as a proper accessible region landmark, the Carousel must:
 
             1) Be discoverable in screen reader landmark navigation:
@@ -125,14 +125,14 @@ describe("Carousel: Basic rendering.", () => {
         expect(region).toHaveAttribute("tabIndex", "0");
     });
 
-    it("Unit test: Does not render navigation buttons when there is exactly 1 item.", () => {
+    test("Unit test: Does not render navigation buttons when there is exactly 1 item.", () => {
         renderCarousel({ items: generateSlideContent(1) });
 
         expect(screen.queryByRole("button", { name: "Previous item" })).not.toBeInTheDocument();
         expect(screen.queryByRole("button", { name: "Next item" })).not.toBeInTheDocument();
     });
 
-    it("Unit test: Renders navigation buttons when there are 2 items.", () => {
+    test("Unit test: Renders navigation buttons when there are 2 items.", () => {
         renderCarousel({ items: generateSlideContent(2) });
 
         expect(screen.getByRole("button", { name: "Previous item" })).toBeInTheDocument();
@@ -142,7 +142,7 @@ describe("Carousel: Basic rendering.", () => {
 
 describe("Carousel: Advanced rendering of slides based on slots and item count.", () => {
 
-    it("Unit test: Rendering with 1 item should produce exactly 1 real active slide and no silhouettes.", () => {
+    test("Unit test: Rendering with 1 item should produce exactly 1 real active slide and no silhouettes.", () => {
         renderCarousel({ items: generateSlideContent(1) });
 
         const allSlides = document.querySelectorAll(".slide");
@@ -161,7 +161,7 @@ describe("Carousel: Advanced rendering of slides based on slots and item count."
         expect(silhouetteSlides).toHaveLength(0);
     });
 
-    it("Unit test: Rendering with 2 items should produce 1 real active slide and 1 silhouette.", () => {
+    test("Unit test: Rendering with 2 items should produce 1 real active slide and 1 silhouette.", () => {
         renderCarousel({ items: generateSlideContent(2) });
 
         const allSlides = Array.from(document.querySelectorAll(".slide"));
@@ -182,7 +182,7 @@ describe("Carousel: Advanced rendering of slides based on slots and item count."
         expect(silhouetteSlides[0]).toHaveAttribute("tabIndex", "-1");
     });
 
-    it("Unit test: Rendering with 3 items should produce 3 real slides (1 active, 2 inert) and no silhouettes.", () => {
+    test("Unit test: Rendering with 3 items should produce 3 real slides (1 active, 2 inert) and no silhouettes.", () => {
         renderCarousel({ items: generateSlideContent(3) });
 
         const allSlides = Array.from(document.querySelectorAll(".slide"));
@@ -213,7 +213,7 @@ describe("Carousel: Advanced rendering of slides based on slots and item count."
         });
     });
 
-    it("Unit test: Rendering with 4 items should produce 3 real slides (1 active, 2 inert) and 2 silhouettes.", () => {
+    test("Unit test: Rendering with 4 items should produce 3 real slides (1 active, 2 inert) and 2 silhouettes.", () => {
         renderCarousel({ items: generateSlideContent(4) });
 
         const allSlides = Array.from(document.querySelectorAll(".slide"));
@@ -244,7 +244,7 @@ describe("Carousel: Advanced rendering of slides based on slots and item count."
         });
     });
 
-    it("Unit test: Rendering with 5 or more items should produce 3 real slides (1 active, 2 inert) and 2 silhouettes.", () => {
+    test("Unit test: Rendering with 5 or more items should produce 3 real slides (1 active, 2 inert) and 2 silhouettes.", () => {
         renderCarousel({ items: generateSlideContent(6) });
 
         const allSlides = Array.from(document.querySelectorAll(".slide"));
@@ -278,7 +278,8 @@ describe("Carousel: Advanced rendering of slides based on slots and item count."
 });
 
 describe("Carousel: 4-item clone strategy.", () => {
-    it("Unit test: When exactly 4 items are rendered, unique keys are used for silhouettes.", () => {
+
+    test("Unit test: When exactly 4 items are rendered, unique keys are used for silhouettes.", () => {
         const { container } = renderCarousel({ items: generateSlideContent(4) });
 
         /* We should have 5 slides. If the cloned silhouette was properly given a unique key, then
@@ -291,7 +292,7 @@ describe("Carousel: 4-item clone strategy.", () => {
         expect(uniqueElements.size).toBe(5);
     });
 
-    it("Integration test: When exactly 4 items are rendered, the user sees 5 visual elements before and after navigation.", () => {
+    test("Integration test: When exactly 4 items are rendered, the user sees 5 visual elements before and after navigation.", () => {
         renderCarousel({ items: generateSlideContent(4) });
 
         const nextButton = screen.getByRole("button", { name: "Next item" });
@@ -311,7 +312,7 @@ describe("Carousel: 4-item clone strategy.", () => {
 
 describe("Carousel: Click events.", () => {
 
-    it("Unit test: If the slide is active, clicking triggers onSlideClick. Otherwise, it does not.", () => {
+    test("Unit test: If the slide is active, clicking triggers onSlideClick. Otherwise, it does not.", () => {
         const onSlideClick = jest.fn();
         
         renderCarousel({ items: generateSlideContent(5), onSlideClick });
@@ -341,7 +342,7 @@ describe("Carousel: Click events.", () => {
         expect(onSlideClick).toHaveBeenCalledTimes(1);
     });
 
-    it("Unit test: Does not call onSlideClick when a silhouette is clicked.", () => {
+    test("Unit test: Does not call onSlideClick when a silhouette is clicked.", () => {
         const onSlideClick = jest.fn();
 
         renderCarousel({ items: generateSlideContent(5), onSlideClick });
@@ -361,7 +362,7 @@ describe("Carousel: Click events.", () => {
 
 describe("Carousel: Imperative API.", () => {
     
-    it("Unit test: Exposes nextSlide, prevSlide, and jumpToSlide via ref.", () => {
+    test("Unit test: Exposes nextSlide, prevSlide, and jumpToSlide via ref.", () => {
         const ref = createRef<CarouselHandle>();
         renderCarousel({ ref });
 
@@ -371,7 +372,7 @@ describe("Carousel: Imperative API.", () => {
         expect(typeof ref.current?.jumpToSlide).toBe("function");
     });
 
-    it("Integration test: nextSlide advances the active index and calls onActiveIndexChange.", () => {
+    test("Integration test: nextSlide advances the active index and calls onActiveIndexChange.", () => {
         const onActiveIndexChange = jest.fn();
         const ref = createRef<CarouselHandle>();
 
@@ -391,7 +392,7 @@ describe("Carousel: Imperative API.", () => {
         expect(getActiveIndex()).toBe(1);
     });
 
-    it("Integration test: prevSlide moves the active index back and calls onActiveIndexChange.", () => {
+    test("Integration test: prevSlide moves the active index back and calls onActiveIndexChange.", () => {
         const onActiveIndexChange = jest.fn();
         const ref = createRef<CarouselHandle>();
 
@@ -409,7 +410,7 @@ describe("Carousel: Imperative API.", () => {
         expect(getActiveIndex()).toBe(4);
     });
 
-    it("Integration test: jumpToSlide normalizes indices properly in looping mode.", () => {
+    test("Integration test: jumpToSlide normalizes indices properly in looping mode.", () => {
         const onActiveIndexChange = jest.fn();
         const ref = createRef<CarouselHandle>();
 
@@ -428,7 +429,7 @@ describe("Carousel: Imperative API.", () => {
         expect(onActiveIndexChange).toHaveBeenCalledWith(4);
     });
 
-    it("Integration test: jumpToSlide clamps indices in non-looping mode.", () => {
+    test("Integration test: jumpToSlide clamps indices in non-looping mode.", () => {
         const onActiveIndexChange = jest.fn();
         const ref = createRef<CarouselHandle>();
 
@@ -449,6 +450,7 @@ describe("Carousel: Imperative API.", () => {
 });
 
 describe("Carousel: Press-and-hold navigation.", () => {
+
     beforeEach(() => { 
         jest.useFakeTimers(); 
     }); 
@@ -457,7 +459,7 @@ describe("Carousel: Press-and-hold navigation.", () => {
         jest.useRealTimers(); 
     });
 
-    it("Integration test: Holding down the Next button advances the slides until mouseup.", () => {
+    test("Integration test: Holding down the Next button advances the slides until mouseup.", () => {
         const onActiveIndexChange = jest.fn();
         renderCarousel({ items: generateSlideContent(5), onActiveIndexChange });
 
@@ -475,7 +477,7 @@ describe("Carousel: Press-and-hold navigation.", () => {
         expect(onActiveIndexChange.mock.calls.length).toBeGreaterThanOrEqual(2);
     });
 
-    it("Integration test: Holding down the Prev button reverses the slides until mouseup.", () => {
+    test("Integration test: Holding down the Prev button reverses the slides until mouseup.", () => {
         const onActiveIndexChange = jest.fn();
         renderCarousel({ items: generateSlideContent(5), onActiveIndexChange });
 
@@ -492,7 +494,7 @@ describe("Carousel: Press-and-hold navigation.", () => {
         expect(onActiveIndexChange.mock.calls.length).toBeGreaterThanOrEqual(2);
     });
 
-    it("Unit test: stopHold clears the interval on mouseLeave.", () => {
+    test("Unit test: stopHold clears the interval on mouseLeave.", () => {
         const onActiveIndexChange = jest.fn();
         renderCarousel({ items: generateSlideContent(5), onActiveIndexChange });
 
@@ -519,7 +521,8 @@ describe("Carousel: Press-and-hold navigation.", () => {
 });
 
 describe("Carousel: Accessibility attributes.", () => {
-    it("Unit test: Active slide has aria-current=true and others do not.", () => {
+
+    test("Unit test: Active slide has aria-current=true and others do not.", () => {
         renderCarousel({ items: generateSlideContent(5) });
 
         const allSlides = Array.from(document.querySelectorAll(".slide"));
@@ -539,7 +542,7 @@ describe("Carousel: Accessibility attributes.", () => {
         });
     });
 
-    it("Unit test: Silhouette slides are marked aria-hidden=true.", () => {
+    test("Unit test: Silhouette slides are marked aria-hidden=true.", () => {
         renderCarousel({ items: generateSlideContent(5) });
 
         const allSlides = Array.from(document.querySelectorAll(".slide"));
