@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 
 import { TeaProfilesResponse } from "@/types/serverResponses";
 import { TeaProfiles, TeaProfile, TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
+import { TeaProfileCard } from "@/components/TeaProfileCard";
+import { TeaProfileGrid } from "@/components/TeaProfileGrid/TeaProfileGrid";
 import { Skeleton } from "@/components/Skeleton";
 import { LoadableArea } from "@/components/LoadableArea";
 import { AromaWheel } from "@/components/AromaWheel/AromaWheel";
@@ -25,7 +27,7 @@ import { MATCHING_MODE, MatchingMode } from "@/constants/app";
 import { getAromaName, getAromaFromId } from "@/utils/aromaWheelDataUtils";
 import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
-import { TeaProfileCard } from "@/components/TeaProfileCard";
+
 import { ComboBox } from "@/components/ComboBox/ComboBox";
 
 export default function TeaProfilesPage() {
@@ -45,6 +47,7 @@ export default function TeaProfilesPage() {
     const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles>([]);
     const [aromaMatchingMode, setAromaMatchingMode] = useState<MatchingMode>(MATCHING_MODE.FLAVOR_ONLY);
     const [focusedAromaId, setFocusedAromaId] = useState<string | null>(null);
+    const [selectedTeaProfile, setSelectedTeaProfile] = useState<TeaProfile | null>(null);
 
     const carouselRef = useRef<CarouselHandle | null>(null);
 
@@ -252,9 +255,13 @@ export default function TeaProfilesPage() {
     //     </div>;
     const teaProfilesCarousel = 
         <div className="fade-in-component w-full flex-1">
-            <h2 className="title--heading mb-3 text-center text-lg sm:text-xl md:text-2xl">
-                Teas with this aroma.
+            <h2 className="title--heading mb-3 text-center">
+                Teas with this aroma
             </h2>
+
+            <p className="text--body mb-3 text-center">
+                Click on a tea to view its full profile.
+            </p>
 
             <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
                 <Carousel<TeaProfile>
@@ -263,11 +270,12 @@ export default function TeaProfilesPage() {
                     slideContent={targetTeaProfiles}
                     ariaLabel="Teas with this aroma"
                     loop
-                    onActiveIndexChange={(index) => {
-                        console.log("Active index:", index);
-                    }}
-                    onSlideClick={(tea, index) => {
-                        console.log("Clicked tea:", tea, "at index", index);
+                    // onActiveIndexChange={(index) => {
+                    //     console.log("Active index:", index);
+                    // }}
+                    onSlideClick={(tea, _index) => {
+                        setSelectedTeaProfile(tea);
+                        // console.log("Clicked tea:", tea, "at index", index);
                     }}
                     renderSlide={({ item, isActive }) => (
                         <TeaProfileCard teaProfile={item} isActive={isActive} />
@@ -276,14 +284,13 @@ export default function TeaProfilesPage() {
             </LoadableArea>
         </div>;
 
-
     /* flex-1 tells this content to take up the remaining horizontal space in the row its in next to the aroma wheel.
     
        mx-auto centers the img horizontally within its container.
     */
     const noMatchingTeaProfilesImg = 
         <div className="fade-in-component flex flex-1 flex-col items-center">
-            <h2 className="title--heading mb-3 text-center text-lg sm:text-xl md:text-2xl">
+            <h2 className="title--heading mb-3 text-center">
                 No tea profiles were found for that aroma.
             </h2>
 
@@ -304,6 +311,13 @@ export default function TeaProfilesPage() {
             itemPlaceholderText="No aroma selected"
             className="w-60"
         />;
+
+    const teaProfileGrid = 
+        selectedTeaProfile ?
+            <TeaProfileGrid
+                teaProfile={selectedTeaProfile}
+        /> : 
+        null;
 
     // console.log("Tea profiles response:", data);
     // return <pre>{JSON.stringify(data, null, 2)}</pre>;
@@ -348,6 +362,8 @@ export default function TeaProfilesPage() {
                 {isAromaWheelInteractive ? null: aromaComboBox}
                 {focusedAromaId ? ((targetTeaProfiles.length > 0) ? teaProfilesCarousel : noMatchingTeaProfilesImg) : null}
             </div>
+
+            {teaProfileGrid}
         </>
     );
 }

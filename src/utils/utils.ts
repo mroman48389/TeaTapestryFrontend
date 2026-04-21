@@ -54,3 +54,13 @@
 export function modEuclidean(a: number, b: number) {
     return ((a % b) + b) % b;
 }
+
+export function getLastMonthAndYear(locale: string = "en-US"): string {
+    const now = new Date();
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1);
+
+    const monthName = lastMonth.toLocaleString(locale, { month: "long" });
+    const year = lastMonth.getFullYear();
+
+    return `${monthName} ${year}`;
+}

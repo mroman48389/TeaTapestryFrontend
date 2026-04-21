@@ -28,8 +28,11 @@ Thumbs.db
 *storybook.log
 storybook-static
 
+.env
 .env.local
 .env.*.local
+.env.development
+.env.production
 
 # Jest cache
 jest.config.js

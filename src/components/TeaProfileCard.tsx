@@ -9,7 +9,7 @@ import TeaLeaf from "../assets/camellia-sinensis-tea-leaf-1064x682.png";
  *
  * This is a domain component that displays some subset of TeaProfile data.
  *
- * @property tea - A TeaProfile that contains all possible tea profile data 
+ * @property teaProfile - A TeaProfile that contains all possible tea profile data 
  * that can be displayed. Passing the entire domain object keeps this
  * component flexible, scalable, reusable, and API-stable.
  * 
@@ -123,7 +123,7 @@ export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCard
                 {/* Body */}
                 <div className="flex-1 p-4">
                     <p className="text--body text-dark-mahogany-brown line-clamp-3">
-                        <strong>Alternative names: </strong>{alternativeNames}
+                        <strong>Alternative Names: </strong>{alternativeNames}
                     </p>
                     <p className="text--body text-dark-mahogany-brown line-clamp-3 pt-2">
                         <strong>Origin: </strong>{teaProfile.country_of_origin}

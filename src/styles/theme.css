@@ -20,12 +20,14 @@
     --font-body: "Cabin", ui-sans-serif, system-ui, sans-serif;
     --font-heading: "Cabin", ui-sans-serif, system-ui, sans-serif;
 
-    /* Text sizes */
+    /* Text sizes. Tailwind CSS is mobile first. These should be the 
+       SMALLEST versions of themselves, and we should scale up from these
+       to "sm:" to "md:".  */
     --text-small: 0.875rem;   /* 14px */
     --text-body: 1rem;        /* 16px */
     --text-subheading: 1.125rem; /* 18px */
-    --text-heading: 1.5rem;   /* 24px */
-    --text-hero: 2.25rem;     /* 36px */
+    --text-heading: 1.25rem;   /* 20px */
+    --text-hero: 2rem;     /* 32px */
 
     /* Line heights */
     --leading-small: 1.25;    /* tighter for UI labels */

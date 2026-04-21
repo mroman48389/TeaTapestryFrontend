@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { log } from "@/utils/log-utils";
+import { safeLog } from "@/utils/log-utils";
 
 /* This custom hook takes a base url such as "https://tea-tapestry.com/" and returns 
    both a reference to both a get and post fetcher function, depending on needs, 
@@ -30,12 +30,12 @@ export default function useFetch(baseUrl: string) {
             const response = await fetch(baseUrl + url);
 
             if (!response.ok) {
-                log("useFetch, get, response not ok:", response.status);
+                safeLog("useFetch, get, response not ok:", response.status);
                 throw new Error(`HTTP error ${response.status}`);
             }
 
             const data = await response.json();
-            log("useFetch, get, data:", data);
+            safeLog("useFetch, get, data:", data);
 
             /* If data is falsy, throw it as an error. Data's type will depend on what
                the server sends. */
@@ -46,7 +46,7 @@ export default function useFetch(baseUrl: string) {
             return data as T;
         } 
         catch (error) {
-            log("useFetch, get, error:", error);
+            safeLog("useFetch, get, error:", error);
             setError(error as Error);
             throw error;
         } 
@@ -70,12 +70,12 @@ export default function useFetch(baseUrl: string) {
             });
 
             if (!response.ok) {
-                log("useFetch, post, response not ok:", response.status);
+                safeLog("useFetch, post, response not ok:", response.status);
                 throw new Error(`HTTP error ${response.status}`);
             }
 
             const data = await response.json();
-            log("useFetch, post, data:", data);
+            safeLog("useFetch, post, data:", data);
 
             /* If data is falsy, throw it as an error. Data's type will depend on what
                the server sends. */
@@ -86,7 +86,7 @@ export default function useFetch(baseUrl: string) {
             return data as T;
         } 
         catch (error) {
-            log("useFetch, post, error:", error);
+            safeLog("useFetch, post, error:", error);
             setError(error as Error);
             throw error;
         } 

@@ -10,7 +10,7 @@
         
     We then user the spread operator to write out all elements of this array to console.
 */
-export const log = (...args: unknown[]) => {
+export const safeLog = (...args: unknown[]) => {
     if (process.env.NODE_ENV === "development") {
         console.log(...args);
     }

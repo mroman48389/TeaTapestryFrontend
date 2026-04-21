@@ -1,6 +1,7 @@
 @utility radio-group-field-set {
     @apply mt-8 p-4 pt-2;
     @apply border-wood-bowl-brown rounded-xl border-2;
+    @apply bg-linen-white;
 }
 
 @utility radio-group-legend {

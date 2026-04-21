@@ -1,0 +1,10 @@
+/* Titles */
+
+@utility text-grid-heading {
+    @apply text--body;
+    @apply font-bold;
+}
+
+@utility text-grid-data {
+    @apply text--body;
+}

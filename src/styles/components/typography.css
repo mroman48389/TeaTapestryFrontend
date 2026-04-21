@@ -3,7 +3,7 @@
 @utility title--hero {
     @apply font-heading text-wood-bowl-brown;
 
-    font-size: var(--text-hero);
+    font-size: var(--text-hero); 
     line-height: var(--leading-hero);
     letter-spacing: var(--tracking-hero); 
 }
@@ -17,11 +17,41 @@
 }
 
 @utility title--subheading {
-    @apply font-heading text-dark-mahogany-brown;
+    @apply font-heading text-wood-bowl-brown;
 
-    font-size: var(--text-subheading);
+    font-size: var(--text-subheading); 
     line-height: var(--leading-subheading);
     letter-spacing: var(--tracking-body);
+}
+
+/* sm */
+@media (width >= 640px) { 
+    .title--hero {
+        @apply text-[36px]; 
+    } 
+
+    .title--heading {
+        @apply text-[24px];
+    }
+
+    .title--subheading {
+        @apply text-[19px]; 
+    }
+}
+
+/* md */
+@media (width >= 768px) { 
+    .title--hero {
+        @apply text-[40px];
+    } 
+
+    .title--heading {
+        @apply text-[28px]; 
+    }
+
+    .title--subheading {
+        @apply text-[20px];
+    }
 }
 
 /* Text */

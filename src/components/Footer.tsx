@@ -17,7 +17,7 @@ export default function Footer(props: FooterProps) {
             {...rest}
         >
             <div className="ml-10">
-                <p className="text-linen-white m-0 font-bold">&copy; 2025 Mark Roman</p>
+                <p className="text-linen-white m-0 font-bold">&copy; 2026 Mark Roman</p>
                 <p className="text-linen-white m-0"><small className="text-small">All rights reserved.</small></p>
             </div>
         </footer>
