@@ -44,17 +44,18 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {addNotes ? 
                     <div className="flex flex-col gap-1">
                         <Textarea
+                            data-testid={`textarea-${String(userTeaProfileNotesField)}`}
                             placeholder={placeholderText}
                             className="h-10 w-full resize-none overflow-auto"
                             maxLength={maxChars}
                             onChange={(e) => setNotes({
-                            ...notes,
-                            [userTeaProfileNotesField]: e.target.value
-                        })}
+                                ...notes,
+                                [userTeaProfileNotesField]: e.target.value
+                            })}
                             value={notes[userTeaProfileNotesField]}
-                    />
+                        />
 
-                        <small className="text--small text-right opacity-70">
+                        <small data-testid={`char-counter-${String(userTeaProfileNotesField)}`} className="text--small text-right opacity-70">
                             {maxChars - notes[userTeaProfileNotesField].length} characters left
                         </small>
                     </div> : 
@@ -81,6 +82,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
             </div>
 
             <div
+                data-testid="tea-profile-grid"
                 className={clsx(
                     "bg-linen-white grid gap-x-2 gap-y-4 rounded-xl border px-3 pb-3",
                     (!addNotes) && "grid-cols-[200px_1fr]",
@@ -100,9 +102,9 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
 
                 {/* ---------------   Name   ---------------- */}
 
-                <p className="text-grid-heading">Name</p>
-                <p className="text-grid-data">{teaProfile.name}</p>
-                {addNotes && <p className="text-grid-data">-</p>}
+                <p data-testid="name-label" className="text-grid-heading">Name</p>
+                <p data-testid="name-default-value"className="text-grid-data">{teaProfile.name}</p>
+                {addNotes && <p data-testid="name-my-notes-value" className="text-grid-data">-</p>}
 
                 {/* ---------------   Alternative Names   ---------------- */}
 

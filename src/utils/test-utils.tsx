@@ -2,6 +2,8 @@ import { ReactElement, memo, ComponentType } from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
+import { TeaProfile } from "@/schemas/teaProfiles";
+
 export function renderWithRouter(ui: ReactElement) {
   return render(<MemoryRouter>{ui}</MemoryRouter>);
 }
@@ -120,3 +122,28 @@ export const setUpMatchMediaMock = (initialMatches: boolean) => {
     };
 };
 
+export function getSampleTeaProfile(): TeaProfile {
+    return {
+        id: 1,
+        name: "Long Jing",
+        alternative_names: ["Dragon Well"],
+        country_of_origin: "China",
+        subregions: ["Hangzhou"],
+        cultural_significance: "Top 10 tea of China",
+        cultural_significance_source: "Sources",
+        tea_type: "Green",
+        oxidation_level: "Low",
+        cultivars: ["Longjing #43"],
+        processing: "Pan-fired",
+        dry_leaf_appearance: ["Flat", "Green"],
+        dry_leaf_aroma: ["Nutty"],
+        liquor_appearance: ["Yellow"],
+        liquor_aroma: ["Chestnut"],
+        liquor_taste: ["Sweet"],
+        liquor_body_mouthfeel: ["Light"],
+        body_effect: ["Calming"],
+        wet_leaf_appearance: ["Bright, yellow-green leaves"],
+        wet_leaf_aroma: ["Nutty"],
+        avg_price_per_oz_usd: 5.00,
+    };
+}
