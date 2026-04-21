@@ -19,6 +19,10 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
+            # Fail as early as possible if we don't pass the security audit to avoid exposing secrets.
+            - name: Run frontend security audit
+              run: node scripts/Node/security_audit.mjs
+
             # Install Node.js v22.14.0 in virtual environment with version 4 of setup-node in GitHub Action.
             - name: Set up Node.js
               uses: actions/setup-node@v4
