@@ -1,32 +1,51 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
+import { apiRequest } from "@/api/apiClient/apiClient"
+import { ApiError } from "@/api/errors/errors";
 import { TeaProfilesResponse } from "@/types/serverResponses";
 import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
 
 /* Async thunk to fetch tea profiles. The pending, fulfilled, and rejected attributes
-   it auto generates (the lifecycle of async requests) are handled by extraReducers. */
-export const fetchTeaProfiles = createAsyncThunk<TeaProfilesResponse>(
+   it auto generates (the lifecycle of async requests) are handled by extraReducers.
+   
+   The action prefix "teaProfiles/fetch" generates teaProfiles/fetch/pending, 
+   teaProfiles/fetch/fulfilled, and teaProfiles/fetch/rejected. */
+export const fetchTeaProfiles = createAsyncThunk<
+    TeaProfilesResponse,
+    void,
+    { rejectValue: ApiError }
+>(
     "teaProfiles/fetch",
-    async () => {
-        /* Fetch data (remember, we can't use hooks since we're not in a component!), 
-           raising an error if something went wrong. */
-        const res = await fetch(import.meta.env.VITE_API_URL + "/api/v1/tea_profiles");
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    async (_, thunkAPI) => {
+        try {
+            const data = await apiRequest<TeaProfilesResponse>(
+                import.meta.env.VITE_API_URL + "/api/v1/tea_profiles"
+            );
 
-        /* Convert response to JSON. */
-        const json = await res.json();
+            /* Validate JSON with Zod. */
+            const parsed = TeaProfilesResponseSchema.safeParse(data);
 
-        /* Validate JSON with Zod. */
-        const parsed = TeaProfilesResponseSchema.safeParse(json);
+            if (!parsed.success) {
+                return thunkAPI.rejectWithValue({
+                    type: "ClientValidationError",
+                    message: "Invalid tea_profiles response format",
+                    details: parsed.error.format(),
+                    request_id: "client",
+                    timestamp: new Date().toISOString(),
+                    status: 0,
+                });
+            };
 
-        /* If we did not successfully parse the JSON, raise an error. */
-        if (!parsed.success) {
-            console.error("Tea profiles validation error:", parsed.error);
-            throw new Error("Invalid tea_profiles response format.");
+            /* Return fully validated, typed data. */
+            return parsed.data;
         }
+        catch (err) {
+            if (err && (typeof err === "object") && ("type" in err)) {
+                return thunkAPI.rejectWithValue(err as ApiError);
+            };
 
-        /* Return fully validated, typed data. */
-        return parsed.data;
+            throw err;
+        }
     }
 );
 

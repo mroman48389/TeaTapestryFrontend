@@ -144,6 +144,5 @@ export function getSampleTeaProfile(): TeaProfile {
         body_effect: ["Calming"],
         wet_leaf_appearance: ["Bright, yellow-green leaves"],
         wet_leaf_aroma: ["Nutty"],
-        avg_price_per_oz_usd: 5.00,
     };
 }

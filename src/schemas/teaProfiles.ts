@@ -20,7 +20,6 @@ export const TeaProfileSchema = z.object({
     cultural_significance_source: z.string().nullable(),
     country_of_origin: z.string(),
     subregions: z.array(z.string()).nullable().transform(val => val ?? []),
-    avg_price_per_oz_usd: z.number().nullable(),
     liquor_appearance: z.array(z.string()),
     liquor_aroma: z.array(z.string()),
     liquor_taste: z.array(z.string()),

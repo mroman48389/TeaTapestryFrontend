@@ -4,15 +4,17 @@ import {
     useRef, 
     useCallback 
 } from "react";
-import useSWR from "swr";
-import useFetch from "@/hooks/integration/useFetch";
+// import useSWR from "swr";
+// import useFetch from "@/hooks/integration/useFetch";
+import { useSelector } from 'react-redux';
+import type { RootState } from '../app/store';
 import { useMeasure } from "@/hooks/integration/useMeasure";
 // import {log} from "./../utils/log-utils";
 import clsx from "clsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-import { TeaProfilesResponse } from "@/types/serverResponses";
+// import { TeaProfilesResponse } from "@/types/serverResponses";
 import { TeaProfiles, TeaProfile, TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
 import { TeaProfileCard } from "@/components/TeaProfileCard";
 import { TeaProfileGrid } from "@/components/TeaProfileGrid/TeaProfileGrid";
@@ -29,19 +31,25 @@ import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
 
 import { ComboBox } from "@/components/ComboBox/ComboBox";
+import { safeLog } from "@/utils/log-utils";
 
 export default function TeaProfilesPage() {
-    const { get } = useFetch(import.meta.env.VITE_API_URL);
+    /* Was grabbing the tea profiles directly here; now storing it in Redux. */
+    // const { get } = useFetch(import.meta.env.VITE_API_URL);
 
     /* Note that SWR triggers multiple state transitions, so you will get multiple renders. */
-    const { data: teaProfiles, isLoading, error } = useSWR<TeaProfilesResponse>("/api/v1/tea_profiles", 
-        async (url: string) => {
-            const json = await get(url); // raw server data
-            return TeaProfilesResponseSchema.parse(json); // Zod runs here
-        }
-    );
+    // const { data: teaProfiles, isLoading, error } = useSWR<TeaProfilesResponse>("/api/v1/tea_profiles", 
+    //     async (url: string) => {
+    //         const json = await get(url); // raw server data
+    //         return TeaProfilesResponseSchema.parse(json); // Zod runs here
+    //     }
+    // );
 
     // console.log(teaProfiles);
+
+    const teaProfiles = useSelector((state: RootState) => state.teaProfiles.data);
+    const loading = useSelector((state: RootState) => state.teaProfiles.loading);
+    const error = useSelector((state: RootState) => state.teaProfiles.error);
 
     const [isAromaWheelInteractive, setIsAromaWheelInteractive] = useState(true);
     const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles>([]);
@@ -107,7 +115,7 @@ export default function TeaProfilesPage() {
             }
 
             if (matchingTeaProfiles.length > 0) {
-                console.log(matchingTeaProfiles);
+                safeLog(matchingTeaProfiles);
                 setTargetTeaProfiles(matchingTeaProfiles);
             }
             else {
@@ -127,7 +135,7 @@ export default function TeaProfilesPage() {
     }, [aromaMatchingMode, focusedAromaId, updateTargetTeaProfiles]);
 
     const handleOnAromaClick = (aroma: Aroma, category: AromaCategory) => {
-        console.log("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");
+        safeLog("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");
 
         updateTargetTeaProfiles(aroma.name);
     };
@@ -195,7 +203,7 @@ export default function TeaProfilesPage() {
 
     const aromaWheel = 
         <div ref={aromaWheelDivRef} className="fade-in-component aspect-square w-full max-w-[640px]">
-            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
+            <LoadableArea isLoading={loading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
                 {
                     (aromaWheelDivWidth > 0) && 
                     
@@ -263,7 +271,7 @@ export default function TeaProfilesPage() {
                 Click on a tea to view its full profile.
             </p>
 
-            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+            <LoadableArea isLoading={loading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
                 <Carousel<TeaProfile>
                     key="carousel"
                     ref={carouselRef}
@@ -294,7 +302,7 @@ export default function TeaProfilesPage() {
                 No tea profiles were found for that aroma.
             </h2>
 
-            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+            <LoadableArea isLoading={loading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
                 <img src={EmptyCup} alt="Empty teacup" className="mx-auto h-auto w-60 object-contain"/>
             </LoadableArea>
         </div>;

@@ -1,6 +1,8 @@
 import useSWR from "swr";
 
-import useFetch from "@/hooks/integration/useFetch";
+// import useFetch from "@/hooks/integration/useFetch";
+import { isApiError } from "@/api/errors/errors";
+import { apiRequest } from "@/api/apiClient/apiClient"
 // import {log} from "./../utils/log-utils";
 import { VersionResponse } from "@/types/serverResponses";
 import { HeroTitle } from "@/components/HeroTitle";
@@ -9,11 +11,18 @@ import { Pages, pageIDs } from "@/constants/pages";
 import GreetingImg from "../assets/teacup mascots/waving-teacup-looking-straight-on.png";
 
 export default function AboutPage() {
-    const { get } = useFetch(import.meta.env.VITE_API_URL);
-    const { data, isLoading, error } = useSWR<VersionResponse>("/version", get);
+
+    const { data, isLoading, error } = useSWR<VersionResponse>(
+        "/version", (url: string): Promise<VersionResponse> => apiRequest(import.meta.env.VITE_API_URL + url)
+    );
 
     if (isLoading) return <p>Loading version...</p>;
-    if (error) return <p>Error loading version.</p>;
+    if (error) {
+        if (isApiError(error)) {
+            return <p>Error loading version: {error.message}</p>;
+        }
+        return <p>Error loading version.</p>;
+    }
 
     // const underConstructionImg = 
     //     <div className="fade-in-component flex flex-col flex-1 items-center">
