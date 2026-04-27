@@ -45,6 +45,15 @@ export default function App() {
 
     const location = useLocation();
 
+    /* Use Google Analytics to track route changes. */
+    useEffect(() => {
+        if (window.gtag) {
+            window.gtag("event", "page_view", {
+                page_path: location.pathname + location.search,
+            });
+        }
+    }, [location]);
+
     useEffect(() => {
         dispatch(fetchTeaProfiles());
     }, [dispatch]);

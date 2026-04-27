@@ -113,7 +113,7 @@ export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCard
                 <div className="flex items-center justify-between rounded-t-xl border-b border-amber-800/25 bg-amber-200/40 p-4">
                     <img src={TeaLeaf} alt="Tea leaf" width={50} className="scale-x-[-1]"/>
 
-                    <p className="title--subheading text-dark-mahogany-brown absolute left-1/2 line-clamp-3 -translate-x-1/2 px-2 text-center">
+                    <p className="font-heading text-lg text-dark-mahogany-brown absolute left-1/2 line-clamp-3 -translate-x-1/2 px-2 text-center">
                         {teaProfile.name}
                     </p>
 

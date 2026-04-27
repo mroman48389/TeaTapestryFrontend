@@ -14,6 +14,10 @@ jobs:
     linting-and-testing:
         runs-on: ubuntu-latest
 
+        # Sentry DSN added via GitHub --> Settings --> Secrets --> Actions --> New repository secret
+        env:
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+
         steps:
             # Check out the repo code.
             - name: Checkout code
