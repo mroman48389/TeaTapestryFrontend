@@ -1,17 +1,19 @@
-import { useRef, useState, useEffect, memo } from "react";
+// import { memo } from "react";
+import { useRef, useState, useEffect } from "react";
 
-import { Link, LinkProps } from "react-router-dom";
+import { Link, LinkProps, useLocation } from "react-router-dom";
 
 import TwistedThreadsUnderline from "./TwistedThreadsUnderline";
 import { Pages, PageID } from "@/constants/pages";
+import { getPageIDFromPath } from "@/utils/path-utils";
 
 type NavListItemProps = {
     forceVisible? : boolean;
     liClassName? : string;
     linkClassName? : string;
     pageID: PageID;
-    selectedPageID: PageID;
-    onSelectPage: (value: PageID) => void;
+    // selectedPageID: PageID;
+    // onSelectPage: (value: PageID) => void;
 } & Partial<Pick<LinkProps, "className" | "style" | "target" | "rel">>;
 
 /* List item that can be used for navigation on the top navbar, nav sidebar, or hamburger menu sheet for mobile. */
@@ -22,7 +24,11 @@ function NavListItem(props: NavListItemProps) {
     const textRef = useRef<HTMLAnchorElement>(null);
     const [textWidth, setTextWidth] = useState(0);
 
-    const {forceVisible = false, liClassName = "", linkClassName = "", pageID, selectedPageID, onSelectPage, ...rest} = props;
+    const location = useLocation();
+    const selectedPageID = getPageIDFromPath(location.pathname);
+
+    //const {forceVisible = false, liClassName = "", linkClassName = "", pageID, selectedPageID, onSelectPage, ...rest} = props;
+    const {forceVisible = false, liClassName = "", linkClassName = "", pageID, ...rest} = props;
     
     const itemName = Pages[pageID].title;
     const pageLink = Pages[pageID].path;
@@ -52,25 +58,31 @@ function NavListItem(props: NavListItemProps) {
                 className={`btn ${linkClassName}`}
                 {...rest}
                 to={pageLink} 
-                onClick={() => onSelectPage(pageID)} 
+                // onClick={() => onSelectPage(pageID)} 
             >
                 {itemName}
             </Link>
 
+            {/* {(itemName === Pages[selectedPageID]?.title) ? <TwistedThreadsUnderline width={textWidth}/> : null} */}
             {(itemName === Pages[selectedPageID]?.title) ? <TwistedThreadsUnderline width={textWidth}/> : null}
         </li>
     );
 }
 
+export default NavListItem;
 /* Only re-render if the selection status changed (item was selected and now isn't or vice versa) or onSelectPage changed 
-    (it  shouldn't since it's also memoized). */
-export default memo(NavListItem, (prev, next) => {
-    const wasSelected = prev.pageID === prev.selectedPageID;
-    const isSelected = next.pageID === next.selectedPageID;
-    const selectionChanged = wasSelected !== isSelected;
-    const onSelectPageChanged = prev.onSelectPage !== next.onSelectPage; 
+    (it  shouldn't since it's also memoized). 
+    
+    UPDATE: No longer needed, since we are deriving the selected page ID from the useLocation hook. React can't compare
+    hook values. 
+*/
+// export default memo(NavListItem, (prev, next) => {
+//     const wasSelected = prev.pageID === prev.selectedPageID;
+//     const isSelected = next.pageID === next.selectedPageID;
+//     const selectionChanged = wasSelected !== isSelected;
+//     const onSelectPageChanged = prev.onSelectPage !== next.onSelectPage; 
 
-    return (
-        (!selectionChanged) && (!onSelectPageChanged)   
-    );
-});
+//     return (
+//         (!selectionChanged) && (!onSelectPageChanged)   
+//     );
+// });

@@ -4,11 +4,12 @@ import HamburgerMenu from "./HamburgerMenu";
 
 import { renderWithRouter, setUpMatchMediaMock } from "@/utils/test-utils";
 
-import { pageIDs } from "@/constants/pages";
+// import { pageIDs } from "@/constants/pages";
 
 describe("HamburgerMenu", () => {
     it("Unit test: Renders the HamburgerMenu.", () => {
-        renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={() => {}}/>);
+        // renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={() => {}}/>);
+        renderWithRouter(<HamburgerMenu/>);
         expect(screen.getByTestId("hamburger-menu")).toBeInTheDocument();
     });
 
@@ -17,7 +18,8 @@ describe("HamburgerMenu", () => {
         const mediaMock = setUpMatchMediaMock(false);
 
         /* Render the component. */
-        renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={() => {}}/>);
+        // renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={() => {}}/>);
+        renderWithRouter(<HamburgerMenu/>);
         
         /* Explicit act is needed because the drawer opens with conditional rendering and Framer Motion animation, 
            which may cause delayed state updates that need to be flushed before asserting. */
@@ -52,7 +54,8 @@ describe("HamburgerMenu", () => {
         const mediaMock = setUpMatchMediaMock(false); 
 
         /* Render the component. */
-        renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={() => {}} />);
+        // renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={() => {}} />);
+        renderWithRouter(<HamburgerMenu/>);
         
         /* Explicit act is needed because opening the drawer triggers conditional rendering and animation, which may 
            involve asynchronous updates that need to be flushed before asserting. */
@@ -82,26 +85,49 @@ describe("HamburgerMenu", () => {
         });
     });
 
-    it("Integration test: Should set the new page and close the drawer when a nav item is clicked.", async () => {
-        const mockOnSelectPage = jest.fn();
+    /* UPDATE: We can no longer test "setting the new page" because React Router takes care of that, but we can test
+       that it navigates to a new page, so slightly change the test. */
+    // it("Integration test: Should set the new page and close the drawer when a nav item is clicked.", async () => {
+    //     const mockOnSelectPage = jest.fn();
 
-        /* Render the drawer and open it. For simple user events like fireEvent.click, React Testing Library
-           automatically wraps the state updates in act(), so explicit wrapping is not needed. */
-        renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={mockOnSelectPage}/>);
-        fireEvent.click(screen.getByRole("button", { name: /hamburger menu/i })); 
+    //     /* Render the drawer and open it. For simple user events like fireEvent.click, React Testing Library
+    //        automatically wraps the state updates in act(), so explicit wrapping is not needed. */
+    //     renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={mockOnSelectPage}/>);
+    //     renderWithRouter(<HamburgerMenu/>);
+    //     fireEvent.click(screen.getByRole("button", { name: /hamburger menu/i })); 
 
-        /* Click a nav item. The "/i" makes the match case insensitive. Text should be what you see on the screen. */
+    //     /* Click a nav item. The "/i" makes the match case insensitive. Text should be what you see on the screen. */
+    //     fireEvent.click(screen.getByRole("link", { name: /about/i }));
+
+    //     /* Check that the mock onSelectPage was called with the expected page ID. */
+    //     expect(mockOnSelectPage).toHaveBeenCalledWith(pageIDs.about);
+
+    //     /* waitFor is needed because clicking a nav item triggers a state update that conditionally unmounts the 
+    //        drawer, and we wait for the DOM to reflect the drawer’s disappearance. */
+    //     await waitFor(() => {
+    //         /* Check that the drawer is closed. */
+    //         expect(screen.queryByRole("button", { name: /close menu/i })).not.toBeInTheDocument();
+    //     });
+    // });
+
+    it("Integration test: Should navigate to the new page and close the drawer when a nav item is clicked.", async () => {
+        const { router  } = renderWithRouter(<HamburgerMenu/>);
+
+        /* Open the drawer. */
+        fireEvent.click(screen.getByRole("button", { name: /hamburger menu/i }));
+
+        /* Click the About link. */
         fireEvent.click(screen.getByRole("link", { name: /about/i }));
 
-        /* Check that the mock onSelectPage was called with the expected page ID. */
-        expect(mockOnSelectPage).toHaveBeenCalledWith(pageIDs.about);
+        /* Assert navigation happened. */
+        expect(router.state.location.pathname).toBe("/about");
 
-        /* waitFor is needed because clicking a nav item triggers a state update that conditionally unmounts the 
-           drawer, and we wait for the DOM to reflect the drawer’s disappearance. */
+        /* Assert drawer closed. */
         await waitFor(() => {
-            /* Check that the drawer is closed. */
             expect(screen.queryByRole("button", { name: /close menu/i })).not.toBeInTheDocument();
         });
     });
+
+
 
 });

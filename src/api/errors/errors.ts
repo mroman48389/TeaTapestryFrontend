@@ -1,4 +1,4 @@
-/* Matches the shape of the errors we will get from the backend. */
+/* This is the target shape for all backend errors to have. */
 export interface ApiError {
     type: string
     message: string
@@ -8,7 +8,7 @@ export interface ApiError {
     status: number
 }
 
-/* Determines if an error is from the backend (API error) or not by
+/* Determines if an error is our target ApiError or not by
    doing minimally needed checks on the shape of the error. 
    
    Return value is a type predicate so TypeScript knows that if the
@@ -23,6 +23,49 @@ export function isApiError(error: unknown): error is ApiError {
     );
 }
 
+/* Local type describing the actual, raw backend error shape. */
+interface BackendErrorShape {
+    error: {
+        type: string;
+        message: string;
+        details?: Record<string, unknown>;
+        request_id: string;
+        timestamp: string;
+    };
+}
+
+/* Type guard to safely narrow unknown to BackendErrorShape */
+function isBackendErrorShape(data: unknown): data is BackendErrorShape {
+    if (
+        (typeof data !== "object") ||
+        (data === null) ||
+        !("error" in data)
+    ) {
+        return false;
+    }
+
+    const err = (data as { error: unknown }).error;
+
+    if (
+        typeof err !== "object" ||
+        err === null ||
+        !("type" in err) ||
+        !("message" in err)
+    ) {
+        return false;
+    }
+
+    const e = err as Record<string, unknown>;
+
+    return (
+        (typeof e.type === "string") &&
+        (typeof e.message === "string") &&
+        ((e.details === undefined || typeof e.details === "object")) &&
+        (typeof e.request_id === "string") &&
+        (typeof e.timestamp === "string")
+    );
+}
+
 /* Converts JSON from backend into an ApiError so every frontend error
    will have the same shape. 
    
@@ -31,14 +74,16 @@ export function isApiError(error: unknown): error is ApiError {
    status code from the server could potentially be missing, malformed,
    replaced by proxies or middleware. The backend includes "status" is the JSON
    for convenience. */
-export function normalizeApiError(data: any, status: number): ApiError {
-    if (data?.error) {
+export function normalizeApiError(data: unknown, status: number): ApiError {
+    if (isBackendErrorShape(data)) {
+        const error = data.error;
+
         return {
-            type: data.error.type,
-            message: data.error.message,
-            details: data.error.details,
-            request_id: data.error.request_id,
-            timestamp: data.error.timestamp,
+            type: error.type,
+            message: error.message,
+            details: error.details,
+            request_id: error.request_id,
+            timestamp: error.timestamp,
             status,
         };
     };

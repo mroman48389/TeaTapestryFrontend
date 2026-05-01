@@ -1,12 +1,12 @@
-import { useState, useCallback, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
-import { RootState } from "./store/store";
-import { setSelectedPageID } from "./store/selectedPageSlice";
+// import { useCallback } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+// import { useSelector } from "react-redux";
+// import { RootState } from "./store/store";
+// import { setSelectedPageID } from "./store/selectedPageSlice";
 import { fetchTeaProfiles } from "./store/teaProfilesSlice";
 import type { AppDispatch } from "./store/store";
-
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 import NavSidebar from './components/NavSidebar/NavSidebar';
 import TopNavbar from './components/TopNavbar/TopNavbar';
@@ -20,18 +20,15 @@ import TeaProfilesPage from "./pages/TeaProfilesPage";
 import TeawarePage from "./pages/TeawarePage";
 import TeaTerminologyPage from "./pages/TeaTerminologyPage";
 import FAQsPage from "./pages/FAQsPage";
-
 import AboutPage from "./pages/AboutPage";
 import WhatsNewPage from "./pages/WhatsNewPage";
 import ContactPage from "./pages/ContactPage";
 import LogInPage from "./pages/LogInPage";
-
 import NotFoundPage from "./pages/NotFoundPage";
-
-import { Pages, PageID, pageIDs } from "./constants/pages";
+// import { PageID } from "./constants/pages";
+import { Pages, pageIDs } from "./constants/pages";
 import { getSidebarWidthOrMarginLeft } from "./utils/class-utils";
 import { safeLog } from "./utils/log-utils";
-
 import Footer from "./components/Footer";
 import { SidebarSettingType } from "./constants/app";
 
@@ -40,7 +37,8 @@ export default function App() {
 
     /* Use Redux store instead to prevent App from completely re-rendering. */
     // const [selectedPageID, setSelectedPageID] = useState<PageID>(pageIDs.home);
-    const selectedPageID = useSelector((state: RootState) => state.selectedPage);
+    /* UPDATE: Removed selectedPageID state, leaving the URL as the single source of truth.  */
+    // const selectedPageID = useSelector((state: RootState) => state.selectedPage);
     const dispatch = useDispatch<AppDispatch>();
 
     const location = useLocation();
@@ -68,10 +66,14 @@ export default function App() {
        Without useCallback, this function would be re-created on every render, 
        causing props like onSelectPage to change and triggering re-renders in 
        components like NavSidebarListItem (even when their visual state 
-       hasn't changed). */
-    const handleSetSelectedPageID = useCallback((id: PageID) => {
-        dispatch(setSelectedPageID(id));
-    }, [dispatch]);
+       hasn't changed).
+    
+       UPDATE: Now deriving the page ID from the URL itself so there is one source of
+       truth.
+    */
+    // const handleSetSelectedPageID = useCallback((id: PageID) => {
+    //     dispatch(setSelectedPageID(id));
+    // }, [dispatch]);
 
     function handleOpen() {
         setSidebarOpen(!sidebarOpen);
@@ -91,7 +93,8 @@ export default function App() {
             Footer is positioned static.    
         */
         <div className="app">
-            <TopNavbar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID}/>
+            {/* <TopNavbar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID}/> */}
+            <TopNavbar/>
 
             {/* Nav sidebar + main content
                 
@@ -102,10 +105,13 @@ export default function App() {
                     flex-basis: 0%: Start it at 0% height, then grow based on available space. 
             */}
             <div className="flex min-h-screen flex-1 overflow-hidden">
-                <NavSidebar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID} sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/>
+                {/* <NavSidebar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID} sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/> */}
+                <NavSidebar sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/>
 
                 <main className={`main ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.MarginLeft)}`}>
                     <Routes>
+                        <Route path="/" element={<Navigate to={Pages[pageIDs.teaProfiles].path} replace />}/>
+
                         <Route path={Pages[pageIDs.home].path} element={<Home/>}/>
                         <Route path={Pages[pageIDs.whatIsTea].path} element={<WhatIsTeaPage/>}/>
                         <Route path={Pages[pageIDs.whereDoesTeaComeFrom].path} element={<WhereDoesTeaComeFromPage/>}/>

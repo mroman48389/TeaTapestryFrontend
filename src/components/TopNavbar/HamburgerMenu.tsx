@@ -12,17 +12,18 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 import NavSidebarList from '../NavSidebar/NavSidebarList';
 import TopNavbarLeftList from './TopNavbarLeftList';
-import { PageID } from '@/constants/pages';
+// import { PageID } from '@/constants/pages';
 
-interface HamburgerMenuProps {
-    selectedPageID: PageID;
-    onSelectPage : (value: PageID) => void;
-}
+// interface HamburgerMenuProps {
+//     selectedPageID: PageID;
+//     onSelectPage : (value: PageID) => void;
+// }
 
-export default function HamburgerMenu(props: HamburgerMenuProps) {
+// export default function HamburgerMenu(props: HamburgerMenuProps) {
+export default function HamburgerMenu() {
     const [open, setOpen] = useState(false);
 
-    const {selectedPageID, onSelectPage} = props;
+    // const {selectedPageID, onSelectPage} = props;
 
     useEffect(() => {
         // console.log("useEffect running, open state:", open); 
@@ -63,11 +64,11 @@ export default function HamburgerMenu(props: HamburgerMenuProps) {
         open: { rotate: -45, y: 0 },
     };
 
-    function hamburgerOnSelectPage(pageID: PageID) {
-        // console.log("hamburgerOnSelectPage called with:", pageID);
-        onSelectPage(pageID);
-        setOpen(false);
-    }
+    // function hamburgerOnSelectPage(pageID: PageID) {
+    //     console.log("hamburgerOnSelectPage called with:", pageID);
+    //     onSelectPage(pageID);
+    //     setOpen(false);
+    // }
 
     return (
         <div data-testid="hamburger-menu" className="md:hidden">
@@ -162,8 +163,8 @@ export default function HamburgerMenu(props: HamburgerMenuProps) {
                                         <TopNavbarLeftList 
                                             liClassName="nav-sidebar-list-item" 
                                             linkClassName="text-wood-bowl-brown" 
-                                            selectedPageID={selectedPageID} 
-                                            onSelectPage={hamburgerOnSelectPage}
+                                            // selectedPageID={selectedPageID} 
+                                            // onSelectPage={hamburgerOnSelectPage}
                                         />
                                     </ul>
 
@@ -171,8 +172,8 @@ export default function HamburgerMenu(props: HamburgerMenuProps) {
 
                                     <NavSidebarList 
                                         open={true} 
-                                        selectedPageID={selectedPageID} 
-                                        onSelectPage={hamburgerOnSelectPage}
+                                        // selectedPageID={selectedPageID} 
+                                        // onSelectPage={hamburgerOnSelectPage}
                                     />
 
                                     <div className="h-10" /> {/* Spacer */}

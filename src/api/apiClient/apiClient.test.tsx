@@ -19,7 +19,7 @@ describe("apiRequest", () => {
         global.fetch = jest.fn().mockResolvedValue({
             ok: true, // simulate a successful HTTP response
             json: () => Promise.resolve(mockResponse) // simulate response.json()
-        } as any);
+        } as unknown as Response);
 
         const result = await apiRequest<typeof mockResponse>("/test");
 
@@ -39,7 +39,7 @@ describe("apiRequest", () => {
             ok: false,
             status: 400,
             json: () => Promise.resolve(backendError)
-        } as any);
+        } as unknown as Response);
 
         await expect(apiRequest("/test")).rejects.toEqual(normalized);
 
@@ -50,7 +50,7 @@ describe("apiRequest", () => {
         global.fetch = jest.fn().mockResolvedValue({
             ok: true,
             json: () => Promise.reject(new Error("invalid json"))
-        } as any);
+        } as unknown as Response);
 
         const result = await apiRequest("/test");
 

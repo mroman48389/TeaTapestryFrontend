@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-import { apiRequest } from "@/api/apiClient/apiClient"
+import { apiRequest } from "@/api/apiClient/apiClient";
 import { ApiError } from "@/api/errors/errors";
 import { TeaProfilesResponse } from "@/types/serverResponses";
 import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";

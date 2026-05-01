@@ -1,17 +1,19 @@
 
 import { ComponentPropsWithoutRef } from "react";
 
-import { pageIDs, PageID } from "@/constants/pages";
+// import { PageID } from "@/constants/pages";
+import { pageIDs } from "@/constants/pages";
 import NavListItem from "../NavListItem";
 
 type NavSidebarListProps = {
     open: boolean;
-    selectedPageID: PageID;
-    onSelectPage: (value: PageID) => void;
+    // selectedPageID: PageID;
+    // onSelectPage: (value: PageID) => void;
 } & ComponentPropsWithoutRef<"ul">;
 
 export default function NavSidebarList(props: NavSidebarListProps) {
-    const {open, selectedPageID, onSelectPage, ...rest} = props;
+    // const {open, selectedPageID, onSelectPage, ...rest} = props;
+    const {open, ...rest} = props;
 
     const liClassName = "nav-sidebar-list-item";
 
@@ -34,57 +36,57 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 {...rest} 
             > 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.whatIsTea}
                     liClassName={liClassName}
                 />
 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.whereDoesTeaComeFrom}
                     liClassName={liClassName}
                 />
 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.growingAndProcessing}
                     liClassName={liClassName}
                 />
 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.brewingMethods}
                     liClassName={liClassName}
                 />
 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.experiencingTea}
                     liClassName={liClassName}
                 />
                 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.teaProfiles}
                     liClassName={liClassName}
                 />
 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.teaware}
                     liClassName={liClassName}
                 />
 
                 <NavListItem 
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                     pageID={pageIDs.teaTerminology}
                     liClassName={liClassName}
                 />

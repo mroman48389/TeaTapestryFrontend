@@ -15,7 +15,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 // import { TeaProfilesResponse } from "@/types/serverResponses";
-import { TeaProfiles, TeaProfile, TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
+// import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
+import { TeaProfiles, TeaProfile } from "@/schemas/teaProfiles";
 import { TeaProfileCard } from "@/components/TeaProfileCard";
 import { TeaProfileGrid } from "@/components/TeaProfileGrid/TeaProfileGrid";
 import { Skeleton } from "@/components/Skeleton";

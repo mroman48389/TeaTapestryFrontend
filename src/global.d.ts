@@ -4,6 +4,6 @@ export {};
 /* Lets us use gtag in App.tsx. */
 declare global {
     interface Window {
-        gtag?: (...args: any[]) => void;
+        gtag?: (...args: unknown[]) => void;
     }
 }

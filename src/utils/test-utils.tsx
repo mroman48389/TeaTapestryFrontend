@@ -1,11 +1,27 @@
 import { ReactElement, memo, ComponentType } from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { RouterProvider, createMemoryRouter } from "react-router";
 
 import { TeaProfile } from "@/schemas/teaProfiles";
 
-export function renderWithRouter(ui: ReactElement) {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
+interface RouterOptions {
+    route?: string;
+}
+
+export function renderWithRouter(
+    ui: ReactElement,
+    { route = "/" }: RouterOptions = {}
+) {
+    const router = createMemoryRouter(
+        [{ path: route, element: ui }],
+        { initialEntries: [route] }
+    );
+
+    return {
+        ...render(<RouterProvider router={router} />),
+        router,
+    };
 }
 
 /** 

@@ -4,7 +4,10 @@ import { PageID, pageIDs } from "@/constants/pages";
 
 const selectedPageSlice = createSlice({
     name: "selectedPage",
-    initialState: pageIDs.home as PageID,
+    // temporarily set the first page to Tea Profiles, since that's where most of our
+    // work is
+    initialState: pageIDs.teaProfiles as PageID,
+    // initialState: pageIDs.home as PageID,
     reducers: {
         setSelectedPageID: (state, action: PayloadAction<PageID>) => action.payload,
     },

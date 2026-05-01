@@ -85,10 +85,11 @@ export const Pages: Record<typeof pageIDs[PageKey], PageMeta> = {
         title : 'FAQs',
         path  : '/FAQs',
     },
-
+    
+    /* Use /home instead of / so we can click on Home if we start the app on something other than Home. */
     [pageIDs.home]: {
         title : 'Home',
-        path  : '/',
+        path  : '/home',
     },
 
     [pageIDs.about]: {

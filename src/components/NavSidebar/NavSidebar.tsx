@@ -3,7 +3,7 @@ import { ComponentPropsWithoutRef } from "react";
 import NavSidebarToggle from "./NavSidebarToggle";
 import NavSidebarList from "./NavSidebarList";
 
-import { PageID } from "@/constants/pages";
+// import { PageID } from "@/constants/pages";
 import { getSidebarWidthOrMarginLeft } from "@/utils/class-utils";
 import { SidebarSettingType } from "@/constants/app";
 
@@ -11,12 +11,13 @@ type NavSidebarProps = {
     sidebarOpen: boolean;
     onOpenSidebar: () => void;
 
-    selectedPageID: PageID;
-    onSelectPage : (value: PageID) => void;
+    // selectedPageID: PageID;
+    // onSelectPage : (value: PageID) => void;
 } & ComponentPropsWithoutRef<"nav">;
 
 export default function NavSidebar(props: NavSidebarProps) {
-    const {sidebarOpen, onOpenSidebar, selectedPageID, onSelectPage, ...rest} = props;
+    // const {sidebarOpen, onOpenSidebar, selectedPageID, onSelectPage, ...rest} = props;
+    const {sidebarOpen, onOpenSidebar, ...rest} = props;
 
     return (
         <nav aria-label="Nav sidebar" className="hidden md:block"{...rest}>
@@ -32,8 +33,8 @@ export default function NavSidebar(props: NavSidebarProps) {
                 />
                 <NavSidebarList
                     open={sidebarOpen}
-                    selectedPageID={selectedPageID}
-                    onSelectPage={onSelectPage}
+                    // selectedPageID={selectedPageID}
+                    // onSelectPage={onSelectPage}
                 />
             </div>
         </nav>

@@ -15,7 +15,7 @@ export async function apiRequest<T>(
         },
     });
 
-    let data: any = null;
+    let data: unknown = null;
 
     try {
         data = await response.json();

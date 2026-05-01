@@ -2,16 +2,17 @@ import { ComponentPropsWithoutRef } from "react";
 
 import TeaTapestryTeapot from '../../assets/tea-tapestry-logo-xi-shi-teapot-200x200.svg';
 import TeaTapestryLogo from "../../assets/tea-tapestry-logo-400x150.svg";
-import { PageID } from "@/constants/pages";
+// import { PageID } from "@/constants/pages";
 import TopNavbarList from './TopNavbarList';
 
 type TopNavbarProps = {
-    selectedPageID: PageID;
-    onSelectPage : (value: PageID) => void;
+    // selectedPageID: PageID;
+    // onSelectPage : (value: PageID) => void;
 } & ComponentPropsWithoutRef<"header">;
 
 export default function TopNavbar(props: TopNavbarProps) {
-    const {selectedPageID, onSelectPage, ...rest} = props;
+    // const {selectedPageID, onSelectPage, ...rest} = props;
+    const {...rest} = props;
 
     /*  Teapot
 
@@ -34,7 +35,8 @@ export default function TopNavbar(props: TopNavbarProps) {
                 <img src={TeaTapestryTeapot} alt="Tea Tapestry teapot" width={50} height={50}/>
                 <img src={TeaTapestryLogo} alt="Tea Tapestry logo" width={200} height={75}/>
             </div>
-            <TopNavbarList selectedPageID={selectedPageID} onSelectPage={onSelectPage}/>
+            {/* <TopNavbarList selectedPageID={selectedPageID} onSelectPage={onSelectPage}/> */}
+            <TopNavbarList/>
         </header>
     );
 }

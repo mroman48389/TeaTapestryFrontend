@@ -2,7 +2,7 @@ import useSWR from "swr";
 
 // import useFetch from "@/hooks/integration/useFetch";
 import { isApiError } from "@/api/errors/errors";
-import { apiRequest } from "@/api/apiClient/apiClient"
+import { apiRequest } from "@/api/apiClient/apiClient";
 // import {log} from "./../utils/log-utils";
 import { VersionResponse } from "@/types/serverResponses";
 import { HeroTitle } from "@/components/HeroTitle";
