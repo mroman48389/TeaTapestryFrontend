@@ -6,16 +6,16 @@ import {
 } from "react";
 // import useSWR from "swr";
 // import useFetch from "@/hooks/integration/useFetch";
-import { useSelector } from 'react-redux';
-import type { RootState } from '../app/store';
+// import { useSelector } from 'react-redux';
+// import type { RootState } from '../app/store';
 import { useMeasure } from "@/hooks/integration/useMeasure";
-// import {log} from "./../utils/log-utils";
 import clsx from "clsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@tanstack/react-query";
 
-// import { TeaProfilesResponse } from "@/types/serverResponses";
-// import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
+import { TeaProfilesResponse } from "@/types/serverResponses";
+import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
 import { TeaProfiles, TeaProfile } from "@/schemas/teaProfiles";
 import { TeaProfileCard } from "@/components/TeaProfileCard";
 import { TeaProfileGrid } from "@/components/TeaProfileGrid/TeaProfileGrid";
@@ -30,9 +30,9 @@ import { MATCHING_MODE, MatchingMode } from "@/constants/app";
 import { getAromaName, getAromaFromId } from "@/utils/aromaWheelDataUtils";
 import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
-
 import { ComboBox } from "@/components/ComboBox/ComboBox";
 import { safeLog } from "@/utils/log-utils";
+import { apiRequest } from "@/api/apiClient/apiClient";
 
 export default function TeaProfilesPage() {
     /* Was grabbing the tea profiles directly here; now storing it in Redux. */
@@ -48,9 +48,19 @@ export default function TeaProfilesPage() {
 
     // console.log(teaProfiles);
 
-    const teaProfiles = useSelector((state: RootState) => state.teaProfiles.data);
-    const loading = useSelector((state: RootState) => state.teaProfiles.loading);
-    const error = useSelector((state: RootState) => state.teaProfiles.error);
+    /* UPDATE: Switched to */
+    // const teaProfiles = useSelector((state: RootState) => state.teaProfiles.data);
+    // const isLoading = useSelector((state: RootState) => state.teaProfiles.loading);
+    // const error = useSelector((state: RootState) => state.teaProfiles.error);
+
+    const { data:teaProfiles, isLoading, error } = useQuery({
+        queryKey: ['teaProfiles'],
+        
+        queryFn: async () => {
+            const res = await apiRequest<TeaProfilesResponse>("/api/v1/tea_profiles");
+            return TeaProfilesResponseSchema.parse(res);
+        },
+    });
 
     const [isAromaWheelInteractive, setIsAromaWheelInteractive] = useState(true);
     const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles>([]);
@@ -204,7 +214,7 @@ export default function TeaProfilesPage() {
 
     const aromaWheel = 
         <div ref={aromaWheelDivRef} className="fade-in-component aspect-square w-full max-w-[640px]">
-            <LoadableArea isLoading={loading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
+            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
                 {
                     (aromaWheelDivWidth > 0) && 
                     
@@ -228,40 +238,6 @@ export default function TeaProfilesPage() {
        w-full is needed when the screen shrinks and this content becomes part of a flex column. Without it, the
        carousel will look constricted because flex-1 will make it grow taller and not wider for flex column. 
     */
-    // const teaProfilesCarousel = 
-    //     <div className="fade-in-component flex-1 w-full">
-    //         <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center">
-    //             Teas with this aroma.
-    //         </h2>
-
-    //         <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
-    //             <Carousel<Tea>
-    //                 key="carousel"
-    //                 ref={carouselRef}
-    //                 slideContent={teas}
-    //                 ariaLabel="Teas with this aroma"
-    //                 loop
-    //                 onActiveIndexChange={(index) => {
-    //                     console.log("Active index:", index);
-    //                 }}
-    //                 onSlideClick={(tea, index) => {
-    //                     console.log("Clicked tea:", tea, "at index", index);
-    //                 }}
-    //                 renderSlide={({ item, isActive }) => (
-    //                     <div
-    //                         className={clsx(
-    //                             "carousel-shape",
-    //                             "border border-amber-500/60 bg-neutral-900/90 text-neutral-50 shadow-lg",
-    //                             "flex items-center justify-center",
-    //                             isActive ? "ring-2 ring-amber-400" : ""
-    //                         )}
-    //                     >
-    //                         {item.name}
-    //                     </div>
-    //                 )}
-    //             />
-    //         </LoadableArea>
-    //     </div>;
     const teaProfilesCarousel = 
         <div className="fade-in-component w-full flex-1">
             <h2 className="title--heading mb-3 text-center">
@@ -272,7 +248,7 @@ export default function TeaProfilesPage() {
                 Click on a tea to view its full profile.
             </p>
 
-            <LoadableArea isLoading={loading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
                 <Carousel<TeaProfile>
                     key="carousel"
                     ref={carouselRef}
@@ -303,7 +279,7 @@ export default function TeaProfilesPage() {
                 No tea profiles were found for that aroma.
             </h2>
 
-            <LoadableArea isLoading={loading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
                 <img src={EmptyCup} alt="Empty teacup" className="mx-auto h-auto w-60 object-contain"/>
             </LoadableArea>
         </div>;

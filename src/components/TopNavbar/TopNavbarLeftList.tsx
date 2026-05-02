@@ -5,18 +5,20 @@ import NavListItem from "../NavListItem";
 interface TopNavbarLeftListProps {
     liClassName? : string;
     linkClassName? : string;
+    onNavClick : () => void;
     // selectedPageID: PageID;
     // onSelectPage : (value: PageID) => void;
 }
 
 export default function TopNavbarLeftList(props: TopNavbarLeftListProps) {
     // const {selectedPageID, onSelectPage, liClassName = "top-navbar-list-item", linkClassName = "top-navbar-btn"} = props;
-    const {liClassName = "top-navbar-list-item", linkClassName = "top-navbar-btn"} = props;
+    const {liClassName = "top-navbar-list-item", linkClassName = "top-navbar-btn", onNavClick} = props;
 
     return (
         <>
             <NavListItem 
                 pageID={pageIDs.home}
+                onClick={onNavClick}
                 // selectedPageID={selectedPageID}
                 // onSelectPage={onSelectPage}
                 liClassName={liClassName}
@@ -25,6 +27,7 @@ export default function TopNavbarLeftList(props: TopNavbarLeftListProps) {
 
             <NavListItem 
                 pageID={pageIDs.about}
+                onClick={onNavClick}
                 // selectedPageID={selectedPageID}
                 // onSelectPage={onSelectPage}
                 liClassName={liClassName}
@@ -33,6 +36,7 @@ export default function TopNavbarLeftList(props: TopNavbarLeftListProps) {
 
             <NavListItem 
                 pageID={pageIDs.whatsNew}
+                onClick={onNavClick}
                 // selectedPageID={selectedPageID}
                 // onSelectPage={onSelectPage}
                 liClassName={liClassName}
@@ -41,6 +45,7 @@ export default function TopNavbarLeftList(props: TopNavbarLeftListProps) {
 
             <NavListItem 
                 pageID={pageIDs.contact}
+                onClick={onNavClick}
                 // selectedPageID={selectedPageID}
                 // onSelectPage={onSelectPage}
                 liClassName={liClassName}

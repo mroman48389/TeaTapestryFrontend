@@ -1,11 +1,11 @@
 // import { useCallback } from "react";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 // import { useSelector } from "react-redux";
 // import { RootState } from "./store/store";
 // import { setSelectedPageID } from "./store/selectedPageSlice";
-import { fetchTeaProfiles } from "./store/teaProfilesSlice";
-import type { AppDispatch } from "./store/store";
+// import { fetchTeaProfiles } from "./store/teaProfilesSlice";
+// import type { AppDispatch } from "./store/store";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 import NavSidebar from './components/NavSidebar/NavSidebar';
@@ -39,7 +39,7 @@ export default function App() {
     // const [selectedPageID, setSelectedPageID] = useState<PageID>(pageIDs.home);
     /* UPDATE: Removed selectedPageID state, leaving the URL as the single source of truth.  */
     // const selectedPageID = useSelector((state: RootState) => state.selectedPage);
-    const dispatch = useDispatch<AppDispatch>();
+    // const dispatch = useDispatch<AppDispatch>();
 
     const location = useLocation();
 
@@ -52,9 +52,10 @@ export default function App() {
         }
     }, [location]);
 
-    useEffect(() => {
-        dispatch(fetchTeaProfiles());
-    }, [dispatch]);
+    /* UPDATE: Switched from Redux for server data to React Query. */
+    // useEffect(() => {
+    //     dispatch(fetchTeaProfiles());
+    // }, [dispatch]);
 
     /* Reset scroll to the top if the user navigates to a new page. */
     useEffect(() => {

@@ -5,6 +5,8 @@ jest.mock("../errors/errors", () => ({
     normalizeApiError: jest.fn()
 }));
 
+process.env.API_URL = "http://localhost:8000";
+
 describe("apiRequest", () => {
     beforeEach(() => {
         jest.resetAllMocks();
@@ -24,7 +26,7 @@ describe("apiRequest", () => {
         const result = await apiRequest<typeof mockResponse>("/test");
 
         expect(result).toEqual(mockResponse);
-        expect(fetch).toHaveBeenCalledWith("/test", expect.any(Object));
+        expect(fetch).toHaveBeenCalledWith("http://localhost:8000/test", expect.any(Object));
     });
 
     test("Unit test: Throws normalized error on non-OK response.", async () => {

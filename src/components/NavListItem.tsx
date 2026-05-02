@@ -1,4 +1,5 @@
 // import { memo } from "react";
+import React from "react";
 import { useRef, useState, useEffect } from "react";
 
 import { Link, LinkProps, useLocation } from "react-router-dom";
@@ -12,12 +13,14 @@ type NavListItemProps = {
     liClassName? : string;
     linkClassName? : string;
     pageID: PageID;
+    onClick: () => void;
     // selectedPageID: PageID;
     // onSelectPage: (value: PageID) => void;
 } & Partial<Pick<LinkProps, "className" | "style" | "target" | "rel">>;
 
 /* List item that can be used for navigation on the top navbar, nav sidebar, or hamburger menu sheet for mobile. */
-function NavListItem(props: NavListItemProps) {
+const NavListItem = React.forwardRef<HTMLLIElement, NavListItemProps>((props, ref) => {
+
     /* Create ref for direct access to anchor element so we can grab info from it (the offsetWidth DOM measurement). We 
        Can't use useState to hold a DOM node directly, since React doesn't know when the DOM is ready. We'd end up
        triggering unncessary re-renders if we tried. This reference will persist across renders. */
@@ -28,7 +31,7 @@ function NavListItem(props: NavListItemProps) {
     const selectedPageID = getPageIDFromPath(location.pathname);
 
     //const {forceVisible = false, liClassName = "", linkClassName = "", pageID, selectedPageID, onSelectPage, ...rest} = props;
-    const {forceVisible = false, liClassName = "", linkClassName = "", pageID, ...rest} = props;
+    const {forceVisible = false, liClassName = "", linkClassName = "", pageID, onClick, ...rest} = props;
     
     const itemName = Pages[pageID].title;
     const pageLink = Pages[pageID].path;
@@ -50,7 +53,7 @@ function NavListItem(props: NavListItemProps) {
     // }
 
     return (
-        <li data-testid="nav-list-item" className={`${liClassName} ${forceVisible ? 'list-item' : ''}`}>
+        <li ref={ref} data-testid="nav-list-item" className={`${liClassName} ${forceVisible ? 'list-item' : ''}`}>
 
             {/* Note that React Router requires casting refs. */}
             <Link 
@@ -59,6 +62,7 @@ function NavListItem(props: NavListItemProps) {
                 {...rest}
                 to={pageLink} 
                 // onClick={() => onSelectPage(pageID)} 
+                onClick={() => onClick?.()}
             >
                 {itemName}
             </Link>
@@ -67,8 +71,9 @@ function NavListItem(props: NavListItemProps) {
             {(itemName === Pages[selectedPageID]?.title) ? <TwistedThreadsUnderline width={textWidth}/> : null}
         </li>
     );
-}
+});
 
+NavListItem.displayName = "NavListItem";
 export default NavListItem;
 /* Only re-render if the selection status changed (item was selected and now isn't or vice versa) or onSelectPage changed 
     (it  shouldn't since it's also memoized). 

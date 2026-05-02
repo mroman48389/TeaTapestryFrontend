@@ -70,6 +70,10 @@ export default function HamburgerMenu() {
     //     setOpen(false);
     // }
 
+    function handleNavClick() {
+        setOpen(false);
+    };
+
     return (
         <div data-testid="hamburger-menu" className="md:hidden">
             {/* shadcn's Sheet will manage the opening and closing of the menu, but we need both SheetTrigger to open the menu and 
@@ -163,6 +167,7 @@ export default function HamburgerMenu() {
                                         <TopNavbarLeftList 
                                             liClassName="nav-sidebar-list-item" 
                                             linkClassName="text-wood-bowl-brown" 
+                                            onNavClick={handleNavClick}
                                             // selectedPageID={selectedPageID} 
                                             // onSelectPage={hamburgerOnSelectPage}
                                         />
@@ -172,6 +177,7 @@ export default function HamburgerMenu() {
 
                                     <NavSidebarList 
                                         open={true} 
+                                        onNavClick={handleNavClick}
                                         // selectedPageID={selectedPageID} 
                                         // onSelectPage={hamburgerOnSelectPage}
                                     />

@@ -1,22 +1,28 @@
 import { ReactElement, memo, ComponentType } from "react";
 import { render } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { RouterProvider, createMemoryRouter } from "react-router";
+import { MemoryRouter, RouterProvider, createMemoryRouter } from "react-router-dom";
 
 import { TeaProfile } from "@/schemas/teaProfiles";
 
 interface RouterOptions {
     route?: string;
+    routes?: { path: string; element: React.ReactNode }[];
 }
 
 export function renderWithRouter(
     ui: ReactElement,
-    { route = "/" }: RouterOptions = {}
+    { route = "/", routes }: RouterOptions = {}
 ) {
-    const router = createMemoryRouter(
-        [{ path: route, element: ui }],
-        { initialEntries: [route] }
-    );
+    const testRoutes =
+        routes ??
+        [
+            { path: "/", element: ui },
+            { path: "/about", element: <div>About Page</div> },
+        ];
+
+    const router = createMemoryRouter(testRoutes, {
+        initialEntries: [route],
+    });
 
     return {
         ...render(<RouterProvider router={router} />),

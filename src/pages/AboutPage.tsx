@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import { useQuery } from "@tanstack/react-query";
 
 // import useFetch from "@/hooks/integration/useFetch";
 import { isApiError } from "@/api/errors/errors";
@@ -12,9 +12,11 @@ import GreetingImg from "../assets/teacup mascots/waving-teacup-looking-straight
 
 export default function AboutPage() {
 
-    const { data, isLoading, error } = useSWR<VersionResponse>(
-        "/version", (url: string): Promise<VersionResponse> => apiRequest(import.meta.env.VITE_API_URL + url)
-    );
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['version'],
+        queryFn: () => apiRequest<VersionResponse>('/version'),
+    });
+
 
     if (isLoading) return <p>Loading version...</p>;
     if (error) {

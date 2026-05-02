@@ -10,7 +10,7 @@ describe("NavSidebarList", () => {
 
     test("Renders the NavSidebarList.", () => {
         // renderWithRouter(<NavSidebarList open={true} selectedPageID={pageIDs.whatIsTea} onSelectPage={() => {}}/>);
-        renderWithRouter(<NavSidebarList open={true}/>);
+        renderWithRouter(<NavSidebarList open={true} onNavClick={() =>{}}/>);
         expect(screen.getByTestId("nav-sidebar-list")).toBeInTheDocument();
     });
     

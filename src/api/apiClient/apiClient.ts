@@ -1,5 +1,6 @@
 import { normalizeApiError } from "../errors/errors";
 import * as Sentry from "@sentry/react";
+import { getBaseUrl } from "@/utils/getBaseUrl";
 
 /* This generic function takes care of a lot of boilerplate-type code 
    associated with fetching data and makes the process consistent. */
@@ -7,7 +8,7 @@ export async function apiRequest<T>(
     url: string,
     options?: RequestInit
 ): Promise<T> {
-    const response = await fetch(url, {
+    const response = await fetch(getBaseUrl() + url, {
         ...options,
         headers: {
             "Content-Type": "application/json",

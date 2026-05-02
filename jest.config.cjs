@@ -50,6 +50,7 @@ module.exports = {
 
     /* Tell Jest how to resolve path aliases with @ for src. */
     moduleNameMapper: {
+        "^@/utils/getBaseUrl$": "<rootDir>/src/utils/getBaseUrl.node.ts", // must be first.
         "^@/(.*)$": "<rootDir>/src/$1",
         '\\.(svg|png|jpg|jpeg|gif)$': '<rootDir>/__mocks__/fileMock.js',
     },
@@ -102,6 +103,7 @@ module.exports = {
         "!src/store/**",
         "!src/components/AromaWheel/AromaWheelTypes.ts",
         "!src/data/**",
+        "!src/global.d.ts",
 
         /* Routing shells, layout containers, wiring points, and
            presentational components with no business logic. No branching, 
@@ -123,6 +125,8 @@ module.exports = {
 
         /* Testing files. These do not reflect the app's behavior */
         "!src/utils/test-utils.tsx",
+        "!src/utils/getBaseUrl.ts",
+        "!src/utils/getBaseUrl.node.ts",
         "!src/utils/test-utils.test.defunct.tsx",
 
         /* Ensure no test files are covered (needed since we 
@@ -135,6 +139,7 @@ module.exports = {
         "!src/utils/log-utils.ts",
         "!src/utils/fetcher.ts",
         "!src/utils/svg-utils.ts",
-        "!src/utils/aromaWheelDataUtils.ts"
+        "!src/utils/aromaWheelDataUtils.ts",
+        "!src/api/query/queryFn.ts"
     ]
 };

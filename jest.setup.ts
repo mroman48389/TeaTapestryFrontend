@@ -47,3 +47,11 @@ window.HTMLElement.prototype.scrollIntoView = function () {};
 /* JSDOM does not implement scrollTo, which Radix UI may call when filtering or
    managing scroll position inside CommandList. A no-op mock prevents crashes. */
 window.HTMLElement.prototype.scrollTo = function () {};
+
+/* React Router v7 requires the WHATWG Request API, which JSDOM does not provide.
+   Node 20 provides a global Request implementation, but it may not be attached
+   to the global object in Jest's environment. We safely copy it if available. */
+if (typeof global.Request === "undefined" && typeof Request !== "undefined") {
+  // @ts-ignore
+  global.Request = Request;
+}

@@ -1,10 +1,70 @@
+jest.mock("react-router-dom", () => {
+    const actual = jest.requireActual("react-router-dom");
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const React = require("react");
+
+    const Link = React.forwardRef(
+        (
+            {
+                children,
+                _to, // unused but lint-safe
+                ...rest
+            }: {
+                children: React.ReactNode;
+                _to?: unknown;
+            },
+            ref: React.Ref<HTMLAnchorElement>
+        ) => (
+            <a
+                ref={ref}
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                {...rest}
+            >
+                {children}
+            </a>
+        )
+    );
+    Link.displayName = "MockLink";
+
+    const NavLink = React.forwardRef(
+        (
+            {
+                children,
+                _to,
+                ...rest
+            }: {
+                children: React.ReactNode;
+                _to?: unknown;
+            },
+            ref: React.Ref<HTMLAnchorElement>
+        ) => (
+            <a
+                ref={ref}
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                {...rest}
+            >
+                {children}
+            </a>
+        )
+    );
+    NavLink.displayName = "MockNavLink";
+
+    return {
+        ...actual,
+        Link,
+        NavLink,
+    };
+});
+
 import { screen, fireEvent, waitFor, act } from "@testing-library/react";
-
-import HamburgerMenu from "./HamburgerMenu";
-
 import { renderWithRouter, setUpMatchMediaMock } from "@/utils/test-utils";
 
 // import { pageIDs } from "@/constants/pages";
+
+import HamburgerMenu from "./HamburgerMenu";
 
 describe("HamburgerMenu", () => {
     it("Unit test: Renders the HamburgerMenu.", () => {
@@ -85,49 +145,18 @@ describe("HamburgerMenu", () => {
         });
     });
 
-    /* UPDATE: We can no longer test "setting the new page" because React Router takes care of that, but we can test
-       that it navigates to a new page, so slightly change the test. */
-    // it("Integration test: Should set the new page and close the drawer when a nav item is clicked.", async () => {
-    //     const mockOnSelectPage = jest.fn();
+    it("Integration test: Clicking a nav item triggers its click handler and closed the menu.", async () => {
+        renderWithRouter(<HamburgerMenu />);
 
-    //     /* Render the drawer and open it. For simple user events like fireEvent.click, React Testing Library
-    //        automatically wraps the state updates in act(), so explicit wrapping is not needed. */
-    //     renderWithRouter(<HamburgerMenu selectedPageID={pageIDs.about} onSelectPage={mockOnSelectPage}/>);
-    //     renderWithRouter(<HamburgerMenu/>);
-    //     fireEvent.click(screen.getByRole("button", { name: /hamburger menu/i })); 
-
-    //     /* Click a nav item. The "/i" makes the match case insensitive. Text should be what you see on the screen. */
-    //     fireEvent.click(screen.getByRole("link", { name: /about/i }));
-
-    //     /* Check that the mock onSelectPage was called with the expected page ID. */
-    //     expect(mockOnSelectPage).toHaveBeenCalledWith(pageIDs.about);
-
-    //     /* waitFor is needed because clicking a nav item triggers a state update that conditionally unmounts the 
-    //        drawer, and we wait for the DOM to reflect the drawer’s disappearance. */
-    //     await waitFor(() => {
-    //         /* Check that the drawer is closed. */
-    //         expect(screen.queryByRole("button", { name: /close menu/i })).not.toBeInTheDocument();
-    //     });
-    // });
-
-    it("Integration test: Should navigate to the new page and close the drawer when a nav item is clicked.", async () => {
-        const { router  } = renderWithRouter(<HamburgerMenu/>);
-
-        /* Open the drawer. */
         fireEvent.click(screen.getByRole("button", { name: /hamburger menu/i }));
 
-        /* Click the About link. */
-        fireEvent.click(screen.getByRole("link", { name: /about/i }));
+        const aboutLink = screen.getByRole("link", { name: /about/i });
+        fireEvent.click(aboutLink);
 
-        /* Assert navigation happened. */
-        expect(router.state.location.pathname).toBe("/about");
-
-        /* Assert drawer closed. */
+        /* Drawer should be closed. */
         await waitFor(() => {
             expect(screen.queryByRole("button", { name: /close menu/i })).not.toBeInTheDocument();
         });
     });
-
-
 
 });

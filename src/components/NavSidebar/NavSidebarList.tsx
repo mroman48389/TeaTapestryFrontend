@@ -7,13 +7,14 @@ import NavListItem from "../NavListItem";
 
 type NavSidebarListProps = {
     open: boolean;
+    onNavClick : () => void;
     // selectedPageID: PageID;
     // onSelectPage: (value: PageID) => void;
 } & ComponentPropsWithoutRef<"ul">;
 
 export default function NavSidebarList(props: NavSidebarListProps) {
     // const {open, selectedPageID, onSelectPage, ...rest} = props;
-    const {open, ...rest} = props;
+    const {open, onNavClick, ...rest} = props;
 
     const liClassName = "nav-sidebar-list-item";
 
@@ -38,6 +39,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.whatIsTea}
                     liClassName={liClassName}
                 />
@@ -45,6 +47,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.whereDoesTeaComeFrom}
                     liClassName={liClassName}
                 />
@@ -52,6 +55,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.growingAndProcessing}
                     liClassName={liClassName}
                 />
@@ -59,6 +63,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.brewingMethods}
                     liClassName={liClassName}
                 />
@@ -66,6 +71,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.experiencingTea}
                     liClassName={liClassName}
                 />
@@ -73,6 +79,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.teaProfiles}
                     liClassName={liClassName}
                 />
@@ -80,6 +87,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.teaware}
                     liClassName={liClassName}
                 />
@@ -87,6 +95,7 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                 <NavListItem 
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
+                    onClick={onNavClick}
                     pageID={pageIDs.teaTerminology}
                     liClassName={liClassName}
                 />

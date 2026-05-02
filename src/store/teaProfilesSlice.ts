@@ -18,9 +18,7 @@ export const fetchTeaProfiles = createAsyncThunk<
     "teaProfiles/fetch",
     async (_, thunkAPI) => {
         try {
-            const data = await apiRequest<TeaProfilesResponse>(
-                import.meta.env.VITE_API_URL + "/api/v1/tea_profiles"
-            );
+            const data = await apiRequest<TeaProfilesResponse>("/api/v1/tea_profiles");
 
             /* Validate JSON with Zod. */
             const parsed = TeaProfilesResponseSchema.safeParse(data);
