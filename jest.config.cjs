@@ -112,9 +112,11 @@ module.exports = {
            brittle tests that provide no real benefits. */
         "!src/pages/**", 
         "!src/App.tsx", 
+        "!src/AppRoutes.tsx",
         "!src/main.tsx",
         "!src/components/Skeleton.tsx",
         "!src/components/LoadableArea.tsx",
+        "!src/components/GlobalErrorBoundary.tsx",
         "!src/components/Button.tsx", 
         "!src/components/Footer.tsx", 
         "!src/components/NavListItem.tsx", 

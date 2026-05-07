@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import tsconfigPaths from "vite-tsconfig-paths";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vite.dev/config/
 import path from 'node:path';
@@ -20,6 +21,7 @@ export default defineConfig({
             org: "self-bst", // matches Sentry
             project: "teatapestry-frontend", // matches slug entered in Sentry when creating project
         }),
+        visualizer({ open: true })
     ],
     /* Tell bundler (Vite) to look in src/ when building. */
     resolve: {
@@ -57,5 +59,27 @@ export default defineConfig({
                 setupFiles: ['.storybook/vitest.setup.ts']
             }
         }]
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                /* Optimization - Codesplitting/chunking: Split our JavaScript bundle into 
+                   chunks so the main bundle isn't huge. This will improve performance by
+                   reducing initial page load time. We want to split off code from 
+                   libraries that is heavy, shared across pages, and can be safely
+                   isolated. You can view bundles to choose from in dist/assets/*.js 
+                   after running npm run build. You will notice that lazy loaded route
+                   files will be in there too. */ 
+                manualChunks: {
+                    react: ["react", "react-dom"],
+                    router: ["react-router-dom"],
+                    query: ["@tanstack/react-query"],
+                    sentry: ["@sentry/react"],
+                    vendor: [
+                        "clsx"
+                    ]
+                }
+            }
+        }
     }
 });

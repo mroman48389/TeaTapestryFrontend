@@ -1,7 +1,9 @@
+import { memo } from "react";
 import clsx from "clsx";
 
 import { TeaProfile } from "@/schemas/teaProfiles";
-import WashiPaperBackground from "../assets/washi-paper-background-682x1024.jpg";
+// import WashiPaperBackground from "../assets/washi-paper-background-682x1024.jpg";
+import WashiPaperBackground from "../assets/washi-paper-background-682x1024.webp";
 import TeaLeaf from "../assets/camellia-sinensis-tea-leaf-1064x682.png";
 
 /**
@@ -25,7 +27,7 @@ interface TeaProfileCardProps {
     onClick?: () => void;
 }
 
-export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCardProps) {
+function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCardProps) {
     // console.log(teaProfile.name);
 
     // if((teaProfile.alternative_names === null) || (teaProfile.liquor_taste === null)) {
@@ -111,13 +113,13 @@ export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCard
 
                 {/* Header*/}
                 <div className="flex items-center justify-between rounded-t-xl border-b border-amber-800/25 bg-amber-200/40 p-4">
-                    <img src={TeaLeaf} alt="Tea leaf" width={50} className="scale-x-[-1]"/>
+                    <img src={TeaLeaf} alt="Tea leaf" width={50} height={32} className="scale-x-[-1]"/>
 
-                    <p className="font-heading text-dark-mahogany-brown absolute left-1/2 line-clamp-3 -translate-x-1/2 px-2 text-center text-lg">
+                    <p className="font-heading text-dark-mahogany-brown absolute left-1/2 line-clamp-3 -translate-x-1/2 px-2 text-center text-[17px]">
                         {teaProfile.name}
                     </p>
 
-                    <img src={TeaLeaf} alt="Tea leaf" width={50} />
+                    <img src={TeaLeaf} alt="Tea leaf" width={50} height={32}/>
                 </div>
 
                 {/* Body */}
@@ -140,3 +142,5 @@ export function TeaProfileCard({ teaProfile, isActive, onClick }: TeaProfileCard
         </div>
     );
 }
+
+export const TeaProfileCardM = memo(TeaProfileCard);

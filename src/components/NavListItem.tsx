@@ -1,4 +1,3 @@
-// import { memo } from "react";
 import React from "react";
 import { useRef, useState, useEffect } from "react";
 
@@ -44,14 +43,6 @@ const NavListItem = React.forwardRef<HTMLLIElement, NavListItemProps>((props, re
         }
     }, [itemName]);    
 
-    // No longer needed, since React Router handles it.
-    // function onAnchorClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    //     /* Prevent browser from navigating; we'll handle it with React Router ourselves. If we let the browser do this,
-    //        it will navigate to a new URL, reload the app, and wipe out our state. */
-    //     e.preventDefault(); 
-    //     onSelectPage(pageID);
-    // }
-
     return (
         <li ref={ref} data-testid="nav-list-item" className={`${liClassName} ${forceVisible ? 'list-item' : ''}`}>
 
@@ -75,19 +66,3 @@ const NavListItem = React.forwardRef<HTMLLIElement, NavListItemProps>((props, re
 
 NavListItem.displayName = "NavListItem";
 export default NavListItem;
-/* Only re-render if the selection status changed (item was selected and now isn't or vice versa) or onSelectPage changed 
-    (it  shouldn't since it's also memoized). 
-    
-    UPDATE: No longer needed, since we are deriving the selected page ID from the useLocation hook. React can't compare
-    hook values. 
-*/
-// export default memo(NavListItem, (prev, next) => {
-//     const wasSelected = prev.pageID === prev.selectedPageID;
-//     const isSelected = next.pageID === next.selectedPageID;
-//     const selectionChanged = wasSelected !== isSelected;
-//     const onSelectPageChanged = prev.onSelectPage !== next.onSelectPage; 
-
-//     return (
-//         (!selectionChanged) && (!onSelectPageChanged)   
-//     );
-// });

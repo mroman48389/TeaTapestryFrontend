@@ -1,0 +1,4 @@
+# Tells search engines what they are and are not allowed to crawl. Allow everything for now.
+
+User-agent: *
+Allow: /

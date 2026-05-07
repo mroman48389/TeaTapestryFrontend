@@ -33,6 +33,7 @@ storybook-static
 .env.*.local
 .env.development
 .env.production
+.env.preview
 
 # Jest cache
 jest.config.js

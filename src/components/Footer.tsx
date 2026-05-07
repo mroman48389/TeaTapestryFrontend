@@ -10,6 +10,9 @@ type FooterProps = {
 export default function Footer(props: FooterProps) {
     const { sidebarOpen, ...rest } = props;
 
+    /* Make sure any changes to the dimensions of this component are reflected in the Suspense 
+       that wraps it where it is used! We need to avoid layout shifts when lazy loading and
+       keep LCP and CLS low. */
     return (
         <footer 
             data-testid="footer"

@@ -1,36 +1,27 @@
+import { Suspense, useState, useEffect, lazy }  from "react";
 // import { useCallback } from "react";
-import { useState, useEffect } from "react";
 // import { useDispatch } from "react-redux";
 // import { useSelector } from "react-redux";
 // import { RootState } from "./store/store";
 // import { setSelectedPageID } from "./store/selectedPageSlice";
 // import { fetchTeaProfiles } from "./store/teaProfilesSlice";
 // import type { AppDispatch } from "./store/store";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-import NavSidebar from './components/NavSidebar/NavSidebar';
 import TopNavbar from './components/TopNavbar/TopNavbar';
-import Home from "./pages/HomePage";
-import WhatIsTeaPage from "./pages/WhatIsTeaPage";
-import WhereDoesTeaComeFromPage from "./pages/WhereDoesTeaComeFromPage";
-import GrowingProcessingPage from "./pages/GrowingProcessingPage";
-import BrewingMethodsPage from "./pages/BrewingMethodsPage";
-import ExperiencingTeaPage from "./pages/ExperiencingTeaPage";
-import TeaProfilesPage from "./pages/TeaProfilesPage";
-import TeawarePage from "./pages/TeawarePage";
-import TeaTerminologyPage from "./pages/TeaTerminologyPage";
-import FAQsPage from "./pages/FAQsPage";
-import AboutPage from "./pages/AboutPage";
-import WhatsNewPage from "./pages/WhatsNewPage";
-import ContactPage from "./pages/ContactPage";
-import LogInPage from "./pages/LogInPage";
-import NotFoundPage from "./pages/NotFoundPage";
 // import { PageID } from "./constants/pages";
-import { Pages, pageIDs } from "./constants/pages";
+import { SidebarSettingType } from "./constants/app";
 import { getSidebarWidthOrMarginLeft } from "./utils/class-utils";
 import { safeLog } from "./utils/log-utils";
-import Footer from "./components/Footer";
-import { SidebarSettingType } from "./constants/app";
+
+/* Optimization: Lazy load components which the app benefits from lazy loading. */
+const NavSidebar = lazy(() =>
+    import('./components/NavSidebar/NavSidebar')
+);
+const Footer = lazy(() =>
+    import('./components/Footer')
+);
+const AppRoutes = lazy(() => import("./AppRoutes").then(mod => ({ default: mod.AppRoutes })));
 
 export default function App() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -107,34 +98,22 @@ export default function App() {
             */}
             <div className="flex min-h-screen flex-1 overflow-hidden">
                 {/* <NavSidebar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID} sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/> */}
-                <NavSidebar sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/>
+                <Suspense fallback={
+                    <div className={`nav-sidebar ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.Width)}`}/>
+                }>
+                    <NavSidebar sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/>
+                </Suspense>
 
                 <main className={`main ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.MarginLeft)}`}>
-                    <Routes>
-                        <Route path="/" element={<Navigate to={Pages[pageIDs.teaProfiles].path} replace />}/>
-
-                        <Route path={Pages[pageIDs.home].path} element={<Home/>}/>
-                        <Route path={Pages[pageIDs.whatIsTea].path} element={<WhatIsTeaPage/>}/>
-                        <Route path={Pages[pageIDs.whereDoesTeaComeFrom].path} element={<WhereDoesTeaComeFromPage/>}/>
-                        <Route path={Pages[pageIDs.growingAndProcessing].path} element={<GrowingProcessingPage/>}/>
-                        <Route path={Pages[pageIDs.brewingMethods].path} element={<BrewingMethodsPage/>}/>
-                        <Route path={Pages[pageIDs.experiencingTea].path} element={<ExperiencingTeaPage/>}/>
-                        <Route path={Pages[pageIDs.teaProfiles].path} element={<TeaProfilesPage/>}/>
-                        <Route path={Pages[pageIDs.teaware].path} element={<TeawarePage/>}/>
-                        <Route path={Pages[pageIDs.teaTerminology].path} element={<TeaTerminologyPage/>}/>
-                        <Route path={Pages[pageIDs.FAQs].path} element={<FAQsPage/>}/>
-
-                        <Route path={Pages[pageIDs.about].path} element={<AboutPage/>}/>
-                        <Route path={Pages[pageIDs.whatsNew].path} element={<WhatsNewPage/>}/>
-                        <Route path={Pages[pageIDs.contact].path} element={<ContactPage/>}/>
-                        <Route path={Pages[pageIDs.logIn].path} element={<LogInPage/>}/>
-
-                        <Route path={Pages[pageIDs.notFound].path} element={<NotFoundPage/>}/>
-                    </Routes>
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <AppRoutes />
+                    </Suspense>
                 </main>
             </div>
-
-            <Footer sidebarOpen={sidebarOpen}/>
+            
+            <Suspense fallback={<div className={`footer ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.MarginLeft)}`}/>}>
+                <Footer sidebarOpen={sidebarOpen}/>
+            </Suspense>
         </div>
     );
 }

@@ -1,6 +1,25 @@
 import { normalizeApiError } from "../errors/errors";
-import * as Sentry from "@sentry/react";
 import { getBaseUrl } from "@/utils/getBaseUrl";
+
+// console.log("API URL:", import.meta.env.VITE_API_URL);
+
+/* Lazy Sentry helpers. These ensure Sentry is only loaded when needed,
+   and never pulled into the main bundle. */
+function addSentryBreadcrumb(breadcrumb: {
+    category: string;
+    message: string;
+    level: "error" | "info" | "warning";
+}) {
+    import("@sentry/react").then((Sentry) => {
+        Sentry.addBreadcrumb(breadcrumb);
+    });
+}
+
+function captureSentryException(error: unknown) {
+    import("@sentry/react").then((Sentry) => {
+        Sentry.captureException(error);
+    });
+}
 
 /* This generic function takes care of a lot of boilerplate-type code 
    associated with fetching data and makes the process consistent. */
@@ -38,10 +57,16 @@ export async function apiRequest<T>(
                navigation: /profile --> /teas/123
 
         */
-        Sentry.addBreadcrumb({
+        addSentryBreadcrumb({
             category: "api",
             message: `API error: ${url} (${response.status})`,
             level: "error",
+        });
+
+        captureSentryException({
+            url,
+            status: response.status,
+            data,
         });
 
         throw normalizeApiError(data, response.status);

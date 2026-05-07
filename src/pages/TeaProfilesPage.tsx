@@ -2,7 +2,9 @@ import {
     useEffect, 
     useState, 
     useRef, 
-    useCallback 
+    useCallback, 
+    Suspense,
+    lazy 
 } from "react";
 // import useSWR from "swr";
 // import useFetch from "@/hooks/integration/useFetch";
@@ -13,19 +15,33 @@ import clsx from "clsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 import { TeaProfilesResponse } from "@/types/serverResponses";
 import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
 import { TeaProfiles, TeaProfile } from "@/schemas/teaProfiles";
-import { TeaProfileCard } from "@/components/TeaProfileCard";
-import { TeaProfileGrid } from "@/components/TeaProfileGrid/TeaProfileGrid";
+import { TeaProfileCardM } from "@/components/TeaProfileCard";
+const TeaProfileGrid = lazy(() =>
+    import("@/components/TeaProfileGrid/TeaProfileGrid").then(mod => ({
+        default: mod.TeaProfileGrid
+    }))
+);
 import { Skeleton } from "@/components/Skeleton";
 import { LoadableArea } from "@/components/LoadableArea";
-import { AromaWheel } from "@/components/AromaWheel/AromaWheel";
-import { Carousel, CarouselHandle } from "@/components/Carousel/Carousel";
+const AromaWheel = lazy(() =>
+    import("@/components/AromaWheel/AromaWheel").then(mod => ({
+        default: mod.AromaWheel
+    }))
+);
+import { CarouselHandle, CarouselProps } from "@/components/Carousel/Carousel";
+const Carousel = lazy(() =>
+    import("@/components/Carousel/Carousel").then(mod => ({
+        default: mod.Carousel
+    }))
+) as <T>(props: CarouselProps<T> & { ref?: React.Ref<CarouselHandle> }) => React.ReactElement;;
 import { aromaWheelData } from "@/data/aromaWheelData";
 import { Aroma, AromaCategory } from "@/types/aromas";
-import EmptyCup from "../assets/teacup mascots/empty-teacup.png";
+import EmptyCup from "../assets/teacup mascots/empty-teacup.webp";
 import { MATCHING_MODE, MatchingMode } from "@/constants/app";
 import { getAromaName, getAromaFromId } from "@/utils/aromaWheelDataUtils";
 import { HeroTitle } from "@/components/HeroTitle";
@@ -33,6 +49,7 @@ import { Pages, pageIDs } from "@/constants/pages";
 import { ComboBox } from "@/components/ComboBox/ComboBox";
 import { safeLog } from "@/utils/log-utils";
 import { apiRequest } from "@/api/apiClient/apiClient";
+import { useVisibility } from "@/hooks/integration/useVisibility";
 
 export default function TeaProfilesPage() {
     /* Was grabbing the tea profiles directly here; now storing it in Redux. */
@@ -53,15 +70,21 @@ export default function TeaProfilesPage() {
     // const isLoading = useSelector((state: RootState) => state.teaProfiles.loading);
     // const error = useSelector((state: RootState) => state.teaProfiles.error);
 
+    // throw new Error("Test crash");
+
     const { data:teaProfiles, isLoading, error } = useQuery({
         queryKey: ['teaProfiles'],
         
         queryFn: async () => {
+            /* This test should NOT trigger the ErrorBoundary. */
+            // const res = await apiRequest<TeaProfilesResponse>("/api/v1/BAD_URL_TEST");
             const res = await apiRequest<TeaProfilesResponse>("/api/v1/tea_profiles");
             return TeaProfilesResponseSchema.parse(res);
         },
     });
 
+    const [showAromaWheel, setShowAromaWheel] = useState(false);
+    const [showAromaComboBox, setShowAromaComboBox] = useState(false);
     const [isAromaWheelInteractive, setIsAromaWheelInteractive] = useState(true);
     const [targetTeaProfiles, setTargetTeaProfiles] = useState<TeaProfiles>([]);
     const [aromaMatchingMode, setAromaMatchingMode] = useState<MatchingMode>(MATCHING_MODE.FLAVOR_ONLY);
@@ -76,6 +99,34 @@ export default function TeaProfilesPage() {
     /* Allows us to resize the aroma wheel when the carousel meets its minimum width so the
        carousel doesn't get cut off the screen before it needs to be. */
     const [outermostDivRef, outermostDivWidth] = useMeasure(); 
+
+    const { ref: carouselGateRef, isVisible: showCarousel } = useVisibility();
+    const { ref: teaProfileGridGateRef, isVisible: showTeaProfileGrid } = useVisibility();
+
+    /* Optimization - Rendering after hydration: useEffect runs after hydration (the process
+       where React attaches to existing HTML / the DOM). The page will have been painted
+       at least once, and the browser will be ready for non-critical work. 
+       
+       Call setShowAromaWheel(true) so that we know we can render the AromaWheel. */
+    useEffect(() => {
+        /* As soon as the browser finishes the current call stack, let the page know it
+           can render the wheel. This will always fire, but it will do so slightly later
+           than we really want, so we have fallbacks. */
+        const t = setTimeout(() => setShowAromaWheel(true), 0);
+
+        /* Make sure the wheel appears right after the initial paint. This can potentially
+           fire too early. */
+        requestAnimationFrame(() => setShowAromaWheel(true));
+
+        /* The wheel should appear when the browser is idle. This may never fire, but is the
+           best performance-wise. Unlike the first two, it provides a chance to set our flag
+            if the browser ecomes idle early at the cheapest moment for the CPU. */
+        if ((typeof window.requestIdleCallback === "function") && ("requestIdleCallback" in window)) {
+            window.requestIdleCallback(() => setShowAromaWheel(true));
+        }
+
+        return () => clearTimeout(t);
+    }, []);
 
     /* After the initial render, create a media query list (mql) to track the width of the screen. The
        mql object will update automatically when the screen size changes. */
@@ -145,6 +196,29 @@ export default function TeaProfilesPage() {
         updateTargetTeaProfiles(aromaName);
     }, [aromaMatchingMode, focusedAromaId, updateTargetTeaProfiles]);
 
+    useEffect(() => {
+        /* The aroma combobox is only used in mobile mode (when the screen is sufficiently 
+           small and the user cannot effectively interact with the aroma wheel). */
+        if (!isAromaWheelInteractive) {
+            let timeoutId: number;
+
+            const idleId = requestIdleCallback(() => {
+                setShowAromaComboBox(true);
+            });
+
+            /* Fallback for browsers that delay or skip idle callbacks */
+            timeoutId = window.setTimeout(() => {
+                setShowAromaComboBox(true);
+            }, 150);
+
+            return () => {
+                cancelIdleCallback(idleId);
+                clearTimeout(timeoutId);
+            };
+        }
+
+    }, [isAromaWheelInteractive]);
+
     const handleOnAromaClick = (aroma: Aroma, category: AromaCategory) => {
         safeLog("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");
 
@@ -212,63 +286,45 @@ export default function TeaProfilesPage() {
             </RadioGroup>
         </fieldset>;
 
+    /* Always show the enclosing div so useMeasure works when determining aromaWheelDivWidth, but only show 
+       the wheel inside the loadable area container if we've determined we should. 
+       
+        The outer <div> must always render so that useMeasure() has a real DOM element 
+        to attach its ResizeObserver to. If we hide this wrapper, useMeasure() will 
+        always report width = 0 and the AromaWheel will never render.
+
+        We only render the LoadableArea + Suspense + AromaWheel if
+            1. the browser is idle (showAromaWheel === true), AND
+            2. the wrapper has been measured (aromaWheelDivWidth > 0).
+
+        This defers the heavy AromaWheel work until after hydration while still 
+        allowing useMeasure() to function correctly. */
     const aromaWheel = 
-        <div ref={aromaWheelDivRef} className="fade-in-component aspect-square w-full max-w-[640px]">
-            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
-                {
-                    (aromaWheelDivWidth > 0) && 
-                    
-                    <AromaWheel
-                        data={aromaWheelData}
-                        size={Math.min(aromaWheelDivWidth, aromaWheelDefaultWidth)}
-                        gapAngleRad={0.02}
-                        interactive={isAromaWheelInteractive}
-                        onAromaClick={(aroma, category) => {
-                            handleOnAromaClick(aroma, category);
-                        }}
-                        focusedAromaId={focusedAromaId}
-                        onFocusedAromaIdChange={setFocusedAromaId}
-                    />
-                }
-            </LoadableArea>
+        <div ref={aromaWheelDivRef} className="fade-in-component mt-5 aspect-square w-full max-w-[640px] min-w-[1px]">
+            {
+                showAromaWheel &&
+                <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
+                    {
+                        (aromaWheelDivWidth > 0) && 
+                        
+                        <Suspense fallback={<Skeleton className="h-full w-full rounded-full"/>}>
+                            <AromaWheel
+                                data={aromaWheelData}
+                                size={Math.min(aromaWheelDivWidth, aromaWheelDefaultWidth)}
+                                gapAngleRad={0.02}
+                                interactive={isAromaWheelInteractive}
+                                onAromaClick={(aroma, category) => {
+                                    handleOnAromaClick(aroma, category);
+                                }}
+                                focusedAromaId={focusedAromaId}
+                                onFocusedAromaIdChange={setFocusedAromaId}
+                            />
+                        </Suspense>
+                    }
+                </LoadableArea>
+            }
         </div>;
         
-    /* flex-1 tells this content to take up the remaining horizontal space in the row its in next to the aroma wheel.
-    
-       w-full is needed when the screen shrinks and this content becomes part of a flex column. Without it, the
-       carousel will look constricted because flex-1 will make it grow taller and not wider for flex column. 
-    */
-    const teaProfilesCarousel = 
-        <div className="fade-in-component w-full flex-1">
-            <h2 className="title--heading mb-3 text-center">
-                Teas with this aroma
-            </h2>
-
-            <p className="text--body mb-3 text-center">
-                Click on a tea to view its full profile.
-            </p>
-
-            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
-                <Carousel<TeaProfile>
-                    key="carousel"
-                    ref={carouselRef}
-                    slideContent={targetTeaProfiles}
-                    ariaLabel="Teas with this aroma"
-                    loop
-                    // onActiveIndexChange={(index) => {
-                    //     console.log("Active index:", index);
-                    // }}
-                    onSlideClick={(tea, _index) => {
-                        setSelectedTeaProfile(tea);
-                        // console.log("Clicked tea:", tea, "at index", index);
-                    }}
-                    renderSlide={({ item, isActive }) => (
-                        <TeaProfileCard teaProfile={item} isActive={isActive} />
-                    )}
-                />
-            </LoadableArea>
-        </div>;
-
     /* flex-1 tells this content to take up the remaining horizontal space in the row its in next to the aroma wheel.
     
        mx-auto centers the img horizontally within its container.
@@ -280,29 +336,103 @@ export default function TeaProfilesPage() {
             </h2>
 
             <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
-                <img src={EmptyCup} alt="Empty teacup" className="mx-auto h-auto w-60 object-contain"/>
+                <img src={EmptyCup} alt="Empty teacup" width={677} height={543} className="mx-auto h-auto w-60 object-contain"/>
             </LoadableArea>
         </div>;
 
+    /* flex-1 tells this content to take up the remaining horizontal space in the row its in next to the aroma wheel.
+    
+       w-full is needed when the screen shrinks and this content becomes part of a flex column. Without it, the
+       carousel will look constricted because flex-1 will make it grow taller and not wider for flex column. 
+       
+       Important: The outer <div> wrapper must always be in the DOM so the visibility 
+       observer can attach properly. 
+    */
+    const teaProfilesCarousel = 
+        <div ref={carouselGateRef} className="fade-in-component w-full flex-1">
+            {
+                focusedAromaId ? 
+                (
+                    (targetTeaProfiles.length > 0) ?
+
+                        <>
+                            <h2 className="title--heading mb-3 text-center">
+                                Teas with this aroma
+                            </h2>
+
+                            <p className="text--body mb-3 text-center">
+                                Click on a tea to view its full profile.
+                            </p>
+
+                            {
+                            showCarousel &&
+
+                            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+                                <Suspense fallback={<Skeleton className="carousel-shape"/>}>
+                                    <Carousel<TeaProfile>
+                                        key="carousel"
+                                        ref={carouselRef}
+                                        slideContent={targetTeaProfiles}
+                                        ariaLabel="Teas with this aroma"
+                                        loop
+                                        // onActiveIndexChange={(index) => {
+                                        //     console.log("Active index:", index);
+                                        // }}
+                                        onSlideClick={(tea, _index) => {
+                                            setSelectedTeaProfile(tea);
+                                            // console.log("Clicked tea:", tea, "at index", index);
+                                        }}
+                                        renderSlide={({ item, isActive }) => (
+                                            <TeaProfileCardM teaProfile={item} isActive={isActive} />
+                                        )}
+                                    />
+                                </Suspense>
+
+                            </LoadableArea>
+                        }
+                        </> :
+
+                    noMatchingTeaProfilesImg
+                ) : 
+                
+                null
+            }
+        </div>;
+
     const aromaComboBox = 
-        <ComboBox
-            items={aromaWheelData.categories.flatMap(category => category.aromas)}
-            groups={Object.fromEntries(
+        showAromaComboBox ? 
+            <ComboBox
+                items={aromaWheelData.categories.flatMap(category => category.aromas)}
+                groups={Object.fromEntries(
                 aromaWheelData.categories.map(category => [category.name, category.aromas])
             )}
-            selectedItem={getAromaFromId(focusedAromaId)}
-            onSelectItem={(aroma) => setFocusedAromaId(aroma.id)}
-            getItemName={(aroma) => aroma.name}
-            itemPlaceholderText="No aroma selected"
-            className="w-60"
-        />;
-
-    const teaProfileGrid = 
-        selectedTeaProfile ?
-            <TeaProfileGrid
-                teaProfile={selectedTeaProfile}
-        /> : 
+                selectedItem={getAromaFromId(focusedAromaId)}
+                onSelectItem={(aroma) => setFocusedAromaId(aroma.id)}
+                getItemName={(aroma) => aroma.name}
+                itemPlaceholderText="No aroma selected"
+                className="w-60"
+        /> :
         null;
+
+    /* Important: The outer <div> wrapper must always be in the DOM so the visibility 
+       observer can attach properly. */
+    const teaProfileGrid = 
+        <div ref={teaProfileGridGateRef}>
+            {
+                selectedTeaProfile && showTeaProfileGrid &&
+                <Suspense 
+                    fallback={
+                        <div className="flex items-center justify-center py-10">
+                            <Loader2 className="text-wood-bowl-brown h-8 w-8 animate-spin" />
+                        </div>
+                    }
+                >
+                    <TeaProfileGrid
+                        teaProfile={selectedTeaProfile}
+                    />
+                </Suspense> 
+            }
+        </div>;
 
     // console.log("Tea profiles response:", data);
     // return <pre>{JSON.stringify(data, null, 2)}</pre>;
@@ -344,8 +474,8 @@ export default function TeaProfilesPage() {
                 className={clsx( "flex items-center gap-[32px]", showInRow ? "flex-row" : "flex-col" )}
             >
                 {aromaWheel}
-                {isAromaWheelInteractive ? null: aromaComboBox}
-                {focusedAromaId ? ((targetTeaProfiles.length > 0) ? teaProfilesCarousel : noMatchingTeaProfilesImg) : null}
+                {aromaComboBox}
+                {teaProfilesCarousel}
             </div>
 
             {teaProfileGrid}

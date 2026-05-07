@@ -28,12 +28,14 @@ export default function TopNavbar(props: TopNavbarProps) {
 
             1. Used Claude this time with prompting. It was able to do everything!
             
+        Note: We need a width, height, AND sizing to keep Lighthouse happy. Width and height establish the aspect ratio and the 
+        className sizes the images. Width and height can be any numbers that preserve the aspect ratio.
     */
     return (
         <header className="top-navbar" {...rest}>
             <div className='ml-3 flex items-center justify-between'>
-                <img src={TeaTapestryTeapot} alt="Tea Tapestry teapot" width={50} height={50}/>
-                <img src={TeaTapestryLogo} alt="Tea Tapestry logo" width={200} height={75}/>
+                <img src={TeaTapestryTeapot} alt="Tea Tapestry teapot" width={50} height={50} className="h-[50px] w-[50px]"/>
+                <img src={TeaTapestryLogo} alt="Tea Tapestry logo" width={200} height={75} className="h-[75px] w-[200px]"/>
             </div>
             {/* <TopNavbarList selectedPageID={selectedPageID} onSelectPage={onSelectPage}/> */}
             <TopNavbarList/>

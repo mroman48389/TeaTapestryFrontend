@@ -16,7 +16,7 @@
     --open-nav-sidebar-width: 292px; /* "w-73" */ 
     --closed-nav-sidebar-width: 56px; /* "w-14" */
 
-    /* Font families */
+    /* Font families. Preloaded in index.html and defined in base.css. */
     --font-body: "Cabin", ui-sans-serif, system-ui, sans-serif;
     --font-heading: "Cabin", ui-sans-serif, system-ui, sans-serif;
 

@@ -1,3 +1,34 @@
+/* Force Vite to include Cabin font files in the build. installed with npm install @fontsource/cabin. 
+
+    Cabin 400 -> body text, paragraphs, UI labels
+    Cabin 500 -> slightly emphasized text, subheadings, or buttons
+    Cabin 600 -> section headings, nav items, or call‑to‑action emphasis
+    Cabin 700 ->  main headings, hero text, or anything that needs strong visual weight
+*/
+@import "@fontsource/cabin/400.css";
+@import "@fontsource/cabin/500.css";
+@import "@fontsource/cabin/600.css";
+@import "@fontsource/cabin/700.css";
+
+/* Define our fonts and control the loading behavior. Used in conjunction with preloading in
+   index.html and Tailwind font families in theme.css. These fonts should be in dist/assets.
+   Only define fonts used above the fold here. */
+@font-face {
+  font-family: "Cabin";
+  src: url("/assets/cabin-latin-400-normal-CexE3FJz.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cabin";
+  src: url("/assets/cabin-latin-700-normal-BSVyX4_V.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
     html, body {
         @apply bg-tea-steam-green;

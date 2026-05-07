@@ -7,8 +7,7 @@ import { apiRequest } from "@/api/apiClient/apiClient";
 import { VersionResponse } from "@/types/serverResponses";
 import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
-// import UnderConstructionImg from "../assets/teacup mascots/construction-teacup.png";
-import GreetingImg from "../assets/teacup mascots/waving-teacup-looking-straight-on.png";
+import GreetingImg from "../assets/teacup mascots/waving-teacup-looking-straight-on.webp";
 
 export default function AboutPage() {
 
@@ -39,7 +38,7 @@ export default function AboutPage() {
         <>
             <HeroTitle>{Pages[pageIDs.about].title}</HeroTitle>
             
-            <img src={GreetingImg} alt="Teacup waving" className="mt-7 h-65 w-auto"/>
+            <img src={GreetingImg} alt="Teacup waving" width={375} height={418} className="mt-7 h-65 w-auto"/>
 
             <h2 className="title--heading mt-5">
                 Mission

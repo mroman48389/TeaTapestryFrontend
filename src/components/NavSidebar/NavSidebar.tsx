@@ -19,6 +19,9 @@ export default function NavSidebar(props: NavSidebarProps) {
     // const {sidebarOpen, onOpenSidebar, selectedPageID, onSelectPage, ...rest} = props;
     const {sidebarOpen, onOpenSidebar, ...rest} = props;
 
+    /* Make sure any changes to the dimensions of this component are reflected in the Suspense 
+       that wraps it where it is used! We need to avoid layout shifts when lazy loading and
+       keep LCP and CLS low. */
     return (
         <nav aria-label="Nav sidebar" className="hidden md:block"{...rest}>
             <div className={
@@ -33,6 +36,7 @@ export default function NavSidebar(props: NavSidebarProps) {
                 />
                 <NavSidebarList
                     open={sidebarOpen}
+                    onNavClick={() => {}}
                     // selectedPageID={selectedPageID}
                     // onSelectPage={onSelectPage}
                 />

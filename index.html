@@ -13,6 +13,19 @@
 
         <meta charset="UTF-8" />
 
+
+        <meta name="description" content="Learn about the world of tea, discover new teas, and share your experiences with a global network of tea drinkers.">
+
+        <!-- Preload fonts that are above the fold, not system fonts, and critical to layout. 
+             System fonts load instantly, so we don't have to worry about those. This will 
+             prevent layout shifts. Look in Chrome -> DevTools -> Network -> Disable cache 
+             checkbox and reload the page to see which font files the browser is actually 
+             downloading in dist/assets. We need to define the fonts and control the loading behavior 
+             in base.css and declare Tailwind font families in theme.css as well.
+        -->
+        <link rel="preload" href="/assets/cabin-latin-400-normal-CexE3FJz.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="/assets/cabin-latin-700-normal-BSVyX4_V.woff2" as="font" type="font/woff2" crossorigin>
+
         <!-- Favicon with fallbacks. Used freeconvert.com to convert the svg into the ico and png.  -->
         <link rel="icon" href="/tea-tapestry-logo-xi-shi-teapot-200x200.ico" />
         <link rel="icon" type="image/png" href="/tea-tapestry-logo-xi-shi-teapot-200x200.png" />

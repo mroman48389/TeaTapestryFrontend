@@ -870,8 +870,6 @@ function CarouselInner<T>(
 
 };
 
-export const Carousel = forwardRef(CarouselInner) as <
-    T
->(
+export const Carousel = forwardRef(CarouselInner) as <T>(
     props: CarouselProps<T> & { ref?: React.Ref<CarouselHandle> }
 ) => React.ReactElement;
