@@ -1,4 +1,25 @@
-@import "tailwindcss";
+/* 
+ * IMPORTANT: Tailwind v4 Source Exclusions — DO NOT REMOVE
+ *
+ * Tailwind v4 automatically scans the project for class names but does NOT
+ * reliably respect .gitignore on Windows. Without these exclusions, Tailwind
+ * scans dist/, binary assets, and large generated files, causing a 3-4 minute
+ * CSS processing hang on every dev server start.
+ *
+ * Excluded paths and why:
+ *   ../dist          - Production build output; Tailwind has no business scanning compiled JS
+ *   ../stats.html    - Rollup bundle visualizer output (4.5MB); regenerated on each build
+ *   ../package-lock.json - 850KB file with no Tailwind classes
+ *   ../src/assets    - Binary images (PNG, WebP, SVG); no Tailwind classes, just slows scanning
+ *
+ * If you remove these and dev startup becomes slow again (3-4 min blank screen),
+ * this is why. Confirmed fix: reduced Tailwind scan time from 3m 41s to 2s.
+ */
+@import "tailwindcss"; 
+@source not "../dist";
+@source not "../stats.html";
+@source not "../package-lock.json";
+@source not "../src/assets";
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));

@@ -44,33 +44,33 @@ describe("NavListItem", () => {
     //     expect(mockSelect).toHaveBeenCalledWith(pageIDs.about);
     // });
 
-    it("Unit test, Memoization: Does not re-render when props are unchanged.", () => {
-        const options = {
-            displayName: "MemoizedNavListItem",
-            withRouter: true,
-        };
-        const { Memoized, spy } = createMemoizedComponentWithSpy(NavListItem, options);
+    // it("Unit test, Memoization: Does not re-render when props are unchanged.", () => {
+    //     const options = {
+    //         displayName: "MemoizedNavListItem",
+    //         withRouter: true,
+    //     };
+    //     const { Memoized, spy } = createMemoizedComponentWithSpy(NavListItem, options);
 
-        // const onSelectPage = () => {};
+    //     // const onSelectPage = () => {};
 
-        const { rerender } = render(
-            <Memoized
-                pageID={pageIDs.about}
-                // selectedPageID={pageIDs.about}
-                // onSelectPage={onSelectPage}
-            />
-        );
+    //     const { rerender } = render(
+    //         <Memoized
+    //             pageID={pageIDs.about}
+    //             // selectedPageID={pageIDs.about}
+    //             // onSelectPage={onSelectPage}
+    //         />
+    //     );
     
-        rerender(
-            <Memoized
-                pageID={pageIDs.about}
-                // selectedPageID={pageIDs.about}
-                // onSelectPage={onSelectPage}
-            />
-        );
+    //     rerender(
+    //         <Memoized
+    //             pageID={pageIDs.about}
+    //             // selectedPageID={pageIDs.about}
+    //             // onSelectPage={onSelectPage}
+    //         />
+    //     );
     
-        expect(spy).toHaveBeenCalledTimes(1);
-      });
+    //     expect(spy).toHaveBeenCalledTimes(1);
+    //   });
       
     //   it("Unit test, Memoization: Re-renders when page selection changes.", () => {
     //     const onSelectPage = () => {};

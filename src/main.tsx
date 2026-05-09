@@ -104,6 +104,8 @@ const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
 
 function renderApp() {
+    // createRoot(rootElement!).render(<div>Minimal test</div>);
+
     createRoot(rootElement!).render(
         /* StrictMode will cause everything to render twice but will not be in the production when built. StrictMode
         helps detect bugs and potential issues and enforces best practices. */

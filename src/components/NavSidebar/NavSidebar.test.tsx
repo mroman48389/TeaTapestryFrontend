@@ -17,7 +17,7 @@ describe("NavSidebar", () => {
 
     test("Unit test: Renders the NavSidebarList.", () => {
         // renderWithRouter(<NavSidebarList open={false} selectedPageID={pageIDs.whatIsTea} onSelectPage={() => {}}/>);
-        renderWithRouter(<NavSidebarList open={false}/>);
+        renderWithRouter(<NavSidebarList open={false} onNavClick={() => {}}/>);
         expect(screen.getByRole("list")).toBeInTheDocument();
     });
 

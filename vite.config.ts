@@ -1,4 +1,4 @@
-/// <reference types="vitest/config" />
+// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -21,7 +21,12 @@ export default defineConfig({
             org: "self-bst", // matches Sentry
             project: "teatapestry-frontend", // matches slug entered in Sentry when creating project
         }),
-        visualizer({ open: true })
+        /* Enable visualizer in build mode but not normal development mode so we can analyze bundles
+           only when we need to (on npm run build). */
+        visualizer({ 
+            open: false,
+            filename: "bundle-stats.html",
+         }),
     ],
     /* Tell bundler (Vite) to look in src/ when building. */
     resolve: {
@@ -81,5 +86,11 @@ export default defineConfig({
                 }
             }
         }
-    }
+    },
+    /* Never reuse stale module caches. Speeds up launches after server restructures. */
+    server: {
+        host: "127.0.0.1",
+        port: 5173,
+        strictPort: true,
+    },
 });

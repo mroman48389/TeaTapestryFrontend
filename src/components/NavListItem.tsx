@@ -12,7 +12,7 @@ type NavListItemProps = {
     liClassName? : string;
     linkClassName? : string;
     pageID: PageID;
-    onClick: () => void;
+    onClick?: () => void;
     // selectedPageID: PageID;
     // onSelectPage: (value: PageID) => void;
 } & Partial<Pick<LinkProps, "className" | "style" | "target" | "rel">>;

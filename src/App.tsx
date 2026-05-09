@@ -13,6 +13,7 @@ import TopNavbar from './components/TopNavbar/TopNavbar';
 import { SidebarSettingType } from "./constants/app";
 import { getSidebarWidthOrMarginLeft } from "./utils/class-utils";
 import { safeLog } from "./utils/log-utils";
+import { waitForBackend } from "./utils/waitForBackend";
 
 /* Optimization: Lazy load components which the app benefits from lazy loading. */
 const NavSidebar = lazy(() =>
@@ -25,6 +26,7 @@ const AppRoutes = lazy(() => import("./AppRoutes").then(mod => ({ default: mod.A
 
 export default function App() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [ready, setReady] = useState<boolean | "error">(false);
 
     /* Use Redux store instead to prevent App from completely re-rendering. */
     // const [selectedPageID, setSelectedPageID] = useState<PageID>(pageIDs.home);
@@ -33,6 +35,36 @@ export default function App() {
     // const dispatch = useDispatch<AppDispatch>();
 
     const location = useLocation();
+
+    /* In development mode, run some code to determine if the app is ready or has failed. */
+    useEffect(() => {
+        async function init() {
+            /* We need to be ready immediately in production. */
+            if (!import.meta.env.DEV) {
+                setReady(true);
+                return;
+            }
+
+            const start = performance.now();
+            const ok = await waitForBackend(import.meta.env.VITE_API_URL + "/version");
+
+            // If backend never came up, show an error screen
+            if (!ok) {
+                setReady("error");
+                return;
+            }
+
+            /* Prevent flash if backend responds instantly. */
+            const elapsed = performance.now() - start;
+            if (elapsed < 300) {
+                await new Promise(r => setTimeout(r, 300 - elapsed));
+            }
+
+            setReady(true);
+        }
+
+        init();
+    }, []);
 
     /* Use Google Analytics to track route changes. */
     useEffect(() => {
@@ -72,6 +104,22 @@ export default function App() {
     }
 
     safeLog("App component rendered");
+
+    if (!ready) {
+        return (
+            <div className="flex h-screen items-center justify-center text-lg">
+                Starting Tea Tapestry...
+            </div>
+        );
+    }
+
+    if (ready === "error") {
+        return (
+            <div className="flex h-screen items-center justify-center text-lg text-red-600">
+                Unable to reach the Tea Tapestry backend.
+            </div>
+        );
+    }
 
     return (
         /*  App is one big vertical flex container that spans the entire viewport height. 

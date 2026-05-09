@@ -41,3 +41,7 @@ jest.config.js
 
 # TypeScript build artifacts
 *.tsbuildinfo
+
+# IMPORTANT: Generated build analysis files — excluded to prevent Tailwind v4 scanning them on dev startup
+stats.html
+tailwind-out.css

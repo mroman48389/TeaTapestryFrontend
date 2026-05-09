@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "ESNext",         // tell TypeScript to compile to latest ECMAScript (ES) version
         "module": "ESNext",         // use native ES modules for import/export
-        "moduleResolution": "Node", // resolve modules like Node.js does (ensures compatibility with React, Vite, and 3rd party packages)
+        "moduleResolution": "bundler", // resolve modules like Node.js does (ensures compatibility with React, Vite, and 3rd party packages)
         "strict": true,             // enable strict type-checking options
         "jsx": "react-jsx",         // use JSX transform from React (so we don't have to import React in every file)
         "esModuleInterop": true,    // allow default imports from CommonJS modules (so, 'import express from 'express'' rather than 'import * as express')
@@ -14,15 +14,16 @@
         "paths": {
             "@/*": ["./src/*"] // Define custom import aliases for TypeScript. Replace @/ with ./src/.
         },
-        "types": [
-            "jest", "@testing-library/jest-dom"
-        ]
+        "types": ["vite/client"]
     },
     "include": [
-        "src", 
-        "src/**/*.css",
+        "src",
         "src/**/*.ts",
-        "src/**/*.tsx"
+        "src/**/*.tsx",
+        "src/**/*.css",
+        "vite-env.d.ts",
+        ".storybook",
+        "global.d.ts"
     ]            // TypeScript will only look in src for compilable files
  
 }

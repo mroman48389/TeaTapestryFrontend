@@ -5,7 +5,7 @@ import NavListItem from "../NavListItem";
 interface TopNavbarLeftListProps {
     liClassName? : string;
     linkClassName? : string;
-    onNavClick : () => void;
+    onNavClick? : () => void;
     // selectedPageID: PageID;
     // onSelectPage : (value: PageID) => void;
 }
