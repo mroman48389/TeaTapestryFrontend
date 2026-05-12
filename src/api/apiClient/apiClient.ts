@@ -2,6 +2,7 @@ import { normalizeApiError } from "../errors/errors";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 
 // console.log("API URL:", import.meta.env.VITE_API_URL);
+console.log("VITE_API_URL at build:", import.meta.env.VITE_API_URL);
 
 /* Lazy Sentry helpers. These ensure Sentry is only loaded when needed,
    and never pulled into the main bundle. */
