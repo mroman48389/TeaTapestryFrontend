@@ -8,7 +8,7 @@ export async function waitForBackend(url: string, timeoutMs = 10000) {
             const res = await fetch(url);
             if (res.ok) return true;
         } 
-        catch (_) {
+        catch {
 
         }
 
