@@ -2,7 +2,6 @@ import { normalizeApiError } from "../errors/errors";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 
 // console.log("API URL:", import.meta.env.VITE_API_URL);
-console.log("VITE_API_URL at build:", import.meta.env.VITE_API_URL);
 
 /* Lazy Sentry helpers. These ensure Sentry is only loaded when needed,
    and never pulled into the main bundle. */
@@ -28,6 +27,11 @@ export async function apiRequest<T>(
     url: string,
     options?: RequestInit
 ): Promise<T> {
+    const base = getBaseUrl();
+    console.log("apiRequest --> base URL:", base);
+    console.log("apiRequest --> endpoint:", url);
+    console.log("apiRequest --> final URL:", base + url);
+
     const response = await fetch(getBaseUrl() + url, {
         ...options,
         headers: {
@@ -35,6 +39,10 @@ export async function apiRequest<T>(
             ...(options?.headers || {}),
         },
     });
+
+    console.log("apiRequest --> response.url:", response.url);
+    console.log("apiRequest --> response.ok:", response.ok);
+    console.log("apiRequest --> response.status:", response.status);
 
     let data: unknown = null;
 
