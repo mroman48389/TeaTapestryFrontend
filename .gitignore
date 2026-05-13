@@ -45,3 +45,4 @@ jest.config.js
 # IMPORTANT: Generated build analysis files — excluded to prevent Tailwind v4 scanning them on dev startup
 stats.html
 tailwind-out.css
+bundle-stats.html
