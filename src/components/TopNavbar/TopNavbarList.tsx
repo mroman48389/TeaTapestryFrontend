@@ -2,7 +2,8 @@
 import { ComponentPropsWithoutRef } from "react";
 // import { useState } from "react";
 
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { AvatarImage } from "@/components/ui/avatar";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 // import { PageID } from "@/constants/pages";
