@@ -10,7 +10,9 @@ interface TouchButtonProps {
     children: React.ReactNode;
     buttonClassName?: string;
     buttonTip?: string;
+    tabIndex?: number;
     "data-testid"?: string;
+    
 }
 
 /* 

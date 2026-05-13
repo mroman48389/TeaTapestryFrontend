@@ -85,15 +85,15 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 data-testid="tea-profile-grid"
                 className={clsx(
                     "bg-linen-white grid gap-x-2 gap-y-4 rounded-xl border px-3 pb-3",
-                    (!addNotes) && "grid-cols-[200px_1fr]",
-                    addNotes && "grid-cols-[200px_1fr_1fr]"
+                    (!addNotes) && "text-grid-col-widths-two",
+                    addNotes && "text-grid-col-widths-three"
                 )}
             >
 
                 {/* ---------------   Column headers   ---------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b py-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <div/>
                         <p className="text-grid-heading">Default</p>
                         {addNotes && <p className="text-grid-heading">My Notes</p>}
@@ -109,7 +109,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* ---------------   Alternative Names   ---------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Alternative Names</p>
                         <p className="text-grid-data">{teaProfile.alternative_names.join(", ")}</p>
                         {renderTextArea("alternative_names", "Enter alternative name(s).", {maxChars: 200})}
@@ -125,7 +125,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* ----------------   Subregions   --------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Subregion(s)</p>
                         <p className="text-grid-data">{teaProfile.subregions.join(", ")}</p>
                         {renderTextArea("subregions", "Enter the subregion the tea came from.", {maxChars: 200})}
@@ -141,7 +141,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* ---------------   Cultural Significance Source(s)   ---------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Cultural Significance Source(s)</p>
                         <p className="text-grid-data">{teaProfile.cultural_significance_source}</p>
                         {renderTextArea("cultural_significance_source", "Enter sources.")}
@@ -169,7 +169,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* ---------------   Processing   ---------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Processing</p>
                         <p className="text-grid-data">{teaProfile.processing}</p>
                         {renderTextArea("processing", "Describe how this tea was processed.")}
@@ -179,7 +179,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* ---------------   Mass-market Price Range and Median Price   ---------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Mass-market Price Range and Median Price (USD) for {getLastMonthAndYear()}</p>
                         <p className="text-grid-data">Coming soon</p>
                         {renderTextArea("pricing", "Enter pricing information.", {maxChars: 200})}
@@ -195,7 +195,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* -----------------   Dry Leaf Aroma   -------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Dry Leaf Aroma</p>
                         <p className="text-grid-data">{teaProfile.dry_leaf_aroma.join(", ")}</p>
                         {renderTextArea("dry_leaf_aroma", "Describe the scent of the dry leaves.")}
@@ -223,7 +223,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* ---------------   Liquor Body / Mouthfeel    ---------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Liquor Body / Mouthfeel</p>
                         <p className="text-grid-data">{teaProfile.liquor_body_mouthfeel.join(", ")}</p>
                         {renderTextArea("liquor_body_mouthfeel", "Describe the body of the tea and the effect it has on your mouth.")}
@@ -233,7 +233,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                 {/* -----------------   Body Effect   -------------- */}
 
                 <div className="border-wood-bowl-brown col-span-full border-b pb-3">
-                    <div className="grid grid-cols-[200px_1fr_1fr] gap-x-2">
+                    <div className="text-grid-col-widths-three grid gap-x-2">
                         <p className="text-grid-heading">Body Effect</p>
                         <p className="text-grid-data">{teaProfile.body_effect.join(", ")}</p>
                         {renderTextArea("body_effect", "Describe any effects the tea has on your body as a whole.")}

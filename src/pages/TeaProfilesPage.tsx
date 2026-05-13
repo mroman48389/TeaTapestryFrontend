@@ -196,26 +196,30 @@ export default function TeaProfilesPage() {
     }, [aromaMatchingMode, focusedAromaId, updateTargetTeaProfiles]);
 
     useEffect(() => {
-        /* The aroma combobox is only used in mobile mode (when the screen is sufficiently 
-           small and the user cannot effectively interact with the aroma wheel). */
-        if (!isAromaWheelInteractive) {
-            let timeoutId: number;
-
-            runWhenIdle(() => {
-                setShowAromaComboBox(true);
-            });
-
-            /* Fallback for browsers that delay or skip idle callbacks */
-            timeoutId = window.setTimeout(() => {
-                setShowAromaComboBox(true);
-            }, 150);
-
-            return () => {
-                clearTimeout(timeoutId);
-            };
+        /* If the aroma wheel is interactive, we're in desktop mode, and we should NOT show the
+           combobox. */
+        if (isAromaWheelInteractive) {
+            setShowAromaComboBox(false);
+            return;
         }
 
+        /* The aroma combobox is only used in mobile mode (when the screen is sufficiently 
+           small and the user cannot effectively interact with the aroma wheel). */
+        let timeoutId: number;
+
+        runWhenIdle(() => {
+            setShowAromaComboBox(true);
+        });
+
+        /* Fallback for browsers that delay or skip idle callbacks */
+        timeoutId = window.setTimeout(() => {
+            setShowAromaComboBox(true);
+        }, 150);
+
+        return () => clearTimeout(timeoutId);
+
     }, [isAromaWheelInteractive]);
+
 
     const handleOnAromaClick = (aroma: Aroma, category: AromaCategory) => {
         safeLog("Category: " + category.name + ". " + "Aroma: " + aroma.name + ".");

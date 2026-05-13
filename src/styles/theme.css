@@ -49,6 +49,10 @@
 
     --shadow-sidebar-fallback: 6px 0 10px -2px rgba(0,0,0,0.15); /* fallback for older browsers.*/
     --shadow-sidebar: 6px 0 10px -2px color-mix(in srgb, var(--color-sencha-green) 40%, transparent);
+
+    /* Column widths */
+    --text-grid-col-1-width: 125px;
+    --text-grid-col-fr-width: 1fr;
 }
 
 @utility shadow-sidebar-fallback {

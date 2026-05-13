@@ -8,3 +8,16 @@
 @utility text-grid-data {
     @apply text--body;
 }
+
+@utility text-grid-col-widths-two {
+    grid-template-columns:
+        var(--text-grid-col-1-width)
+        var(--text-grid-col-fr-width);
+}
+
+@utility text-grid-col-widths-three {
+    grid-template-columns:
+        var(--text-grid-col-1-width)
+        var(--text-grid-col-fr-width)
+        var(--text-grid-col-fr-width);
+}

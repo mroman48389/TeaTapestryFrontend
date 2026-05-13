@@ -4,7 +4,7 @@
 
 ## Purpose
 
-> Allows users to learn about the world of tea, explore tea via interactive pages, and share their tea journeys with others.
+> Allows users to learn about the world of tea, explore teas via interactive pages, and share their tea journeys with others.
 
 ## Stack
 
@@ -29,10 +29,12 @@
 	
 ## Testing
 
-	npx jest --coverage
+	npx jest --coverage 
 
 	This script clears Jest's cache before generating coverage.  
 	See 'docs/testing/coverage-notes.md'.
+
+	You can also use coverage.ps1 or test.ps1 via scripts\PowerShell\[script]
 
 ## Versioning
 

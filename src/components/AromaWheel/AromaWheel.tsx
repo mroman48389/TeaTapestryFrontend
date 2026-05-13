@@ -644,11 +644,14 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
             );
         });
 
+    /* tabIndex of -1 and touch-none prevent focus on the buttons so the screen will
+       not jump up after clicking them. */
     const clockwiseBtn = 
         <TouchButton
             data-testid="rotate-clockwise-btn"
-            buttonClassName="btn rectangle-btn-border tooltip px-4 py-2"
+            buttonClassName="btn rectangle-btn-border tooltip px-4 py-2 touch-none"
             buttonTip="Rotate clockwise"
+            tabIndex={-1}
             onMouseDown={() => startRotating(1)} 
             onMouseUp={stopRotating} 
             onMouseLeave={stopRotating} 
@@ -662,8 +665,9 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
     const counterclockwiseBtn = 
         <TouchButton
             data-testid="rotate-counterclockwise-btn"
-            buttonClassName="btn rectangle-btn-border tooltip ml-[5px] px-4 py-2"
+            buttonClassName="btn rectangle-btn-border tooltip ml-[5px] px-4 py-2 touch-none"
             buttonTip="Rotate counterclockwise"
+            tabIndex={-1}
             onMouseDown={() => startRotating(-1)} 
             onMouseUp={stopRotating} 
             onMouseLeave={stopRotating} 
@@ -671,7 +675,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
             onTouchEnd={stopRotating}
         >
             <span className="sr-only">Rotate counterclockwise</span>
-            <RotateLeft className="rotate-[50deg]"/>
+            <RotateLeft className="rotate-50"/>
         </TouchButton>;
 
     /* There is a lot happening in AromaWheel, so we assign it the region role and 
@@ -701,7 +705,7 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
             >
                 <g 
                     data-testid="aroma-wheel-rotation-group"
-                    className="transition-transform duration-[120ms] ease-linear"
+                    className="transition-transform duration-120 ease-linear"
                     transform={`translate(${size / 2}, ${size / 2}) rotate(${rotationDeg})`} 
                 >
                     {categorySegments}
@@ -710,11 +714,13 @@ export const AromaWheel: React.FC<AromaWheelProps> = ({
                 </g>
             </svg>
 
-            <div className="absolute bottom-2.5 left-2.5 flex gap-0">
-                {clockwiseBtn}
+            <div className="absolute bottom-2.5 left-2.5">
                 {counterclockwiseBtn}
             </div>
 
+            <div className="absolute right-2.5 bottom-2.5 flex gap-0 sm:left-20">
+                {clockwiseBtn}
+            </div>
         </div>
     );
 

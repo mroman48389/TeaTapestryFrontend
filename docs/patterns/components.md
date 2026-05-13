@@ -28,7 +28,7 @@
 >    4. do not have domain logic or custom events.
 >    5. do not have special geometry or visualization logic.
 
->Examples in Tea Tapestry are TopNavbar and NavSidebarToggle.
+> Examples in Tea Tapestry are TopNavbar and NavSidebarToggle.
 
 ## 3. Route Components
 
