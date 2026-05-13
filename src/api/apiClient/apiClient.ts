@@ -27,10 +27,10 @@ export async function apiRequest<T>(
     url: string,
     options?: RequestInit
 ): Promise<T> {
-    const base = getBaseUrl();
-    console.log("apiRequest --> base URL:", base);
-    console.log("apiRequest --> endpoint:", url);
-    console.log("apiRequest --> final URL:", base + url);
+    // const base = getBaseUrl();
+    // console.log("apiRequest --> base URL:", base);
+    // console.log("apiRequest --> endpoint:", url);
+    // console.log("apiRequest --> final URL:", base + url);
 
     const response = await fetch(getBaseUrl() + url, {
         ...options,
@@ -40,9 +40,9 @@ export async function apiRequest<T>(
         },
     });
 
-    console.log("apiRequest --> response.url:", response.url);
-    console.log("apiRequest --> response.ok:", response.ok);
-    console.log("apiRequest --> response.status:", response.status);
+    // console.log("apiRequest --> response.url:", response.url);
+    // console.log("apiRequest --> response.ok:", response.ok);
+    // console.log("apiRequest --> response.status:", response.status);
 
     let data: unknown = null;
 
