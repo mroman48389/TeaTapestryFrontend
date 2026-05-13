@@ -31,7 +31,7 @@ export default function TopNavbarList(props: TopNavbarListProps) {
 
                 <li className="mr-0">
                     <Avatar>
-                        <AvatarImage src="/user.jpg" alt="User" />
+                        {/* <AvatarImage src="/user.jpg" alt="User" /> */}
                         <AvatarFallback>
                             <AccountCircleIcon className="icon"/>
                         </AvatarFallback>
