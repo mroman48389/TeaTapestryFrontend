@@ -142,6 +142,7 @@ module.exports = {
         "!src/utils/fetcher.ts",
         "!src/utils/svg-utils.ts",
         "!src/utils/aromaWheelDataUtils.ts",
-        "!src/api/query/queryFn.ts"
+        "!src/utils/idle.ts",
+        "!src/api/query/queryFn.ts",
     ]
 };

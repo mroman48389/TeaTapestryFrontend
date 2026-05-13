@@ -48,6 +48,7 @@ import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
 import { ComboBox } from "@/components/ComboBox/ComboBox";
 import { safeLog } from "@/utils/log-utils";
+import { runWhenIdle } from "@/utils/idle";
 import { apiRequest } from "@/api/apiClient/apiClient";
 import { useVisibility } from "@/hooks/integration/useVisibility";
 
@@ -121,9 +122,7 @@ export default function TeaProfilesPage() {
         /* The wheel should appear when the browser is idle. This may never fire, but is the
            best performance-wise. Unlike the first two, it provides a chance to set our flag
             if the browser ecomes idle early at the cheapest moment for the CPU. */
-        if ((typeof window.requestIdleCallback === "function") && ("requestIdleCallback" in window)) {
-            window.requestIdleCallback(() => setShowAromaWheel(true));
-        }
+        runWhenIdle(() => setShowAromaWheel(true));
 
         return () => clearTimeout(t);
     }, []);
@@ -202,7 +201,7 @@ export default function TeaProfilesPage() {
         if (!isAromaWheelInteractive) {
             let timeoutId: number;
 
-            const idleId = requestIdleCallback(() => {
+            runWhenIdle(() => {
                 setShowAromaComboBox(true);
             });
 
@@ -212,7 +211,6 @@ export default function TeaProfilesPage() {
             }, 150);
 
             return () => {
-                cancelIdleCallback(idleId);
                 clearTimeout(timeoutId);
             };
         }

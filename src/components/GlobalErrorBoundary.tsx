@@ -28,9 +28,9 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
                     <p className="opacity-70">Try refreshing the page.</p>
 
                     {/* TEMPORARY DEBUG OUTPUT */}
-                    <pre className="text-left text-sm whitespace-pre-wrap opacity-80">
+                    {/* <pre className="text-left text-sm whitespace-pre-wrap opacity-80">
                         {String(this.state.error)}
-                    </pre>
+                    </pre> */}
                 </div>
             );
         }

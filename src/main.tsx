@@ -10,6 +10,7 @@ import './index.css';
 
 // import { fetcher } from "./utils/fetcher";
 import { safeLog } from './utils/log-utils';
+import { runWhenIdle } from "./utils/idle";
 import App from './App';
 import { GlobalErrorBoundary } from './components/GlobalErrorBoundary';
 
@@ -82,12 +83,7 @@ function loadSentry() {
 
 /* Guarantee that Sentry loads after the page paints, after hydration, when the
    browser is idle and does not block the LCP. */
-if ("requestIdleCallback" in window) {
-    requestIdleCallback(loadSentry);
-} 
-else {
-    setTimeout(loadSentry, 0);
-}
+runWhenIdle(loadSentry);
 
 const queryClient = new QueryClient({
     defaultOptions: {
