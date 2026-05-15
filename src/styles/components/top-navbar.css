@@ -1,6 +1,6 @@
 @utility top-navbar {
     /* Layout and positioning */
-    @apply fixed top-0 left-0 w-full h-nav z-[1000];
+    @apply fixed top-0 left-0 w-full h-nav z-1000;
     @apply flex justify-between;
 
     /* Color */
