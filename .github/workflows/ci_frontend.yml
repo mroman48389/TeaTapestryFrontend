@@ -3,11 +3,17 @@ name: Frontend Integration # workflow name (shows up in GitHub Actions tab)
 
 # GitHub will run this workflow on pushes and pull requests for the "main" (production) branch.
 on:
-    push:
-        branches: [main] 
-    pull_request:
-        branches: [main]
-    workflow_dispatch:
+  push:
+    branches:
+      # Staging and production deploys should be gated by CI.
+      - develop
+      - main
+  pull_request:
+    branches:
+      # Make sure feature branches get CI when they're being merged.
+      - develop
+      - main
+  workflow_dispatch:
 
 jobs:
     # Define a job, linting and testing coverage, to run on the GitHub Ubuntu virtual machine.
