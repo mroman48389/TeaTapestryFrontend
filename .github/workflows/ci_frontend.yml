@@ -1,5 +1,5 @@
-# CI/CD: GitHub Actions workflow for automated linting and other CI/CD on push/pull requests.
-name: Frontend CI/CD # workflow name (shows up in GitHub Actions tab)
+# CI: GitHub Actions workflow for automated linting and other CI on push/pull requests.
+name: Frontend Integration # workflow name (shows up in GitHub Actions tab)
 
 # GitHub will run this workflow on pushes and pull requests for the "main" (production) branch.
 on:
