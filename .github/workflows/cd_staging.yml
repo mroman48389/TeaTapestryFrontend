@@ -1,0 +1,121 @@
+# Full CD staging pipeline for Tea Tapestry Frontend. Runs when CI finishes on pushes to the 
+# develop branch only. Ensures develop branch is always healthy and performance-checked 
+# before merging to main branch. Runs the following in order:
+#     1. CI (via the separate Frontend Integration workflow in ci_frontend.yml).
+#     2. Deployment to Netlify (staging)
+#     3. Smoke tests
+#     4. Lighthouse CI
+
+name: Staging Deployment
+
+on:
+  # This pipeline runs ONLY after the Frontend Integration CI workflow finishes.
+  workflow_run:
+    workflows: ["Frontend Integration"]
+    types: [completed]
+    branches: [develop]
+
+  # Allow manual triggering.
+  workflow_dispatch:
+
+concurrency:
+  # Only allow one instance of the Staging Deployment workflow to run at a time.
+  group: staging-deployment-pipeline
+  # Cancel previous pipeline processes if there is a new CI completion event.
+  cancel-in-progress: true
+
+jobs:
+
+  # ------------------------------------------------------------
+  # 1. Deploy to Netlify staging if CI passes
+  # ------------------------------------------------------------
+
+  deploy_staging:
+
+    # Run continuous integration (linting, tests, security audits) on
+    # pushes to develop branch.
+    if: github.event.workflow_run.conclusion == 'success' 
+
+    name: Deploy to Netlify Staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        env:
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+        run: npm run build
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy to Netlify Staging
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_STAGING_SITE_ID }}
+        run: netlify deploy --prod-if-unlocked --dir=dist --site=$NETLIFY_SITE_ID
+
+  # ------------------------------------------------------------
+  # 2. Run smoke tests if staging deploy succeeds.
+  # ------------------------------------------------------------
+
+  smoke_tests:
+    name: Smoke Tests (Playwright)
+    needs: deploy_staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run smoke tests
+        run: npx playwright test
+
+  # ------------------------------------------------------------
+  # 3. Run Lighthouse CI if smoke tests succeed.
+  #
+  # Validates the actual staging app, catching CDN caching
+  # issues, Netlify build differences, environment-specific
+  # regressions, backend latency affecting TTFB, third-party
+  # script behavior in staging. The real world Lighthouse score.
+  # ------------------------------------------------------------
+
+  lighthouse:
+    name: Lighthouse CI (Staging)
+    needs: smoke_tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Lighthouse CI
+        run: npm run lhci

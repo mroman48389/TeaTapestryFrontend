@@ -1,13 +1,19 @@
-# CI/CD: GitHub Actions workflow for automated linting and other CI/CD on push/pull requests.
-name: Frontend CI/CD # workflow name (shows up in GitHub Actions tab)
+# CI: GitHub Actions workflow for automated linting and other CI on push/pull requests.
+name: Frontend Integration # workflow name (shows up in GitHub Actions tab)
 
 # GitHub will run this workflow on pushes and pull requests for the "main" (production) branch.
 on:
-    push:
-        branches: [main] 
-    pull_request:
-        branches: [main]
-    workflow_dispatch:
+  push:
+    branches:
+      # Staging and production deploys should be gated by CI.
+      - develop
+      - main
+  pull_request:
+    branches:
+      # Make sure feature branches get CI when they're being merged.
+      - develop
+      - main
+  workflow_dispatch:
 
 jobs:
     # Define a job, linting and testing coverage, to run on the GitHub Ubuntu virtual machine.
