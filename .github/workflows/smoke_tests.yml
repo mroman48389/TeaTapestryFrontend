@@ -4,6 +4,7 @@ name: Smoke Tests
 
 on:
   workflow_dispatch:
+  
   # Run this workflow if the one in cd_staging.yml completes.
   workflow_run:
     workflows: ["Staging Deployment"]
