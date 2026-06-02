@@ -34,9 +34,7 @@ jobs:
 
     # Run continuous integration (linting, tests, security audits) on
     # pushes to develop branch.
-    if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'develop'
+    if: github.event.workflow_run.conclusion == 'success' 
 
     name: Deploy to Netlify Staging
     runs-on: ubuntu-latest
