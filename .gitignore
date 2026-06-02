@@ -46,3 +46,6 @@ jest.config.js
 stats.html
 tailwind-out.css
 bundle-stats.html
+
+.lighthouseci/
+lhci_reports/

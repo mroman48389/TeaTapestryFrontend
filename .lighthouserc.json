@@ -1,14 +1,12 @@
 {
     "ci": {
         "collect": {
-            "staticDistDir": "./dist",
             "url": [
                 "https://tea-tapestry-staging.netlify.app/"
             ],
             "numberOfRuns": 3
         },
         "assert": {
-            "preset": "lighthouse:recommended",
             "assertions": {
                 "categories:performance": ["warn", { "minScore": 0.70 }],
                 "categories:accessibility": ["error", { "minScore": 0.95 }],

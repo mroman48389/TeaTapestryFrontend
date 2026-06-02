@@ -1,3 +1,5 @@
+# You can run this locally with "npx lhci collect --verbose". This will place html files
+# in .ighthouseci that you can open in a web browswer.
 name: Lighthouse CI
 
 on:
