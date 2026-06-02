@@ -1,14 +1,40 @@
-# CD that deploys Tea Tapestry Frontend to Netlify. Runs on pushes to the main branch only. Our production
-# deployment pipeline. 
+# Full CD production pipeline for Tea Tapestry Frontend. Runs when CI finishes on pushes to 
+# the main branch only. Runs the following in order:
+#     1. CI (via the separate Frontend Integration workflow in ci_frontend.yml).
+#     2. Deployment to Netlify (production)
+#     3. Lighthouse CI
+
 name: Production Deployment
 
 on:
-  push:
-    branches:
-      - main
+  # This pipeline runs ONLY after the Frontend Integration CI workflow finishes.
+  workflow_run:
+    workflows: ["Frontend Integration"]
+    types: [completed]
+
+  # Allow manual triggering.
+  workflow_dispatch:
+
+concurrency:
+  # Only allow one instance of the Production Deployment workflow to run at a time.
+  group: production-deployment-pipeline
+  # Cancel previous pipeline processes if there is a new CI completion event.
+  cancel-in-progress: true
 
 jobs:
-  deploy:
+
+  # ------------------------------------------------------------
+  # 1. Deploy to Netlify production if CI passes
+  # ------------------------------------------------------------
+
+  deploy_production:
+    # Run continuous integration (linting, tests, security audits) on
+    # pushes to main branch.
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+
+    name: Deploy to Netlify Production
     runs-on: ubuntu-latest
 
     steps:
@@ -37,3 +63,26 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_PRODUCTION_SITE_ID }}
         run: netlify deploy --prod --dir=dist --site=$NETLIFY_SITE_ID
+
+  # ------------------------------------------------------------
+  # 4. Run Lighthouse CI if smoke tests succeed.
+  # ------------------------------------------------------------
+
+  lighthouse_production:
+    name: Lighthouse CI (Production)
+    needs: deploy_production
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Lighthouse CI
+        run: npm run lhci
