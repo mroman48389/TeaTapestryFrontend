@@ -11,7 +11,7 @@ on:
   workflow_run:
     workflows: ["Frontend Integration"]
     types: [completed]
-    # branches: [main]
+    branches: [main]
 
   # Allow manual triggering.
   workflow_dispatch:
@@ -39,8 +39,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # with:
-        #   ref: ${{ github.event.workflow_run.head_sha }}
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -76,6 +76,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
