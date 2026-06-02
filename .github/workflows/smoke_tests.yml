@@ -1,0 +1,31 @@
+# This workflow validates that the staging app works, detecting
+# issues CI/CD can't.
+name: Smoke Tests
+
+on:
+  workflow_dispatch:
+  # Run this workflow if the one in cd_staging.yml completes.
+  workflow_run:
+    workflows: ["Staging Deployment"]
+    types: [completed]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run smoke tests
+        run: npx playwright test
