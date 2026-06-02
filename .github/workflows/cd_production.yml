@@ -31,9 +31,7 @@ jobs:
   deploy_production:
     # Run continuous integration (linting, tests, security audits) on
     # pushes to main branch.
-    if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main'
+    if: github.event.workflow_run.conclusion == 'success'
 
     name: Deploy to Netlify Production
     runs-on: ubuntu-latest
