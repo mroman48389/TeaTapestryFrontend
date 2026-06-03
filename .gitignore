@@ -49,3 +49,5 @@ bundle-stats.html
 
 .lighthouseci/
 lhci_reports/
+
+playwright_tests/.env
