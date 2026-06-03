@@ -2,9 +2,6 @@ import { test, expect } from '@playwright/test';
 
 /* Run via "npx playwright test" */
 
-console.log('PLAYWRIGHT FRONTEND_STAGING_URL:', process.env.FRONTEND_STAGING_URL);
-console.log('PLAYWRIGHT BACKEND_STAGING_URL:', process.env.BACKEND_STAGING_URL);
-
 test('Staging app loads.', async ({ page }) => {
     await page.goto(process.env.FRONTEND_STAGING_URL!);
 

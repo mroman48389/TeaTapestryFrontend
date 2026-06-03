@@ -119,11 +119,6 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Debug env vars
-        run: |
-          echo "FRONTEND_STAGING_URL=$FRONTEND_STAGING_URL"
-          echo "BACKEND_STAGING_URL=$BACKEND_STAGING_URL"
-
       - name: Run smoke tests
         run: npx playwright test smoke
 
@@ -168,6 +163,19 @@ jobs:
 
       - name: Run visual regression tests
         run: npx playwright test visual
+
+      # Allow us to grab artifacts after Playwright runs.
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            playwright-report/
+            test-results/
+            **/*-actual.png
+            **/*-diff.png
+            **/*-expected.png
 
   # ------------------------------------------------------------
   # 4. Run Lighthouse CI if smoke tests succeed.
