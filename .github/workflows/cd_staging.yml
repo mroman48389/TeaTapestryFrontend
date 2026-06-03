@@ -7,7 +7,7 @@
 #     4. Visual regression tests
 #     5. Lighthouse CI
 #
-# Note that the node versions used for the jobs below are intentionally different. The various
+# NOTE: The node versions used for the jobs below are intentionally different. The various
 # tests we perform are stable with Node 20 but not so much with more recent versions of Node. We
 # stay at Node 22 for the deployments since this build toolchain (Vite, Tailwind, other dependencies)
 # seem stable at this version.
