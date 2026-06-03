@@ -1,10 +1,21 @@
 # Full CD staging pipeline for Tea Tapestry Frontend. Runs when CI finishes on pushes to the 
 # develop branch only. Ensures develop branch is always healthy and performance-checked 
 # before merging to main branch. Runs the following in order:
+#
 #     1. CI (via the separate Frontend Integration workflow in ci_frontend.yml).
 #     2. Deployment to Netlify (staging)
 #     3. Smoke tests
-#     4. Lighthouse CI
+#     4. Visual regression tests
+#     5. Lighthouse CI
+#
+# NOTE: The node versions used for the jobs below are intentionally different. The various
+# tests we perform are stable with Node 20 but not so much with more recent versions of Node. We
+# stay at Node 22 for the deployments since this build toolchain (Vite, Tailwind, other dependencies)
+# seem stable at this version.
+#
+# NOTE 2: GitHub Actions will use the default branch's workflow files, so we want the default branch
+# to be "develop". This will ensure that changes to workflows happen when merging from feature branches
+# to "develop".
 
 name: Staging Deployment
 
@@ -70,12 +81,20 @@ jobs:
 
   # ------------------------------------------------------------
   # 2. Run smoke tests if staging deploy succeeds.
+  #
+  # Basic tests that make sure the deployed staging app is 
+  # running.
   # ------------------------------------------------------------
 
   smoke_tests:
     name: Smoke Tests (Playwright)
     needs: deploy_staging
     runs-on: ubuntu-latest
+    env:
+      FRONTEND_STAGING_URL: ${{ secrets.FRONTEND_STAGING_URL }}
+      BACKEND_STAGING_URL: ${{ secrets.BACKEND_STAGING_URL }}
+      # We don't want dotenvx overriding our Playwright .env variables.
+      DOTENVX_DISABLE: true
 
     steps:
       - uses: actions/checkout@v4
@@ -86,6 +105,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+
+      # Cache browsers for Playwright to speed things up.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
         run: npm ci
@@ -94,10 +120,65 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run smoke tests
-        run: npx playwright test
+        run: npx playwright test smoke
 
   # ------------------------------------------------------------
-  # 3. Run Lighthouse CI if smoke tests succeed.
+  # 3. Run visual regression tests if smoke tests succeed. 
+  #
+  # Prevents unintentional UI changes from ever making it to 
+  # production.
+  # ------------------------------------------------------------
+
+  visual_tests:
+    name: Visual Regression Tests (Playwright)
+    needs: smoke_tests
+    runs-on: ubuntu-latest
+    env:
+      FRONTEND_STAGING_URL: ${{ secrets.FRONTEND_STAGING_URL }}
+      # We don't want dotenvx overriding our Playwright .env variables.
+      DOTENVX_DISABLE: true
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Cache browsers for Playwright to speed things up.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run visual regression tests
+        run: npx playwright test visual
+
+      # Allow us to grab artifacts after Playwright runs.
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            playwright-report/
+            test-results/
+            **/*-actual.png
+            **/*-diff.png
+            **/*-expected.png
+
+  # ------------------------------------------------------------
+  # 4. Run Lighthouse CI if smoke tests succeed.
   #
   # Validates the actual staging app, catching CDN caching
   # issues, Netlify build differences, environment-specific
@@ -107,7 +188,7 @@ jobs:
 
   lighthouse:
     name: Lighthouse CI (Staging)
-    needs: smoke_tests
+    needs: visual_tests
     runs-on: ubuntu-latest
 
     steps:
@@ -119,6 +200,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm ci

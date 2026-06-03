@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-const FRONTEND_STAGING_URL = 'https://tea-tapestry-staging.netlify.app';
-const BACKEND_STAGING_URL = 'https://tea-tapestry-backend-staging.fly.dev';
+/* Run via "npx playwright test" */
 
 test('Staging app loads.', async ({ page }) => {
-    await page.goto(FRONTEND_STAGING_URL);
+    await page.goto(process.env.FRONTEND_STAGING_URL!);
 
     /* Page loads */
     await expect(page).toHaveTitle(/Tea Tapestry/i);
@@ -14,6 +13,6 @@ test('Staging app loads.', async ({ page }) => {
 });
 
 test('Backend API is reachable.', async ({ request }) => {
-    const response = await request.get(BACKEND_STAGING_URL + "/api/v1/tea_profiles");
+    const response = await request.get(process.env.BACKEND_STAGING_URL! + "/api/v1/tea_profiles");
     expect(response.ok()).toBeTruthy();
 });
