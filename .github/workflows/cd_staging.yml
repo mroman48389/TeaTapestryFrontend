@@ -1,6 +1,7 @@
 # Full CD staging pipeline for Tea Tapestry Frontend. Runs when CI finishes on pushes to the 
 # develop branch only. Ensures develop branch is always healthy and performance-checked 
 # before merging to main branch. Runs the following in order:
+#
 #     1. CI (via the separate Frontend Integration workflow in ci_frontend.yml).
 #     2. Deployment to Netlify (staging)
 #     3. Smoke tests
@@ -11,6 +12,10 @@
 # tests we perform are stable with Node 20 but not so much with more recent versions of Node. We
 # stay at Node 22 for the deployments since this build toolchain (Vite, Tailwind, other dependencies)
 # seem stable at this version.
+#
+# NOTE 2: GitHub Actions will use the default branch's workflow files, so we want the default branch
+# to be "develop". This will ensure that changes to workflows happen when merging from feature branches
+# to "develop".
 
 name: Staging Deployment
 
