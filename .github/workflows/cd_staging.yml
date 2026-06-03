@@ -114,6 +114,11 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      - name: Debug env vars
+        run: |
+          echo "FRONTEND_STAGING_URL=$FRONTEND_STAGING_URL"
+          echo "BACKEND_STAGING_URL=$BACKEND_STAGING_URL"
+
       - name: Run smoke tests
         run: npx playwright test smoke
 
