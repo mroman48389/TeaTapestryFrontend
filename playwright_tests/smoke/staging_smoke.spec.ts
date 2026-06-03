@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+/* Run via "npx playwright test" */
 
 test('Staging app loads.', async ({ page }) => {
     await page.goto(process.env.FRONTEND_STAGING_URL!);
