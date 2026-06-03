@@ -85,6 +85,9 @@ jobs:
     name: Smoke Tests (Playwright)
     needs: deploy_staging
     runs-on: ubuntu-latest
+    env:
+      FRONTEND_STAGING_URL: ${{ secrets.FRONTEND_STAGING_URL }}
+      BACKEND_STAGING_URL: ${{ secrets.BACKEND_STAGING_URL }}
 
     steps:
       - uses: actions/checkout@v4
@@ -123,6 +126,8 @@ jobs:
     name: Visual Regression Tests (Playwright)
     needs: smoke_tests
     runs-on: ubuntu-latest
+    env:
+      FRONTEND_STAGING_URL: ${{ secrets.FRONTEND_STAGING_URL }}
 
     steps:
       - uses: actions/checkout@v4
