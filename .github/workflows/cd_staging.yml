@@ -29,6 +29,9 @@ on:
   # Allow manual triggering.
   workflow_dispatch:
 
+# Prevent workflow from running at all unless the triggering branch is develop
+if: ${{ github.event.workflow_run.head_branch == 'develop' }}
+
 concurrency:
   # Only allow one instance of the Staging Deployment workflow to run at a time.
   group: staging-deployment-pipeline
