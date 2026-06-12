@@ -1,6 +1,6 @@
 @utility footer {
     /* Layout and positioning. */
-    @apply w-full h-20 flex items-center;
+    @apply w-full h-footer flex items-center;
 
     /* Text. */
     @apply bg-dark-mahogany-brown text-linen-white;

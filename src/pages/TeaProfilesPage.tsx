@@ -16,6 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { motion, circOut } from "framer-motion";
 
 import { TeaProfilesResponse } from "@/types/serverResponses";
 import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
@@ -91,8 +92,11 @@ export default function TeaProfilesPage() {
     const [aromaMatchingMode, setAromaMatchingMode] = useState<MatchingMode>(MATCHING_MODE.FLAVOR_ONLY);
     const [focusedAromaId, setFocusedAromaId] = useState<string | null>(null);
     const [selectedTeaProfile, setSelectedTeaProfile] = useState<TeaProfile | null>(null);
+    const [showCarousel, setShowCarousel] = useState(false);
 
     const carouselRef = useRef<CarouselHandle | null>(null);
+    const carouselGateRef = useRef<HTMLDivElement | null>(null);
+
 
     /* Allows us to fluidly resize the aroma wheel, which derives its internal geometry from
        props passed to it. */
@@ -101,8 +105,58 @@ export default function TeaProfilesPage() {
        carousel doesn't get cut off the screen before it needs to be. */
     const [outermostDivRef, outermostDivWidth] = useMeasure(); 
 
-    const { ref: carouselGateRef, isVisible: showCarousel } = useVisibility();
     const { ref: teaProfileGridGateRef, isVisible: showTeaProfileGrid } = useVisibility();
+
+    /* 
+        Why we don't use useVisibility hook for the carousel:
+
+        TeaProfilesPage is unusually dynamic: its layout shifts after hydration, Suspense 
+        boundaries resolve at different times, lazy components load asynchronously, and 
+        ResizeObservers adjust geometry. Because of this, the carousel wrapper may not be 
+        in its final on‑screen position when useVisibility first runs.
+
+        useVisibility is intentionally a simple, reusable, one‑shot observer that attaches 
+        on mount and disconnects after the first intersection. This design works for the 
+        vast majority of components in the app, where layout is stable at mount time and 
+        visibility can be determined immediately. We still use it for the tea profile grid 
+        for this reason.
+
+        The carousel is an exception. Its layout is not stable when the page first 
+        mounts, so the initial observer from useVisibility can attach too early and miss 
+        the moment when the carousel wrapper actually becomes visible. Once missed, the 
+        one‑shot observer never fires again.
+
+        Instead of complicating useVisibility with dependency arrays, state resets, and 
+        multi‑shot behavior (which would make the hook harder to reason about and less 
+        reusable), we keep the hook simple and add a page‑specific observer and local
+        ref here. The observer attaches when focusedAromaId changes (at a moment when the 
+        layout is stable and the carousel wrapper is definitely rendered). This ensures reliable 
+        visibility detection.
+    */
+
+    useEffect(() => {
+        setShowCarousel(false);
+
+        /* We only need to run this effect if we already have a carouselGateRef.current. */
+        if (!carouselGateRef.current) return;
+
+        /* Create a new intersection observer. */
+        const observer = new IntersectionObserver(([entry]) => {
+            
+            /* If the element enters the viewport, set isVisible to true and
+                disconnect the observer, as we no longer need it. */
+            if (entry.isIntersecting) {
+                setShowCarousel(true);
+                observer.disconnect();
+            }
+        });
+
+        /* Attach obseerver to the DOM element. */
+        observer.observe(carouselGateRef.current);
+
+        /* Stop observing and clean up when the component unmounts. */
+        return () => observer.disconnect();
+    }, [focusedAromaId]);
 
     /* Optimization - Rendering after hydration: useEffect runs after hydration (the process
        where React attaches to existing HTML / the DOM). The page will have been painted
@@ -288,6 +342,26 @@ export default function TeaProfilesPage() {
             </RadioGroup>
         </fieldset>;
 
+    /* Draw attention to the aroma wheel and make it feel like it's blooming by increasing the scale and 
+       decreasing the brightness as it fades in. It should be the star of the show. */
+    const aromaWheelVariants = {
+        hidden: {
+            opacity: 0,
+            scale: 0.96,
+            filter: "brightness(1.2)"
+        },
+        visible: {
+            opacity: 1,
+            scale: 1,
+            filter: "brightness(1)",
+            transition: {
+                delay: 0.2,      
+                duration: 0.9,   
+                ease: circOut
+            }
+        }
+    }; 
+
     /* Always show the enclosing div so useMeasure works when determining aromaWheelDivWidth, but only show 
        the wheel inside the loadable area container if we've determined we should. 
        
@@ -302,13 +376,19 @@ export default function TeaProfilesPage() {
         This defers the heavy AromaWheel work until after hydration while still 
         allowing useMeasure() to function correctly. */
     const aromaWheel = 
-        <div ref={aromaWheelDivRef} className="fade-in-component mt-5 aspect-square w-full max-w-[640px] min-w-[1px]">
+        <div 
+            ref={aromaWheelDivRef} 
+            className="fade-in-component mt-5 aspect-square w-full max-w-[640px] min-w-[1px]"
+        >
             {
-                showAromaWheel &&
-                <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
-                    {
-                        (aromaWheelDivWidth > 0) && 
-                        
+                showAromaWheel && (aromaWheelDivWidth > 0) && 
+
+                <motion.div
+                    initial="hidden"
+                    animate={"visible"}
+                    variants={aromaWheelVariants}
+                >
+                    <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="h-full w-full rounded-full"/>} >
                         <Suspense fallback={<Skeleton className="h-full w-full rounded-full"/>}>
                             <AromaWheel
                                 data={aromaWheelData}
@@ -322,8 +402,8 @@ export default function TeaProfilesPage() {
                                 onFocusedAromaIdChange={setFocusedAromaId}
                             />
                         </Suspense>
-                    }
-                </LoadableArea>
+                    </LoadableArea>
+                </motion.div>
             }
         </div>;
         
@@ -342,6 +422,22 @@ export default function TeaProfilesPage() {
             </LoadableArea>
         </div>;
 
+    const teaProfilesCarouselVariants = {
+        hidden: {
+            opacity: 0,
+            scale: 0.985
+        },
+        visible: {
+            opacity: 1,
+            scale: 1,
+            transition: {
+                delay: 0.1,      
+                duration: 0.6,   
+                ease: circOut
+            }
+        }
+    };
+
     /* flex-1 tells this content to take up the remaining horizontal space in the row its in next to the aroma wheel.
     
        w-full is needed when the screen shrinks and this content becomes part of a flex column. Without it, the
@@ -351,7 +447,10 @@ export default function TeaProfilesPage() {
        observer can attach properly. 
     */
     const teaProfilesCarousel = 
-        <div ref={carouselGateRef} className="fade-in-component w-full flex-1">
+        <div 
+            ref={carouselGateRef} 
+            className="fade-in-component w-full flex-1"
+        >
             {
                 focusedAromaId ? 
                 (
@@ -369,28 +468,33 @@ export default function TeaProfilesPage() {
                             {
                             showCarousel &&
 
-                            <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
-                                <Suspense fallback={<Skeleton className="carousel-shape"/>}>
-                                    <Carousel<TeaProfile>
-                                        key="carousel"
-                                        ref={carouselRef}
-                                        slideContent={targetTeaProfiles}
-                                        ariaLabel="Teas with this aroma"
-                                        loop
-                                        // onActiveIndexChange={(index) => {
-                                        //     console.log("Active index:", index);
-                                        // }}
-                                        onSlideClick={(tea, _index) => {
-                                            setSelectedTeaProfile(tea);
-                                            // console.log("Clicked tea:", tea, "at index", index);
-                                        }}
-                                        renderSlide={({ item, isActive }) => (
-                                            <TeaProfileCardM teaProfile={item} isActive={isActive} />
-                                        )}
-                                    />
-                                </Suspense>
-
-                            </LoadableArea>
+                            <motion.div
+                                initial="hidden"
+                                animate={"visible"}
+                                variants={teaProfilesCarouselVariants}
+                            >
+                                <LoadableArea isLoading={isLoading} error={error} skeleton={<Skeleton className="carousel-shape"/>} >
+                                    <Suspense fallback={<Skeleton className="carousel-shape"/>}>
+                                        <Carousel<TeaProfile>
+                                            key="carousel"
+                                            ref={carouselRef}
+                                            slideContent={targetTeaProfiles}
+                                            ariaLabel="Teas with this aroma"
+                                            loop
+                                            // onActiveIndexChange={(index) => {
+                                            //     console.log("Active index:", index);
+                                            // }}
+                                            onSlideClick={(tea, _index) => {
+                                                setSelectedTeaProfile(tea);
+                                                // console.log("Clicked tea:", tea, "at index", index);
+                                            }}
+                                            renderSlide={({ item, isActive }) => (
+                                                <TeaProfileCardM teaProfile={item} isActive={isActive} />
+                                            )}
+                                        />
+                                    </Suspense>
+                                </LoadableArea>
+                            </motion.div>
                         }
                         </> :
 
@@ -481,6 +585,14 @@ export default function TeaProfilesPage() {
             </div>
 
             {teaProfileGrid}
+
+            {/* <div className="h-20 w-100 text-sm text-black">
+                focusedAromaId: {String(focusedAromaId)}<br/>
+                targetTeaProfiles length: {targetTeaProfiles?.length}<br/>
+                showCarousel: {String(showCarousel)}<br/>
+                isLoading: {String(isLoading)}<br/>
+                error: {String(error)}
+            </div> */}
         </>
     );
 }

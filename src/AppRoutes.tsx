@@ -1,11 +1,10 @@
 import { Suspense, lazy } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
 import { Pages, pageIDs } from "./constants/pages";
 
 /* Optimization: Lazy load pages in routes so they're not all included in the main bundle when they
    don't need to be. We'll get a faster initial load and smoother user experience. */
-const Home = lazy(() => import("./pages/HomePage"));
 const WhatIsTeaPage = lazy(() => import("./pages/WhatIsTeaPage"));
 const WhereDoesTeaComeFromPage = lazy(() => import("./pages/WhereDoesTeaComeFromPage"));
 const GrowingProcessingPage = lazy(() => import("./pages/GrowingProcessingPage"));
@@ -22,6 +21,13 @@ const LogInPage = lazy(() => import("./pages/LogInPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 export function AppRoutes() {
+    /* Give certain pages a key tied to the current path so that the page will always freshly mount. This is
+       useful for complex pages like TeaProfilesPage, which have lots of state, lazy components, visibility
+       gates, refs, effects, observers, and logic that depends on mounting order. In this case, 
+       showCarousel's state relies on useVisibility()'s observer always firing on mount, which it was 
+       sometimes not doing. That was causing the carousel to not show sometimes. */
+    const location = useLocation();
+
     /* Wrap routes that both lazy load and fetch data with ErrorBoundary to protect the user from 
        ever seeing a blank white page. Only do this if the page is sufficiently complex, such as Tea Profiles.
        To test, in Chrome, do F12 --> Network --> Change No throttling to Offline --> Navigate to a page with
@@ -29,9 +35,11 @@ export function AppRoutes() {
     return (
         <Suspense fallback={<p>Loading...</p>}>
             <Routes>
-                <Route path="/" element={<Navigate to={Pages[pageIDs.teaProfiles].path} replace />} />
+                <Route
+                    path="/"
+                    element={<Navigate to={Pages[pageIDs.teaProfiles].path} replace />}
+                />
 
-                <Route path={Pages[pageIDs.home].path} element={<Home />} />
                 <Route path={Pages[pageIDs.whatIsTea].path} element={<WhatIsTeaPage />} />
                 <Route path={Pages[pageIDs.whereDoesTeaComeFrom].path} element={<WhereDoesTeaComeFromPage />} />
                 <Route path={Pages[pageIDs.growingAndProcessing].path} element={<GrowingProcessingPage />} />
@@ -43,7 +51,7 @@ export function AppRoutes() {
                     element={
                         <GlobalErrorBoundary>
                             <Suspense fallback={<p>Loading tea profiles...</p>}>
-                                <TeaProfilesPage />
+                                <TeaProfilesPage key={location.pathname}/>
                             </Suspense>
                         </GlobalErrorBoundary>
                     }

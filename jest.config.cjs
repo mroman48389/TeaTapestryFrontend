@@ -112,10 +112,12 @@ module.exports = {
            brittle tests that provide no real benefits. */
         "!src/pages/**", 
         "!src/App.tsx", 
+        "!src/RootLayout.tsx",
         "!src/AppRoutes.tsx",
         "!src/main.tsx",
         "!src/components/Skeleton.tsx",
         "!src/components/LoadableArea.tsx",
+        "!src/components/TransitionOverlay.tsx",
         "!src/components/GlobalErrorBoundary.tsx",
         "!src/components/Button.tsx", 
         "!src/components/Footer.tsx", 
@@ -143,6 +145,8 @@ module.exports = {
         "!src/utils/svg-utils.ts",
         "!src/utils/aromaWheelDataUtils.ts",
         "!src/utils/idle.ts",
+        "!src/utils/waitForBackend.ts",
         "!src/api/query/queryFn.ts",
+
     ]
 };

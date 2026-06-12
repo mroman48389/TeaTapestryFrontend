@@ -9,6 +9,7 @@ import { getPageIDFromPath } from "@/utils/path-utils";
 
 type NavListItemProps = {
     forceVisible? : boolean;
+    disableNavigation? : boolean;
     liClassName? : string;
     linkClassName? : string;
     pageID: PageID;
@@ -30,7 +31,7 @@ const NavListItem = React.forwardRef<HTMLLIElement, NavListItemProps>((props, re
     const selectedPageID = getPageIDFromPath(location.pathname);
 
     //const {forceVisible = false, liClassName = "", linkClassName = "", pageID, selectedPageID, onSelectPage, ...rest} = props;
-    const {forceVisible = false, liClassName = "", linkClassName = "", pageID, onClick, ...rest} = props;
+    const {forceVisible = false, disableNavigation = false, liClassName = "", linkClassName = "", pageID, onClick, ...rest} = props;
     
     const itemName = Pages[pageID].title;
     const pageLink = Pages[pageID].path;
@@ -43,23 +44,38 @@ const NavListItem = React.forwardRef<HTMLLIElement, NavListItemProps>((props, re
         }
     }, [itemName]);    
 
+    /* Note that React Router requires casting refs, so we do so on the Link. */
     return (
         <li ref={ref} data-testid="nav-list-item" className={`${liClassName} ${forceVisible ? 'list-item' : ''}`}>
 
-            {/* Note that React Router requires casting refs. */}
-            <Link 
-                ref={textRef as React.Ref<HTMLAnchorElement>} 
-                className={`btn ${linkClassName}`}
-                {...rest}
-                to={pageLink} 
-                // onClick={() => onSelectPage(pageID)} 
-                onClick={() => onClick?.()}
-            >
-                {itemName}
-            </Link>
+            { 
+                disableNavigation 
+                
+                ? 
+            
+                    <button
+                        className={`btn ${linkClassName}`}
+                        onClick={() => onClick?.()}
+                >
+                        {itemName}
+                    </button> 
+                
+                : 
+                
+                    <Link 
+                        ref={textRef as React.Ref<HTMLAnchorElement>} 
+                        className={`btn ${linkClassName}`}
+                        {...rest}
+                        to={pageLink} 
+                    // onClick={() => onSelectPage(pageID)} 
+                        onClick={() => onClick?.()}
+                >
+                        {itemName}
+                    </Link>
+            }
 
             {/* {(itemName === Pages[selectedPageID]?.title) ? <TwistedThreadsUnderline width={textWidth}/> : null} */}
-            {(itemName === Pages[selectedPageID]?.title) ? <TwistedThreadsUnderline width={textWidth}/> : null}
+            {((!disableNavigation) && (itemName === Pages[selectedPageID]?.title)) ? <TwistedThreadsUnderline width={textWidth}/> : null}
         </li>
     );
 });

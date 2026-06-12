@@ -11,8 +11,8 @@ import './index.css';
 // import { fetcher } from "./utils/fetcher";
 import { safeLog } from './utils/log-utils';
 import { runWhenIdle } from "./utils/idle";
-import App from './App';
 import { GlobalErrorBoundary } from './components/GlobalErrorBoundary';
+import { RootLayout } from './RootLayout';
 
 if (!import.meta.env.VITE_API_URL) {
     throw new Error("VITE_API_URL is missing. Check your .env files.");
@@ -82,8 +82,10 @@ function loadSentry() {
 }
 
 /* Guarantee that Sentry loads after the page paints, after hydration, when the
-   browser is idle and does not block the LCP. */
-runWhenIdle(loadSentry);
+   browser is idle and does not block the LCP. Do this only in production mode. */
+if (import.meta.env.PROD) {
+    runWhenIdle(loadSentry);
+}
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -99,10 +101,10 @@ const rootElement = document.getElementById('root');
 
 if (!rootElement) throw new Error('Root element not found');
 
-function renderApp() {
-    // createRoot(rootElement!).render(<div>Minimal test</div>);
+const root = createRoot(rootElement);
 
-    createRoot(rootElement!).render(
+function renderApp() {
+    root.render(
         /* StrictMode will cause everything to render twice but will not be in the production when built. StrictMode
         helps detect bugs and potential issues and enforces best practices. */
         <StrictMode>
@@ -114,7 +116,7 @@ function renderApp() {
                         <GlobalErrorBoundary>
                             {/* Suspense prevents blank screens and ensures lazy loaded routes load safely. */}
                             <Suspense fallback={<div>Loading...</div>}>
-                                <App/>
+                                <RootLayout/>
                             </Suspense>
                         </GlobalErrorBoundary>
                     </BrowserRouter>

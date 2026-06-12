@@ -12,7 +12,7 @@ describe("TopNavbar", () => {
 
     it("Integration test: Renders TopNavbar with and TopNavbarList.", () => {
         // renderWithRouter(<TopNavbar selectedPageID={pageIDs.about} onSelectPage={() => {}}/>);
-        renderWithRouter(<TopNavbar/>);
+        renderWithRouter(<TopNavbar onNavigate={()=>{}}/>);
         expect(screen.getByRole("list")).toBeInTheDocument();
     });
 
