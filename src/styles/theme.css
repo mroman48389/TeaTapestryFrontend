@@ -9,12 +9,14 @@
     --color-duanni-yellow: #c9a873;       /* threads, outlines */
     --color-zisha-brown: #7b5446;         /* threads, outlines */
     --color-dark-mahogany-brown: #3e241d; /* top nav bar items */   
+    --color-black-wash: #0b0f0d;          /* animations and transitions */
 
     /* Spacing */
     --spacing-nav: 5rem; /* equivalent to h-20 (20 * 0.25rem = 5rem)  */
-    --height-nav: 5rem; /* equivalent to h-20 (20 * 0.25rem = 5rem) */
+    --height-nav: 5rem; /* equivalent to h-20 (20 * 0.25rem = 5rem). Gives us h-nav class. */
     --open-nav-sidebar-width: 292px; /* "w-73" */ 
     --closed-nav-sidebar-width: 56px; /* "w-14" */
+    --height-footer: 5rem; /* equivalent to h-20 (20 * 0.25rem = 5rem). Gives us h-footer class. */
 
     /* Font families. Preloaded in index.html and defined in base.css. */
     --font-body: "Cabin", ui-sans-serif, system-ui, sans-serif;

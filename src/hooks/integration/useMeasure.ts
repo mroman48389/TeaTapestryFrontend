@@ -9,7 +9,7 @@ import { useLayoutEffect, useRef, useState } from "react";
         - ref: Attach to the element you want to measure.
         - width: The current content width of the element you attach the ref to.
 */
-export function useMeasure(): [React.RefObject<HTMLDivElement>, number] {
+export function useMeasure(): [React.RefObject<HTMLDivElement>, number, number] {
     /* Create reference container that will persist across re-renders for the lifetime of the
        element. We are expecting this ref to point to a HTMLDivElement. */
     const ref = useRef<HTMLDivElement>(null);
@@ -19,6 +19,7 @@ export function useMeasure(): [React.RefObject<HTMLDivElement>, number] {
        This is why we can't simply query the DOM and pass in the aforementioned dimensions; doing
        so would not provoke the re-renders we need for the element to resize. */
     const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
 
     /* While useEffect runs AFTER the browser paints the screen, useLayoutEffect runs BEFORE.
        We use the latter to measure before the user sees anything so we can avoid flicker. 
@@ -46,7 +47,9 @@ export function useMeasure(): [React.RefObject<HTMLDivElement>, number] {
 
         /* The element may have no width when the observer begins observing. Force the observer to 
            fire once after mount to ensure our hook returns a non-zero width. */
-        setWidth(element.getBoundingClientRect().width);
+        const rect = element.getBoundingClientRect();
+        setWidth(rect.width);
+        setWidth(rect.height);
 
         /* Otherwise, create a new ResizeObserver instance. ResizeObserver is a browser API that watches
            DOM elements and notifies you when their size changes. */
@@ -57,6 +60,7 @@ export function useMeasure(): [React.RefObject<HTMLDivElement>, number] {
             /* Set the element's new width. */
             if (entry) {
                 setWidth(entry.contentRect.width);
+                setHeight(entry.contentRect.height);
             }
         });
 
@@ -73,5 +77,5 @@ export function useMeasure(): [React.RefObject<HTMLDivElement>, number] {
         };
     }, []);
 
-    return [ref, width];
+    return [ref, width, height];
 }

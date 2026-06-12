@@ -1,24 +1,34 @@
-export function generateFixedWavePath(segmentCount: number = 20, segmentWidth: number = 15, amplitude: number = 8): string {
-    let path = `M0 10`; /* M= (M)ove to x = 0, y = 10 */
-  
-    for (let i = 0; i < segmentCount; i++) {
-        /* Starting x position */
-        const startX = i * segmentWidth;
+export function generateContinuousWavePath(width: number, amplitude: number, wavelength: number) {
+    const points = [];
+    const step = 2;
 
-        /* (C)ontrol (p)oints for Bezier curve. Control point 1 is the crest and control point 2 is the trough. */
-        const cp1X = startX + segmentWidth / 3; 
-        const cp1Y = 10 - amplitude;
-
-        const cp2X = startX + 2 * segmentWidth / 3; 
-        const cp2Y = 10 + amplitude;
-
-        /* Ending position */
-        const endX = startX + segmentWidth;
-        const endY = 10;
-  
-        /* Add cubic Bezier curve to path. C = (C)urve to. */
-        path += ` C${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`;
+    for (let x = 0; x <= width; x += step) {
+        const y = 10 + amplitude * Math.sin((2 * Math.PI * x) / wavelength);
+        points.push(`${x},${y}`);
     }
-  
-    return path;
+
+    /* Last point of the wave. */
+    const endX = width;
+    const endY = 10 + amplitude * Math.sin((2 * Math.PI * width) / wavelength);
+
+    /* Smooth transition length. Slightly longer for gentler curvature. */
+    const smooth = 10; 
+
+    /* (C)ontrol (p)oints for Bezier curve. Control point 1 is the crest and control point 2 is the trough. */
+    const cp1X = endX + smooth * 0.25;
+    const cp1Y = endY; // match tangent direction
+
+    const cp2X = endX + smooth * 0.75;
+    const cp2Y = 10; // pull toward baseline
+
+    /* Final leaf anchor point. */
+    const leafX = endX + smooth;
+    const leafY = 10;
+
+    /* M= (M)ove to x = 0, y = 10. */
+    return `
+        M0,10 
+        L${points.join(" ")}
+        C${cp1X},${cp1Y} ${cp2X},${cp2Y} ${leafX},${leafY}
+    `;
 }

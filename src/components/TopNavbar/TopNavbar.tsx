@@ -6,13 +6,19 @@ import TeaTapestryLogo from "../../assets/tea-tapestry-logo-400x150.svg";
 import TopNavbarList from './TopNavbarList';
 
 type TopNavbarProps = {
+    onNavigate: (path: string) => void;
     // selectedPageID: PageID;
     // onSelectPage : (value: PageID) => void;
 } & ComponentPropsWithoutRef<"header">;
 
 export default function TopNavbar(props: TopNavbarProps) {
     // const {selectedPageID, onSelectPage, ...rest} = props;
-    const {...rest} = props;
+    const {onNavigate, ...rest} = props;
+
+    function handleNavigate(e: React.MouseEvent<HTMLAnchorElement>) {
+        e.preventDefault();
+        onNavigate("/");
+    };
 
     /*  Teapot
 
@@ -33,9 +39,15 @@ export default function TopNavbar(props: TopNavbarProps) {
     */
     return (
         <header className="top-navbar" {...rest}>
-            <div className='ml-3 flex items-center justify-between'>
-                <img src={TeaTapestryTeapot} alt="Tea Tapestry teapot" width={50} height={50} className="h-[50px] w-[50px]"/>
-                <img src={TeaTapestryLogo} alt="Tea Tapestry logo" width={200} height={75} className="h-[75px] w-[200px]"/>
+            <div className="ml-3 flex items-center justify-between">
+                
+                <a href="/" onClick={handleNavigate}>
+                    <img src={TeaTapestryTeapot} alt="Tea Tapestry teapot" width={50} height={50} className="h-[50px] w-[50px]"/>
+                </a>
+
+                <a href="/" onClick={handleNavigate}>
+                    <img src={TeaTapestryLogo} alt="Tea Tapestry logo" width={200} height={75} className="h-[75px] w-[200px]"/>
+                </a>
             </div>
             {/* <TopNavbarList selectedPageID={selectedPageID} onSelectPage={onSelectPage}/> */}
             <TopNavbarList/>
