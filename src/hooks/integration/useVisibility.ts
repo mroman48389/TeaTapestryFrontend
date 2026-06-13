@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
 /* This hook tells us when an element is visible or almost visible on screen.
-   Useful with lazy loaded components for visibility-based gate keeping. */
+   Useful with lazy loaded components for visibility-based gate keeping. 
+   
+   NOTE: Only use this for components whose wrapper does NOT shift position
+   after the hook attaches. Otherwise, the observer may miss its one chance
+   to attach. Or more simply, this hook requires the component's wrapper
+   to be rendered in the DOM before any async content above it loads. */
 export function useVisibility(options?: IntersectionObserverInit) {
     /* Provide ref so we can observe the DOM element whose visibility we
        care about. React will put the DOM node into ref.current. */

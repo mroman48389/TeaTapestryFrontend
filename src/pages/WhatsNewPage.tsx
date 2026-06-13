@@ -1,21 +1,23 @@
 import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
-import UnderConstructionImg from "../assets/teacup mascots/construction-teacup.webp";
+import ThinkingImg from "../assets/teacup mascots/thinking-teacup.webp";
 
 export default function WhatsNewPage() {
-    const underConstructionImg = 
-        <div className="fade-in-component mt-10 flex flex-1 flex-col items-center">
-            <h2 className="title--subheading text-center">
-                {"This area is currently under construction. Please visit \"Tea profiles\" in the meantime."}
-            </h2>
-
-            <img src={UnderConstructionImg} alt="Teacup with hardhat" width={1024} height={1024} className="h-auto w-75"/>
-        </div>;
-
+  
     return (
         <>
             <HeroTitle>{Pages[pageIDs.whatsNew].title}</HeroTitle>
-            {underConstructionImg}
+            <img src={ThinkingImg} alt="Thinking teacup" width={582} height={880} className="mt-7 ml-5 h-65 w-auto"/>
+
+            <p className="text--body mt-3">
+                12 June 2026 - Version 1.1.0 
+            </p>
+
+            <ul className="text-dark-mahogany-brown list-disc pt-3 pl-10">
+                <li>
+                    Added a landing page.
+                </li>
+            </ul>
         </>
     );
 }

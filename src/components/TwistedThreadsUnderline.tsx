@@ -1,22 +1,26 @@
-import { ComponentProps } from 'react';
-import { motion }  from 'motion/react';
+import { ComponentProps } from "react";
+import { motion } from "motion/react";
 
-import { APP_COLORS } from '@/constants/app';
-import { generateFixedWavePath } from '@/utils/svg-utils';
+import { generateContinuousWavePath } from '@/utils/svg-utils';
+import { APP_COLORS } from "@/constants/app";
+
+export const LEAF_WIDTH = 22;
 
 type TwistedThreadsUnderlineProps = {
     width: number;
 } & ComponentProps<typeof motion.svg>;
 
 export default function TwistedThreadsUnderline(props: TwistedThreadsUnderlineProps) {
-    const {width, ...rest} = props;
+    const { width, ...rest } = props;
 
-    const segmentWidth = 50; /* higher number = more stretched out waves */
-    const segmentCount = Math.ceil(width / segmentWidth); // ensures full segment coverage
-    const totalPathWidth = segmentCount * segmentWidth;
-    const amplitude = 8; /* controls how tightly knit the threads are to each other */
-    const topPath = generateFixedWavePath(segmentCount, segmentWidth, amplitude);
-    const bottomPath = generateFixedWavePath(segmentCount, segmentWidth, -amplitude); // reversed amplitude
+    /* Controls the height of the waves. */
+    const amplitude = 5;
+    /* Length of one wave from y = 0, x = a to y = 0, x = b, where a and b are
+       consecutive moments where the wave crosses y = 0. */
+    const wavelength = 50; 
+
+    const topPath = generateContinuousWavePath(width, amplitude, wavelength);
+    const bottomPath = generateContinuousWavePath(width, -amplitude, wavelength);
 
     /* Generate a unique gradient ID for the SVG instance below. This prevents ID collisions when multiple 
        TwistedThreadsUnderline components are rendered on the same page. SVG gradients are referenced by ID 
@@ -28,18 +32,18 @@ export default function TwistedThreadsUnderline(props: TwistedThreadsUnderlinePr
     return (
         <div data-testid="twisted-threads-underline" className="twisted-threads-underline">
             <motion.svg
-                width={totalPathWidth}
-                height="20" 
+                width={width + LEAF_WIDTH}
+                height="20"
                 aria-hidden="true"
-                viewBox={`0 0 ${totalPathWidth} 20`}
+                viewBox={`0 0 ${width + LEAF_WIDTH} 20`}
                 initial="hidden"
-                animate={"visible"}
+                animate="visible"
                 variants={{
                     hidden: { pathLength: 0, opacity: 0 },
                     visible: { pathLength: 1, opacity: 1 }
                 }}
                 transition={{ duration: 1.5 }}
-                preserveAspectRatio="xMinYMin meet" 
+                preserveAspectRatio="xMinYMin meet"
                 {...rest}
             >
                 <defs>
@@ -49,7 +53,7 @@ export default function TwistedThreadsUnderline(props: TwistedThreadsUnderlinePr
                     </linearGradient>
                 </defs>
 
-                {/* Top thread (Duanni yellow) */}
+                {/* Top thread */}
                 <motion.path
                     d={topPath}
                     stroke={APP_COLORS.DUANNI_YELLOW}
@@ -60,7 +64,7 @@ export default function TwistedThreadsUnderline(props: TwistedThreadsUnderlinePr
                     transition={{ duration: 1.5 }}
                 />
 
-                {/* Bottom thread (Zisha brown) */}
+                {/* Bottom thread */}
                 <motion.path
                     d={bottomPath}
                     stroke={APP_COLORS.ZISHA_BROWN}
@@ -75,60 +79,57 @@ export default function TwistedThreadsUnderline(props: TwistedThreadsUnderlinePr
                 <motion.g
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.0, duration: 0.6 }}
+                    transition={{ delay: 1.0, duration: 0.7 }}
                 >
                     {/* Outer shape */}
                     <path
-                        d={
-                            `M${totalPathWidth},10 
-                            C${totalPathWidth - 12},4 ${totalPathWidth - 20},4 ${totalPathWidth - 22},10 
-                            C${totalPathWidth - 20},16 ${totalPathWidth - 12},16 ${totalPathWidth},10 
-                            Z`
-                        }
+                        d={`
+                            M${width + LEAF_WIDTH},10
+                            C${width + LEAF_WIDTH - 12},4 ${width + LEAF_WIDTH - 20},4 ${width + LEAF_WIDTH - 22},10
+                            C${width + LEAF_WIDTH - 20},16 ${width + LEAF_WIDTH - 12},16 ${width + LEAF_WIDTH},10
+                            Z
+                        `}
                         fill={`url(#${gradientId})`}
                         stroke={APP_COLORS.ZISHA_BROWN}
                         strokeWidth="1"
                     />
 
                     {/* Center vein */}
-
                     <path
-                        d={`M${totalPathWidth - 22},10 L${totalPathWidth},10`}
+                        d={`M${width + LEAF_WIDTH - 22},10 L${width + LEAF_WIDTH},10`}
                         stroke={APP_COLORS.ZISHA_BROWN}
                         strokeWidth="0.5"
                         opacity="0.6"
                     />
-                    
+
                     {/* Side veins */}
-
                     <path
-                        d={`M${totalPathWidth - 16},10 L${totalPathWidth - 14},7`}
+                        d={`M${width + LEAF_WIDTH - 16},10 L${width + LEAF_WIDTH - 14},7`}
                         stroke={APP_COLORS.ZISHA_BROWN}
                         strokeWidth="0.4"
                         opacity="0.5"
                     />
 
                     <path
-                        d={`M${totalPathWidth - 16},10 L${totalPathWidth - 14},13`}
+                        d={`M${width + LEAF_WIDTH - 16},10 L${width + LEAF_WIDTH - 14},13`}
                         stroke={APP_COLORS.ZISHA_BROWN}
                         strokeWidth="0.4"
                         opacity="0.5"
                     />
 
                     <path
-                        d={`M${totalPathWidth - 10},10 L${totalPathWidth - 8},7`}
+                        d={`M${width + LEAF_WIDTH - 10},10 L${width + LEAF_WIDTH - 8},7`}
                         stroke={APP_COLORS.ZISHA_BROWN}
                         strokeWidth="0.4"
                         opacity="0.5"
                     />
 
                     <path
-                        d={`M${totalPathWidth - 10},10 L${totalPathWidth - 8},13`}
+                        d={`M${width + LEAF_WIDTH - 10},10 L${width + LEAF_WIDTH - 8},13`}
                         stroke={APP_COLORS.ZISHA_BROWN}
                         strokeWidth="0.4"
                         opacity="0.5"
                     />
-
                 </motion.g>
             </motion.svg>
         </div>

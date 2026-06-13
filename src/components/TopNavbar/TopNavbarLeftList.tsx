@@ -17,15 +17,6 @@ export default function TopNavbarLeftList(props: TopNavbarLeftListProps) {
     return (
         <>
             <NavListItem 
-                pageID={pageIDs.home}
-                onClick={onNavClick}
-                // selectedPageID={selectedPageID}
-                // onSelectPage={onSelectPage}
-                liClassName={liClassName}
-                linkClassName={linkClassName}
-            />
-
-            <NavListItem 
                 pageID={pageIDs.about}
                 onClick={onNavClick}
                 // selectedPageID={selectedPageID}

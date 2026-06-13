@@ -112,10 +112,12 @@ module.exports = {
            brittle tests that provide no real benefits. */
         "!src/pages/**", 
         "!src/App.tsx", 
+        "!src/RootLayout.tsx",
         "!src/AppRoutes.tsx",
         "!src/main.tsx",
         "!src/components/Skeleton.tsx",
         "!src/components/LoadableArea.tsx",
+        "!src/components/TransitionOverlay.tsx",
         "!src/components/GlobalErrorBoundary.tsx",
         "!src/components/Button.tsx", 
         "!src/components/Footer.tsx", 
@@ -130,6 +132,7 @@ module.exports = {
         "!src/utils/getBaseUrl.ts",
         "!src/utils/getBaseUrl.node.ts",
         "!src/utils/test-utils.test.defunct.tsx",
+        "!src/utils/getIsVisualTest.ts",
 
         /* Ensure no test files are covered (needed since we 
            included all .ts and .tsx src files above). */
@@ -143,6 +146,8 @@ module.exports = {
         "!src/utils/svg-utils.ts",
         "!src/utils/aromaWheelDataUtils.ts",
         "!src/utils/idle.ts",
+        "!src/utils/waitForBackend.ts",
         "!src/api/query/queryFn.ts",
+
     ]
 };

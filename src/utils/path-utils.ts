@@ -7,5 +7,5 @@ export function getPageIDFromPath(path: string): PageID {
         }
     }
 
-    return pageIDs.home; // fallback
+    return pageIDs.about; // fallback
 }

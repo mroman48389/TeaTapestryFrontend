@@ -25,15 +25,6 @@ export default function AboutPage() {
         return <p>Error loading version.</p>;
     }
 
-    // const underConstructionImg = 
-    //     <div className="fade-in-component flex flex-col flex-1 items-center">
-    //         <h2 className="title--heading mb-3 text-lg sm:text-xl md:text-2xl text-center mt-5">
-    //             {"This area is currently under construction. Please visit \"Tea profiles\" in the meantime."}
-    //         </h2>
-
-    //         <img src={UnderConstructionImg} alt="Teacup with hardhat" className="h-auto w-100"/>
-    //     </div>;
-    
     return (
         <>
             <HeroTitle>{Pages[pageIDs.about].title}</HeroTitle>
@@ -83,7 +74,138 @@ export default function AboutPage() {
                 .
             </p>
 
-            {/* {underConstructionImg} */}
+            <p className="text--body mt-3">
+                The video loop on the landing page was constructed using the following free, publicly-licensed videos: 
+            </p>
+
+            <ul className="text-dark-mahogany-brown list-disc pt-3 pl-10">
+                <li>
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="http://www.videezy.com" 
+                        rel="noreferrer"
+                    >
+                        Free Broll by Videezy
+                    </a>
+
+                    .&nbsp;Artist:&nbsp;
+            
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.videezy.com/members/ohmratthpon" 
+                        rel="noreferrer"
+                    >
+                        ohmratthpon
+                    </a> 
+                    .
+                </li>
+
+                <li>
+                    Video by&nbsp;
+            
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/@jaturapond-pungtong-1762405466/" 
+                        rel="noreferrer"
+                    >
+                        Jaturapond Pungtong
+                    </a> 
+                    
+                    &nbsp;on&nbsp; 
+                    
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/video/traditional-asian-tea-roasting-process-32586150/" 
+                        rel="noreferrer"
+                    >
+                        Pexels
+                    </a>
+
+                    .
+                </li>
+
+                <li>
+                    Video by&nbsp;
+            
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/@tima-miroshnichenko/" 
+                        rel="noreferrer"
+                    >
+                        Tima Miroshnichenko
+                    </a> 
+                    
+                    &nbsp;on&nbsp; 
+                    
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/video/video-of-a-woman-tea-set-6540523/" 
+                        rel="noreferrer"
+                    >
+                        Pexels
+                    </a>
+
+                    .
+                </li>
+
+                <li>
+                    Video by&nbsp;
+            
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/@rdne/" 
+                        rel="noreferrer"
+                    >
+                        RDNE Stock project
+                    </a> 
+                    
+                    &nbsp;on&nbsp; 
+                    
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/video/traditional-tea-served-during-chinese-new-year-6691600/" 
+                        rel="noreferrer"
+                    >
+                        Pexels
+                    </a>
+
+                    .
+                </li>
+
+                <li>
+                    Video by&nbsp;
+            
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/@roman-odintsov/" 
+                        rel="noreferrer"
+                    >
+                        ROMAN ODINTSOV
+                    </a> 
+                    
+                    &nbsp;on&nbsp; 
+                    
+                    <a 
+                        className="underline" 
+                        target="_blank"
+                        href="https://www.pexels.com/video/a-person-pouring-tea-on-a-cup-8190636/" 
+                        rel="noreferrer"
+                    >
+                        Pexels
+                    </a>
+
+                    .
+                </li>
+            </ul>
         </>
     );
 }

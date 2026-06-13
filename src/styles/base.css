@@ -13,7 +13,7 @@
 /* Define our fonts and control the loading behavior. Used in conjunction with preloading in
    index.html and Tailwind font families in theme.css. These fonts should be in dist/assets.
    Only define fonts used above the fold here. */
-@font-face {
+/* @font-face {
   font-family: "Cabin";
   src: url("/assets/cabin-latin-400-normal-CexE3FJz.woff2") format("woff2");
   font-weight: 400;
@@ -27,7 +27,7 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-}
+} */
 
 @layer base {
     html, body {

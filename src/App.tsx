@@ -7,6 +7,7 @@ import { Suspense, useState, useEffect, lazy }  from "react";
 // import { fetchTeaProfiles } from "./store/teaProfilesSlice";
 // import type { AppDispatch } from "./store/store";
 import { useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import TopNavbar from './components/TopNavbar/TopNavbar';
 // import { PageID } from "./constants/pages";
@@ -24,7 +25,11 @@ const Footer = lazy(() =>
 );
 const AppRoutes = lazy(() => import("./AppRoutes").then(mod => ({ default: mod.AppRoutes })));
 
-export default function App() {
+interface AppProps {
+    onNavigate: (path: string) => void;
+}
+
+export default function App({ onNavigate }: AppProps) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [ready, setReady] = useState<boolean | "error">(false);
 
@@ -121,8 +126,15 @@ export default function App() {
         );
     }
 
-    return (
-        /*  App is one big vertical flex container that spans the entire viewport height. 
+    /*  Animation:
+
+            Fade the app in. Start App as invisible, then gradually make it fully visible after 0.45s.
+            Because of easeOut, more weight is given to the latter part of the 0.45s transition when 
+            the page becomes fully visible. This makes it feel more natural. 
+
+        Structure:
+        
+            App is one big vertical flex container that spans the entire viewport height. 
             
             Top navbar is positioned fixed to the top of the screen.
             
@@ -131,37 +143,45 @@ export default function App() {
                 main content is positioned static.
                 
             Footer is positioned static.    
-        */
-        <div className="app">
-            {/* <TopNavbar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID}/> */}
-            <TopNavbar/>
+    */
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="min-h-screen"
+        >
+            <div className="app">
+                {/* <TopNavbar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID}/> */}
+                <TopNavbar onNavigate={onNavigate}/>
 
-            {/* Nav sidebar + main content
-                
-                flex: Make it a flex container.
-                flex-1:
-                    flex-grow: 1; Allow it to grow to fill available space.
-                    flex-shrink: 1; Allow it to shrink to avoid overflow.
-                    flex-basis: 0%: Start it at 0% height, then grow based on available space. 
-            */}
-            <div className="flex min-h-screen flex-1 overflow-hidden">
-                {/* <NavSidebar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID} sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/> */}
-                <Suspense fallback={
-                    <div className={`nav-sidebar ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.Width)}`}/>
-                }>
-                    <NavSidebar sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/>
-                </Suspense>
-
-                <main className={`main ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.MarginLeft)}`}>
-                    <Suspense fallback={<p>Loading...</p>}>
-                        <AppRoutes />
+                {/* Nav sidebar + main content
+                    
+                    flex: Make it a flex container.
+                    flex-1:
+                        flex-grow: 1; Allow it to grow to fill available space.
+                        flex-shrink: 1; Allow it to shrink to avoid overflow.
+                        flex-basis: 0%: Start it at 0% height, then grow based on available space. 
+                */}
+                <div className="flex min-h-screen flex-1 overflow-hidden">
+                    {/* <NavSidebar selectedPageID={selectedPageID} onSelectPage={handleSetSelectedPageID} sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/> */}
+                    <Suspense fallback={
+                        <div className={`nav-sidebar ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.Width)}`}/>
+                    }>
+                        <NavSidebar sidebarOpen={sidebarOpen} onOpenSidebar={handleOpen}/>
                     </Suspense>
-                </main>
+
+                    <main className={`main ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.MarginLeft)}`}>
+                        <Suspense fallback={<p>Loading...</p>}>
+                            <AppRoutes />
+                        </Suspense>
+                    </main>
+                </div>
+                
+                <Suspense fallback={<div className={`footer ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.MarginLeft)}`}/>}>
+                    <Footer sidebarOpen={sidebarOpen}/>
+                </Suspense>
             </div>
-            
-            <Suspense fallback={<div className={`footer ${getSidebarWidthOrMarginLeft(sidebarOpen, SidebarSettingType.MarginLeft)}`}/>}>
-                <Footer sidebarOpen={sidebarOpen}/>
-            </Suspense>
-        </div>
+        </motion.div>
     );
 }

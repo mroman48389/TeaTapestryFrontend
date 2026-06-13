@@ -6,7 +6,7 @@ describe("getPageIDFromPath", () => {
         expect(getPageIDFromPath(Pages[pageIDs.teaProfiles].path)).toBe(pageIDs.teaProfiles);
     });
 
-    test("Unit test: Returns home for an unknown path.", () => {
-        expect(getPageIDFromPath("/does-not-exist")).toBe(pageIDs.home);
+    test("Unit test: Returns About for an unknown path.", () => {
+        expect(getPageIDFromPath("/does-not-exist")).toBe(pageIDs.about);
     });
 });
