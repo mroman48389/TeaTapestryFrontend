@@ -1,21 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-/* Run via 
-       
-       "npx playwright test". 
-       
-   If you purposefully changed the first screen the user sees upon loading, 
-   switch out to local host (commented out below), run the app, and do this 
-   before pushing changes:
-
-       npx playwright test --update-snapshots
-
-    Then change back to the staging URL and commit the updated snapshot.
-*/
-
 test('Staging app loads.', async ({ page }) => {
     await page.goto(process.env.FRONTEND_STAGING_URL!);
-    // await page.goto('http://localhost:5173');
+    //await page.goto('http://localhost:5173');
 
     /* Page loads. */
     await expect(page).toHaveTitle(/Tea Tapestry/i);
