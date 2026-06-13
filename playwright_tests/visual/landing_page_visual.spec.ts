@@ -22,7 +22,15 @@ import { test, expect } from '@playwright/test';
 
     This will generate the baseline snapshots used by CI. IMPORTANT: Changing the 
     test name will cause a different snapshot to be generated and you'll have to 
-    establish a new baseline.
+    establish a new baseline. In the Visual Regression Tests job, after Run visual
+    regression tests, you should see Upload Playwrite artifacts. Click the link in
+    there. Unzip the folder you get an find the png. Copy the png to 
+    
+        playwright_tests/visual/landing_page_visual.spec.ts-snapshots
+
+    and replace the word "actual" in the file name with "linux". Commit and push and
+    CI should now work.
+
 */
 
 test('Landing page visual regression.', async ({ page }) => {
