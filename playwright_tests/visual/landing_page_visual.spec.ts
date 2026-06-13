@@ -18,13 +18,38 @@ import { test, expect } from '@playwright/test';
     If the test passes, change the URL back to the staging URL below and do 
 
         Remove-Item Env:VITE_PLAYWRIGHT_VISUAL
-        npx playwright test visual/homepage_visual.spec.ts --update-snapshots
+        npx playwright test visual/landing_page_visual.spec.ts --update-snapshots
 
-    This will generate the baseline snapshots used by CI.
+    This will generate the baseline snapshots used by CI. IMPORTANT: Changing the 
+    test name will cause a different snapshot to be generated and you'll have to 
+    establish a new baseline.
 */
 
 test('Landing page visual regression.', async ({ page }) => {
     await page.goto(process.env.FRONTEND_STAGING_URL!);
     // await page.goto('http://localhost:5173');
+
+    /* Wait for the landing page to render enough to freeze it. */
+    await page.waitForTimeout(1500);
+
+    /* Freeze video. */
+    await page.evaluate(() => {
+        const vids = document.querySelectorAll('video');
+        vids.forEach(v => {
+            v.pause();
+            v.currentTime = 0;
+        });
+    });
+
+    /* Freeze Framer Motion / JS animations. */
+    await page.addStyleTag({
+        content: `
+            * {
+            animation: none !important;
+            transition: none !important;
+            }
+        `
+    });
+
     await expect(page).toHaveScreenshot();
 });
