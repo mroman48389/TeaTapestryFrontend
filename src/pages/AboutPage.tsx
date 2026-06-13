@@ -78,7 +78,7 @@ export default function AboutPage() {
                 The video loop on the landing page was constructed using the following free, publicly-licensed videos: 
             </p>
 
-            <ul className="list-disc pl-10 pt-3 text-dark-mahogany-brown">
+            <ul className="text-dark-mahogany-brown list-disc pt-3 pl-10">
                 <li>
                     <a 
                         className="underline" 

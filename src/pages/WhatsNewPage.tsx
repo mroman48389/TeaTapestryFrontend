@@ -13,7 +13,7 @@ export default function WhatsNewPage() {
                 12 June 2026 - Version 1.1.0 
             </p>
 
-            <ul className="list-disc pl-10 pt-3 text-dark-mahogany-brown">
+            <ul className="text-dark-mahogany-brown list-disc pt-3 pl-10">
                 <li>
                     Added a landing page.
                 </li>

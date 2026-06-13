@@ -4,7 +4,7 @@ import { motion, circOut } from "framer-motion";
 import TeaTapestryTeapot from '../assets/tea-tapestry-logo-xi-shi-teapot-200x200.svg';
 import TeaTapestryLogo from "../assets/tea-tapestry-logo-400x150.svg";
 import { Pages, pageIDs } from "@/constants/pages";
-import { IS_VISUAL_TEST } from '@/constants/app';
+import { getIsVisualTest } from "@/utils/getIsVisualTest";
 import NavListItem from '@/components/NavListItem';
 
 interface LandingPageProps {
@@ -14,6 +14,8 @@ interface LandingPageProps {
 export default function LandingPage({ onNavigate }: LandingPageProps) {
     const [videoReady, setVideoReady] = useState(false);
     const [showLoginExploreDialog, setShowLoginExploreDialog] = useState(false);
+
+    const IS_VISUAL_TEST = getIsVisualTest();
 
     const handleExploreBtnClick = () => onNavigate(Pages[pageIDs.teaProfiles].path);
 

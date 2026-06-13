@@ -16,5 +16,3 @@ export const MATCHING_MODE = {
 } as const;
 
 export type MatchingMode = typeof MATCHING_MODE[keyof typeof MATCHING_MODE];
-
-export const IS_VISUAL_TEST = import.meta.env.VITE_PLAYWRIGHT_VISUAL === 'true';
