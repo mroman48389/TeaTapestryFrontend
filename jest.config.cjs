@@ -132,6 +132,7 @@ module.exports = {
         "!src/utils/getBaseUrl.ts",
         "!src/utils/getBaseUrl.node.ts",
         "!src/utils/test-utils.test.defunct.tsx",
+        "!src/utils/getIsVisualTest.ts",
 
         /* Ensure no test files are covered (needed since we 
            included all .ts and .tsx src files above). */

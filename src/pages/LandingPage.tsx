@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, circOut } from "framer-motion";
 
 import TeaTapestryTeapot from '../assets/tea-tapestry-logo-xi-shi-teapot-200x200.svg';
 import TeaTapestryLogo from "../assets/tea-tapestry-logo-400x150.svg";
 import { Pages, pageIDs } from "@/constants/pages";
+import { getIsVisualTest } from "@/utils/getIsVisualTest";
 import NavListItem from '@/components/NavListItem';
 
 interface LandingPageProps {
@@ -13,6 +14,8 @@ interface LandingPageProps {
 export default function LandingPage({ onNavigate }: LandingPageProps) {
     const [videoReady, setVideoReady] = useState(false);
     const [showLoginExploreDialog, setShowLoginExploreDialog] = useState(false);
+
+    const IS_VISUAL_TEST = getIsVisualTest();
 
     const handleExploreBtnClick = () => onNavigate(Pages[pageIDs.teaProfiles].path);
 
@@ -181,9 +184,8 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                 >
                     <motion.div
                         variants={containerVariants}
-                        initial="hidden"
-                        // animate={videoReady ? "visible" : "hidden"}
-                        animate="visible"
+                        initial={IS_VISUAL_TEST ? false : "hidden"} 
+                        animate={IS_VISUAL_TEST ? false : "visible"}
                         className="flex flex-col items-center justify-center gap-5"
                     >
                         <motion.h1 
@@ -222,14 +224,14 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                 <motion.video
                     className="absolute inset-0 h-full w-full object-cover"
                     src="/videos/tea-tapestry-home-loop.mp4"
-                    autoPlay
+                    autoPlay={!IS_VISUAL_TEST}
+                    loop={!IS_VISUAL_TEST}
                     muted
-                    loop
                     playsInline
                     onLoadedData={() => setVideoReady(true)}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: videoReady ? 1 : 0 }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
+                    initial={IS_VISUAL_TEST ? { opacity: 1 } : { opacity: 0 }}
+                    animate={IS_VISUAL_TEST ? { opacity: 1 } : { opacity: videoReady ? 1 : 0 }}
+                    transition={IS_VISUAL_TEST ? { duration: 0 } : { duration: 1.2, ease: "easeOut" }}
                 />
 
                 {showLoginExploreDialog && (
