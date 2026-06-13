@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, circOut } from "framer-motion";
 
 import TeaTapestryTeapot from '../assets/tea-tapestry-logo-xi-shi-teapot-200x200.svg';
@@ -99,15 +99,16 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
     /* 
         Animation:
 
-            Outer motion.div: 
-                Fade the landing page in. Start it as invisible, then gradually make it fully visible after 0.45s.
-                Because of easeOut, more weight is given to the latter part of the 0.45s transition when 
-                the page becomes fully visible. This makes it feel more natural. Also note that we only show the page
-                when the video is ready to avoid seeing a flicker of background beforehand.
-        
-            Inner motion.div: 
+            motion.video: 
+                The landing page content is visible immediately to avoid blank screens. The background video
+                starts at opacity 0 and fades in once it finishes loading. The 1.2s easeOut transition gives
+                more weight to the end of the fade, making the reveal feel smooth and natural. We fade the
+                video in only after it's ready to avoid any flicker or partial-frame flashes.
+
+            motion.div: 
                 To make the the app file like a living, breathing thing, and guide the user's experience, we wrap the 
                 app title, tagline, and main entry point in a motion.div and use variants (see above).
+
 
         How the masking works in the header items:
 
@@ -119,141 +120,139 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
 
     */
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: videoReady ? 1 : 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="min-h-screen"
-        >
-            <div className="overflow-hidden] relative h-screen w-screen">
-                <header>
-                    <div className="flex flex-col items-center pt-2 pr-2 pl-2 sm:flex-row sm:justify-between">
-                        <div 
-                            className="z-1 flex items-center rounded-lg bg-white/45 px-8 py-2 backdrop-blur-sm"
-                            style={{
-                                maskImage: `
-                                    linear-gradient(to right, transparent, black 11%, black 83%, transparent), 
-                                    linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
-                                `,
-                                maskComposite: 'intersect',
-                                WebkitMaskImage: `
-                                    linear-gradient(to right, transparent, black 11%, black 83%, transparent), 
-                                    linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
-                                `,
-                                WebkitMaskComposite: 'source-in',
-                            }}
-                        >
-                            <img src={TeaTapestryTeapot} alt="Tea Tapestry teapot" width={50} height={50} className="h-[50px] w-[50px]"/>
-                            <img src={TeaTapestryLogo} alt="Tea Tapestry logo" width={200} height={75} className="h-[75px] w-[200px]"/>
-                        </div>
-
-                        <div
-                            className="z-1 flex h-10 w-30 items-center justify-center rounded-lg bg-white/45 backdrop-blur-sm"
-                            style={{
-                                maskImage: `
-                                    linear-gradient(to right, transparent, black 10%, black 83%, transparent), 
-                                    linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
-                                `,
-                                maskComposite: 'intersect',
-                                WebkitMaskImage: `
-                                    linear-gradient(to right, transparent, black 10%, black 83%, transparent), 
-                                    linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
-                                `,
-                                WebkitMaskComposite: 'source-in',
-                            }}
-                        >
-                            <ul> 
-                                <NavListItem 
-                                    forceVisible
-                                    disableNavigation
-                                    pageID={pageIDs.logIn}
-                                    liClassName={"top-navbar-list-item"}
-                                    linkClassName={"top-navbar-btn"}
-                                    onClick={handleLoginBtnClick}
-                                />
-                            </ul>
-                        </div>
-                    </div>
-                </header>
-
-                <main>
+        <div className="overflow-hidden] relative h-screen w-screen">
+            <header>
+                <div className="flex flex-col items-center pt-2 pr-2 pl-2 sm:flex-row sm:justify-between">
                     <div 
-                        className="
-                            absolute top-1/2 left-1/2 z-1 flex 
-                            w-full -translate-x-1/2
-                            -translate-y-1/2 flex-col items-center justify-center gap-20 pt-20 [@media(max-height:700px)]:top-[35%] [@media(max-height:700px)]:-translate-y-0
-                        "
+                        className="z-1 flex items-center rounded-lg bg-white/45 px-8 py-2 backdrop-blur-sm"
+                        style={{
+                            maskImage: `
+                                linear-gradient(to right, transparent, black 11%, black 83%, transparent), 
+                                linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
+                            `,
+                            maskComposite: 'intersect',
+                            WebkitMaskImage: `
+                                linear-gradient(to right, transparent, black 11%, black 83%, transparent), 
+                                linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
+                            `,
+                            WebkitMaskComposite: 'source-in',
+                        }}
                     >
-                        <motion.div
-                            variants={containerVariants}
-                            initial="hidden"
-                            animate={videoReady ? "visible" : "hidden"}
-                            className="flex flex-col items-center justify-center gap-5"
-                        >
-                            <motion.h1 
-                                variants={heroVariants} 
-                                className="text-tea-steam-green text-center font-[Georgia] text-6xl select-none [text-shadow:0_0_3px_#022e23,0_0_6px_#022e23] sm:text-8xl"
-                            >
-                                Tea Tapestry
-                            </motion.h1>
-
-                            <motion.p 
-                                variants={taglineVariants}
-                                className="text-tea-steam-green text-xl select-none [text-shadow:0_0_3px_#022e23,0_0_6px_#022e23] sm:text-2xl"
-                            >
-                                Discover the world of tea
-                            </motion.p>
-
-                            <motion.button
-                                variants={exploreVariants}
-                                className="
-                                    text-tea-steam-green
-                                    mt-10 cursor-pointer rounded-md
-                                    bg-white/20 px-9 py-3 font-sans text-2xl
-                                    shadow-[0_0_20px_rgba(255,255,255,0.35)] backdrop-blur-sm
-                                    transition
-                                    select-none [text-shadow:0_0_3px_#022e23,0_0_6px_#022e23]
-                                    hover:bg-white/40 sm:text-3xl
-                                "
-                                onClick={handleExploreBtnClick}
-                            >
-                                Explore
-                            </motion.button>
-                        </motion.div>
+                        <img src={TeaTapestryTeapot} alt="Tea Tapestry teapot" width={50} height={50} className="h-[50px] w-[50px]" data-testid="teapot-logo"/>
+                        <img src={TeaTapestryLogo} alt="Tea Tapestry logo" width={200} height={75} className="h-[75px] w-[200px]"/>
                     </div>
 
-                    <video
-                        className="absolute inset-0 h-full w-full object-cover"
-                        src="/videos/tea-tapestry-home-loop.mp4"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        onLoadedData={() => setVideoReady(true)}
-                    />
+                    <div
+                        className="z-1 flex h-10 w-30 items-center justify-center rounded-lg bg-white/45 backdrop-blur-sm"
+                        style={{
+                            maskImage: `
+                                linear-gradient(to right, transparent, black 10%, black 83%, transparent), 
+                                linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
+                            `,
+                            maskComposite: 'intersect',
+                            WebkitMaskImage: `
+                                linear-gradient(to right, transparent, black 10%, black 83%, transparent), 
+                                linear-gradient(to bottom, transparent, black 19%, black 80%, transparent)
+                            `,
+                            WebkitMaskComposite: 'source-in',
+                        }}
+                    >
+                        <ul> 
+                            <NavListItem 
+                                forceVisible
+                                disableNavigation
+                                pageID={pageIDs.logIn}
+                                liClassName={"top-navbar-list-item"}
+                                linkClassName={"top-navbar-btn"}
+                                onClick={handleLoginBtnClick}
+                            />
+                        </ul>
+                    </div>
+                </div>
+            </header>
 
-                    {showLoginExploreDialog && (
-                        <div 
-                            className="animate-fadeIn absolute inset-0 z-2 flex items-center justify-center bg-black/40 backdrop-blur-sm"
-                            role="dialog"
-                            aria-modal="true"
+            <main>
+                <div 
+                    className="
+                        absolute top-1/2 left-1/2 z-1 flex 
+                        w-full -translate-x-1/2
+                        -translate-y-1/2 flex-col items-center justify-center gap-20 pt-20 [@media(max-height:700px)]:top-[35%] [@media(max-height:700px)]:-translate-y-0
+                    "
+                >
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        // animate={videoReady ? "visible" : "hidden"}
+                        animate="visible"
+                        className="flex flex-col items-center justify-center gap-5"
+                    >
+                        <motion.h1 
+                            data-testid="landing-hero"
+                            variants={heroVariants} 
+                            className="text-tea-steam-green text-center font-[Georgia] text-6xl select-none [text-shadow:0_0_3px_#022e23,0_0_6px_#022e23] sm:text-8xl"
                         >
-                            <div className="max-w-sm rounded-xl bg-white/20 px-6 py-4 text-center text-white shadow-xl backdrop-blur-md">
-                                <p className="mb-4">
-                                    Coming soon! In the meantime, please click &quot;Explore&quot; to continue.
-                                </p>
+                            Tea Tapestry
+                        </motion.h1>
 
-                                <button
-                                    className="rounded-lg bg-white/40 px-4 py-2 text-white transition hover:bg-white/50"
-                                    onClick={() => setShowLoginExploreDialog(false)}
-                                >
-                                    OK
-                                </button>
-                            </div>
+                        <motion.p 
+                            variants={taglineVariants}
+                            className="text-tea-steam-green text-xl select-none [text-shadow:0_0_3px_#022e23,0_0_6px_#022e23] sm:text-2xl"
+                        >
+                            Discover the world of tea
+                        </motion.p>
+
+                        <motion.button
+                            variants={exploreVariants}
+                            className="
+                                text-tea-steam-green
+                                mt-10 cursor-pointer rounded-md
+                                bg-white/20 px-9 py-3 font-sans text-2xl
+                                shadow-[0_0_20px_rgba(255,255,255,0.35)] backdrop-blur-sm
+                                transition
+                                select-none [text-shadow:0_0_3px_#022e23,0_0_6px_#022e23]
+                                hover:bg-white/40 sm:text-3xl
+                            "
+                            onClick={handleExploreBtnClick}
+                        >
+                            Explore
+                        </motion.button>
+                    </motion.div>
+                </div>
+
+                <motion.video
+                    className="absolute inset-0 h-full w-full object-cover"
+                    src="/videos/tea-tapestry-home-loop.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    onLoadedData={() => setVideoReady(true)}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: videoReady ? 1 : 0 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                />
+
+                {showLoginExploreDialog && (
+                    <div 
+                        className="animate-fadeIn absolute inset-0 z-2 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                        role="dialog"
+                        aria-modal="true"
+                    >
+                        <div className="max-w-sm rounded-xl bg-white/20 px-6 py-4 text-center text-white shadow-xl backdrop-blur-md">
+                            <p className="mb-4">
+                                Coming soon! In the meantime, please click &quot;Explore&quot; to continue.
+                            </p>
+
+                            <button
+                                className="rounded-lg bg-white/40 px-4 py-2 text-white transition hover:bg-white/50"
+                                onClick={() => setShowLoginExploreDialog(false)}
+                            >
+                                OK
+                            </button>
                         </div>
-                    )}
-                </main>
-            </div>
-        </motion.div>
+                    </div>
+                )}
+            </main>
+        </div>
     );
 }
