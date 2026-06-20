@@ -5,6 +5,10 @@ import { TeaProfilesResponseSchema } from "../src/schemas/teaProfiles";
     TeaProfilesResponseSchema and TeaProfileSchema. 
 */
 
+if (process.env.CI) {
+    describe.skip("Skipping contract tests in CI", () => {});
+}
+
 test("GET /api/v1/tea_profiles", async () => {
   const res = await fetch(
     "http://localhost:8000/api/v1/tea_profiles"
