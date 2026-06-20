@@ -65,8 +65,8 @@ module.exports = {
         "<rootDir>/src/components/ui/"
     ],
 
-    /* Make sure Jest only runs tests from the src/ folder. */
-    roots: ["<rootDir>/src"], 
+    /* Make sure Jest only runs tests from designated folders. */
+    roots: ["<rootDir>/src", "<rootDir>/contract_tests"], 
     testMatch: ["**/*.test.(ts|tsx)"],
 
     /* Tell Jest to transform the d3 packages, ignoring node_modules. */
@@ -88,6 +88,7 @@ module.exports = {
     collectCoverageFrom: [ 
         /***********   Include   **********/
         "src/**/*.{ts,tsx}", 
+        "contract_tests/**",
 
         /***********   Exclude   **********/
 
