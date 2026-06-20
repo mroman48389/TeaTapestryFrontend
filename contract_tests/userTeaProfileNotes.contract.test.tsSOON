@@ -1,0 +1,4 @@
+/* 
+    Validates that /api/v1/user_tea_profile_notes returns data matching 
+    UserTeaProfileNotesSchema. 
+*/

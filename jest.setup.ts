@@ -1,7 +1,7 @@
 /* Lets us use matchers like expect(element).toBeInTheDocument() without importing them in every test files. */
 import "@testing-library/jest-dom";
-
 import { TextEncoder, TextDecoder } from 'util';
+import 'cross-fetch/polyfill';
 
 /* Jest is running in a Node environment that lacks the TextEncoder web API that React Router relies on, so we need to Polyfill
    TextEncoder in Jest. 
