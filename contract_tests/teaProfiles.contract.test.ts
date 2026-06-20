@@ -1,7 +1,4 @@
-
-if (process.env.CI) {
-    describe.skip("Skipping contract tests in CI", () => {});
-}
+const skip = !!process.env.CI;
 
 import { TeaProfilesResponseSchema } from "../src/schemas/teaProfiles";
 
@@ -10,13 +7,15 @@ import { TeaProfilesResponseSchema } from "../src/schemas/teaProfiles";
     TeaProfilesResponseSchema and TeaProfileSchema. 
 */
 
-test("GET /api/v1/tea_profiles", async () => {
-  const res = await fetch(
-    "http://localhost:8000/api/v1/tea_profiles"
-  );
-  const json = await res.json();
+(skip ? describe.skip : describe)("Contract tests", () => {
+  test("GET /api/v1/tea_profiles", async () => {
+    const res = await fetch(
+      "http://localhost:8000/api/v1/tea_profiles"
+    );
+    const json = await res.json();
 
-  const parsed = TeaProfilesResponseSchema.safeParse(json);
+    const parsed = TeaProfilesResponseSchema.safeParse(json);
 
-  expect(parsed.success).toBe(true);
+    expect(parsed.success).toBe(true);
+  });
 });
