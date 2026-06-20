@@ -1,13 +1,14 @@
+
+if (process.env.CI) {
+    describe.skip("Skipping contract tests in CI", () => {});
+}
+
 import { TeaProfilesResponseSchema } from "../src/schemas/teaProfiles";
 
 /* 
     Validates that /api/v1/tea_profiles returns data matching 
     TeaProfilesResponseSchema and TeaProfileSchema. 
 */
-
-if (process.env.CI) {
-    describe.skip("Skipping contract tests in CI", () => {});
-}
 
 test("GET /api/v1/tea_profiles", async () => {
   const res = await fetch(
