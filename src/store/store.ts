@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import selectedPageReducer from "./selectedPageSlice";
 import teaProfilesReducer from "./teaProfilesSlice";
+import authReducer from "./auth/authSlice";
 
 export const store = configureStore({
     reducer: {
         selectedPage: selectedPageReducer,
         teaProfiles: teaProfilesReducer,
+        auth: authReducer,
     },
 });
 

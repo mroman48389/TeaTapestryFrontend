@@ -1,12 +1,40 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent } from "@testing-library/react";
 
 import { TeaProfileGrid } from "./TeaProfileGrid";
-import { getSampleTeaProfile } from "@/utils/test-utils";
+import { getSampleTeaProfile, renderWithStore } from "@/utils/test-utils";
+import authReducer, { AuthState } from "@/store/auth/authSlice";
+
+/* Define the shape of the Redux store for tests. */
+export interface TestRootState {
+    auth: AuthState;
+}
+
+const loggedInState: TestRootState = {
+    auth: {
+        isLoggedIn: true,
+        user: { id: "1", email: "test@example.com" },
+        accessToken: "fake",
+    },
+};
+
+const loggedOutState: TestRootState  = {
+    auth: {
+        isLoggedIn: false,
+        user: null,
+        accessToken: null,
+    },
+};
 
 describe("TeaProfileGrid", () => {
 
     test("Unit test: Renders the TeaProfileGrid with a Default column.", () => {
-        render(<TeaProfileGrid teaProfile={getSampleTeaProfile()} />);
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: loggedOutState,
+            }
+        );
 
         /* The "Default" column heading should always exist. */
         expect(screen.getByText("Default")).toBeInTheDocument();
@@ -16,7 +44,13 @@ describe("TeaProfileGrid", () => {
     });
 
     test("Unit test: Does not render the My Notes column when addNotes is false.", () => {
-        render(<TeaProfileGrid teaProfile={getSampleTeaProfile()} />);
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: loggedOutState,
+            }
+        );
 
         /* The "My Notes" column heading should not exist. */
         expect(screen.queryByText("My Notes")).toBeNull();
@@ -25,8 +59,14 @@ describe("TeaProfileGrid", () => {
         expect(screen.queryByRole("textbox")).toBeNull();
     });
 
-    test("Integration test: Renders the My Notes column when addNotes is true.", () => {
-        render(<TeaProfileGrid teaProfile={getSampleTeaProfile()} />);
+    test("Integration test: Renders the My Notes column when addNotes is true and the user is logged in.", () => {
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: loggedInState,
+            }
+        );
 
         const checkbox = screen.getByLabelText("Add my own notes");
         fireEvent.click(checkbox);
@@ -38,7 +78,13 @@ describe("TeaProfileGrid", () => {
     });
 
     test("Unit test: Renders exactly two columns when addNotes is false.", () => {
-        render(<TeaProfileGrid teaProfile={getSampleTeaProfile()} />);
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: loggedOutState,
+            }
+        );
 
         expect(screen.getByTestId("name-label")).toBeInTheDocument();
         expect(screen.getByTestId("name-default-value")).toBeInTheDocument();
@@ -46,7 +92,13 @@ describe("TeaProfileGrid", () => {
     });
 
     test("Integration test: Renders exactly three columns when addNotes is true.", () => {
-        render(<TeaProfileGrid teaProfile={getSampleTeaProfile()} />);
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: loggedInState,
+            }
+        );
 
         fireEvent.click(screen.getByLabelText("Add my own notes"));
 
@@ -56,7 +108,13 @@ describe("TeaProfileGrid", () => {
     });
 
     test("Integration test: Updates the correct notes field when typing.", () => {
-        render(<TeaProfileGrid teaProfile={getSampleTeaProfile()} />);
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: loggedInState,
+            }
+        );
 
         fireEvent.click(screen.getByLabelText("Add my own notes"));
 
@@ -73,7 +131,13 @@ describe("TeaProfileGrid", () => {
     });
 
     test("Integration test: Preserves notes when toggling addNotes off and on.", () => {
-        render(<TeaProfileGrid teaProfile={getSampleTeaProfile()} />);
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: loggedInState,
+            }
+        );
 
         const checkbox = screen.getByLabelText("Add my own notes");
         fireEvent.click(checkbox);

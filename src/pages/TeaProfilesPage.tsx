@@ -8,8 +8,7 @@ import {
 } from "react";
 // import useSWR from "swr";
 // import useFetch from "@/hooks/integration/useFetch";
-// import { useSelector } from 'react-redux';
-// import type { RootState } from '../app/store';
+// import { useDispatch } from "react-redux";
 import { useMeasure } from "@/hooks/integration/useMeasure";
 import clsx from "clsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -18,6 +17,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { motion, circOut } from "framer-motion";
 
+// import { login, logout } from "@/store/auth/authSlice";
+// import { AppDispatch } from "@/store/store";
 import { TeaProfilesResponse } from "@/types/serverResponses";
 import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
 import { TeaProfiles, TeaProfile } from "@/schemas/teaProfiles";
@@ -52,6 +53,7 @@ import { safeLog } from "@/utils/log-utils";
 import { runWhenIdle } from "@/utils/idle";
 import { apiRequest } from "@/api/apiClient/apiClient";
 import { useVisibility } from "@/hooks/integration/useVisibility";
+// import { AppDispatch } from "@/app/store";
 
 export default function TeaProfilesPage() {
     /* Was grabbing the tea profiles directly here; now storing it in Redux. */
@@ -67,12 +69,7 @@ export default function TeaProfilesPage() {
 
     // console.log(teaProfiles);
 
-    /* UPDATE: Switched to */
-    // const teaProfiles = useSelector((state: RootState) => state.teaProfiles.data);
-    // const isLoading = useSelector((state: RootState) => state.teaProfiles.loading);
-    // const error = useSelector((state: RootState) => state.teaProfiles.error);
-
-    // throw new Error("Test crash");
+    // const dispatch = useDispatch<AppDispatch>();
 
     const { data:teaProfiles, isLoading, error } = useQuery({
         queryKey: ['teaProfiles'],
@@ -583,6 +580,15 @@ export default function TeaProfilesPage() {
                 {aromaComboBox}
                 {teaProfilesCarousel}
             </div>
+            {/* 
+            <button onClick={() => {console.log("Logged in"); dispatch(login({ id: "1", email: "test@example.com" }));}}>
+                Fake Login
+            </button>
+
+            <button onClick={() => {console.log("Logged out"); dispatch(logout());}}>
+                Logout
+            </button> */}
+
 
             {teaProfileGrid}
 
