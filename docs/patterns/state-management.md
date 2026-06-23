@@ -15,7 +15,7 @@
 
 ## 1. SWR
 
-> This is a lightweight fetching library based on a "stale-while-revalidate" pattern.
+> Server state. This is a lightweight fetching library based on a "stale-while-revalidate" pattern.
 >
 
 > Pros
@@ -38,8 +38,7 @@
 
 ## 2. Redux (with createAsyncThunk)
 
-> Advanced state management that is best for complex UI state. While it can be used for server state, React Query handles server state
-> better in every way.
+> Client state. Advanced state management that is best for complex UI state. While it can be used for server state, React Query handles server state better in every way.
 
 > Pros
 >
@@ -60,7 +59,7 @@
 
 ## 3. React Query (TanStack Query)
 
-> Advanced, powerful state management for server state with many batteries-included-type features. All server state should use this.
+> Server state. Advanced, powerful state management for server state with many batteries-included-type features. All server state should use this.
 
 > Pros
 >

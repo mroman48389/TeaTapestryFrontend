@@ -1,6 +1,8 @@
 import { ReactElement, memo, ComponentType } from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter, RouterProvider, createMemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import { configureStore, Reducer } from "@reduxjs/toolkit";
 
 import { TeaProfile } from "@/schemas/teaProfiles";
 
@@ -28,6 +30,42 @@ export function renderWithRouter(
         ...render(<RouterProvider router={router} />),
         router,
     };
+}
+
+/* Keys are slice names, values are slice reducers. */
+type ReducerMap = Record<string, Reducer>;
+
+/* Builds a test store with the provided reducer and
+   an optional preloaded state. */
+/* Builds a test store with the provided reducer map and optional preloaded state. */
+export function createTestStore({
+    reducer,
+    preloadedState,
+}: {
+    reducer: ReducerMap;
+    preloadedState?: object;
+}) {
+    return configureStore({
+        reducer,
+        preloadedState,
+    });
+}
+
+/* Provides a fresh, isolated Redux store for every test with
+   optional preloaded state. */
+export function renderWithStore(
+    ui: ReactElement,
+    {
+        reducer,
+        preloadedState,
+    }: {
+        reducer: ReducerMap;
+        preloadedState?: object;
+    }
+) {
+    const store = createTestStore({ reducer, preloadedState });
+
+    return render(<Provider store={store}>{ui}</Provider>);
 }
 
 /** 

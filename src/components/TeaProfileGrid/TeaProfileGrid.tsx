@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { TeaProfile } from "@/schemas/teaProfiles";
 import { UserTeaProfileNotes, UserTeaProfileNotesSchema } from "@/schemas/userTeaProfileNotes";
 import { getLastMonthAndYear } from "@/utils/utils";
+import { useAuth } from "@/hooks/logic/useAuth";
 
 /**
  * Props for the TeaProfileGrid component.
@@ -25,6 +26,8 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
     const [addNotes, setAddNotes] = useState(false);
     const [notes, setNotes] = useState<UserTeaProfileNotes>(UserTeaProfileNotesSchema.parse({}));
 
+    const { isLoggedIn } = useAuth();
+
     /* We make renderTextArea a generic function with a type parameter of K. "keyof UserTeaProfileNotes"
        is a union of all valid keys in UserTeaProfileNotes (i.e. : "alternative_names | subregions | ..."). 
        "K extends" forces K to be only one of those keys, so we get full type safety. This allows us to safely
@@ -41,7 +44,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
 
         return (
             <>
-                {addNotes ? 
+                {(isLoggedIn && addNotes) ? 
                     <div className="flex flex-col gap-1">
                         <Textarea
                             data-testid={`textarea-${String(userTeaProfileNotesField)}`}
@@ -70,23 +73,34 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
        a grid as well with one row and 2 or 3 columns. */
     return (
         <>
-            <div className="my-3 flex items-center space-x-2">
-                <Checkbox id="add-my-own-notes" className="text--body" checked={addNotes} onCheckedChange={checked => setAddNotes(checked === true)}/>
+            {
+                isLoggedIn ? 
+            
+                    <div className="my-3 flex items-center space-x-2">
+                        <Checkbox 
+                            id="add-my-own-notes" 
+                            className="text--body" 
+                            checked={addNotes} 
+                            onCheckedChange={checked => setAddNotes(checked === true)}
+                />
 
-                <label
-                    htmlFor="add-my-own-notes"
-                    className="text--body"
+                        <label
+                            htmlFor="add-my-own-notes"
+                            className="text--body"
                 >
-                    Add my own notes
-                </label>
-            </div>
+                            Add my own notes
+                        </label>
+                    </div> : 
+
+                null
+            }
 
             <div
                 data-testid="tea-profile-grid"
                 className={clsx(
                     "bg-linen-white grid gap-x-2 gap-y-4 rounded-xl border px-3 pb-3",
                     (!addNotes) && "text-grid-col-widths-two",
-                    addNotes && "text-grid-col-widths-three"
+                    isLoggedIn && addNotes && "text-grid-col-widths-three"
                 )}
             >
 
@@ -96,7 +110,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
                     <div className="text-grid-col-widths-three grid gap-x-2">
                         <div/>
                         <p className="text-grid-heading">Default</p>
-                        {addNotes && <p className="text-grid-heading">My Notes</p>}
+                        {isLoggedIn && addNotes && <p className="text-grid-heading">My Notes</p>}
                     </div>
                 </div>
 
@@ -104,7 +118,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
 
                 <p data-testid="name-label" className="text-grid-heading">Name</p>
                 <p data-testid="name-default-value"className="text-grid-data">{teaProfile.name}</p>
-                {addNotes && <p data-testid="name-my-notes-value" className="text-grid-data">-</p>}
+                {isLoggedIn && addNotes && <p data-testid="name-my-notes-value" className="text-grid-data">-</p>}
 
                 {/* ---------------   Alternative Names   ---------------- */}
 
@@ -120,7 +134,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
 
                 <p className="text-grid-heading">Origin</p>
                 <p className="text-grid-data">{teaProfile.country_of_origin}</p>
-                {addNotes && <p className="text-grid-data">-</p>}
+                {isLoggedIn && addNotes && <p className="text-grid-data">-</p>}
 
                 {/* ----------------   Subregions   --------------- */}
 
@@ -152,7 +166,7 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
 
                 <p className="text-grid-heading">Type</p>
                 <p className="text-grid-data">{teaProfile.tea_type}</p>
-                {addNotes && <p className="text-grid-data">-</p>}
+                {isLoggedIn && addNotes && <p className="text-grid-data">-</p>}
 
                 {/* ---------------   Oxidation Level   ---------------- */}
 
