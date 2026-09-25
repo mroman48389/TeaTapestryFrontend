@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
+import { UserResponseSchema } from "@/schemas/auth/user";
 
 /* This file defines the API response shapes for Tea Tapestry. It's focus is 
    what the server returns. This file can use schema files such as teaProfiles.ts, 
@@ -10,3 +11,4 @@ export interface VersionResponse {
 };
 
 export type TeaProfilesResponse = z.infer<typeof TeaProfilesResponseSchema>;
+export type UserResponse = z.infer<typeof UserResponseSchema>;

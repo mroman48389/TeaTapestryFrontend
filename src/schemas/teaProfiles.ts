@@ -7,7 +7,7 @@ import { z } from "zod";
    inside loops, handlers, components. 
    
    Use .nullable().transform(val => val ?? []), on optional arrays to avoid needing to check that they
-   are not null everywhere. */
+   are not null everywhere. Matches TeaProfileSchema from the backend. */
 export const TeaProfileSchema = z.object({
     id: z.number(),
     name: z.string(),

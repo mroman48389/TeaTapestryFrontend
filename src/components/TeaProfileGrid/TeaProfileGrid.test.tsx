@@ -12,16 +12,25 @@ export interface TestRootState {
 const loggedInState: TestRootState = {
     auth: {
         isLoggedIn: true,
-        user: { id: "1", email: "test@example.com" },
-        accessToken: "fake",
+        isInitializing: false,
+        user: { 
+            id: "1", 
+            email: "test@example.com",
+            display_name: "Test User",
+            created_at: "2026-01-01T00:00:00Z"
+        },
+        error: ""
+        // accessToken: "fake",
     },
 };
 
 const loggedOutState: TestRootState  = {
     auth: {
         isLoggedIn: false,
+        isInitializing: false,
         user: null,
-        accessToken: null,
+        error: ""
+        // accessToken: null,
     },
 };
 
@@ -153,6 +162,28 @@ describe("TeaProfileGrid", () => {
 
         const textareaAgain = screen.getByPlaceholderText("Enter alternative name(s).");
         expect(textareaAgain).toHaveValue("Saved text");
+    });
+
+    test("Unit test: Prevents notes interaction while session initial check is pending.", () => {
+        const initializingState: TestRootState = {
+            auth: {
+                isLoggedIn: false,
+                isInitializing: true,
+                user: null,
+                error: ""
+            },
+        };
+
+        renderWithStore(
+            <TeaProfileGrid teaProfile={getSampleTeaProfile()} />,
+            {
+                reducer: { auth: authReducer },
+                preloadedState: initializingState,
+            }
+        );
+
+        /* Confirm My Notes section cannot be opened while checking session. */
+        expect(screen.queryByLabelText("Add my own notes")).toBeNull();
     });
 
 });

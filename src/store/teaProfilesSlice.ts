@@ -26,7 +26,7 @@ export const fetchTeaProfiles = createAsyncThunk<
             if (!parsed.success) {
                 return thunkAPI.rejectWithValue({
                     type: "ClientValidationError",
-                    message: "Invalid tea_profiles response format",
+                    message: "Invalid tea_profiles response format.",
                     details: parsed.error.format(),
                     request_id: "client",
                     timestamp: new Date().toISOString(),

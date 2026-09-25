@@ -15,7 +15,7 @@
 >
 >    1. Not needed on first paint.
 >    2. Intensive.
->    3. Below the fold (visible to the user immediately on load).
+>    3. Below the fold (not visible to the user immediately on load).
 >    4. Not required for the user to see something meaningful immediately. As long as there is 
 >       something else on the screen for the user to gain something immediately, complex
 >       components that appear above the fold can still be good candidates for lazy loading (such

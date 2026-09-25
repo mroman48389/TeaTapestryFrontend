@@ -106,7 +106,7 @@ const root = createRoot(rootElement);
 function renderApp() {
     root.render(
         /* StrictMode will cause everything to render twice but will not be in the production when built. StrictMode
-        helps detect bugs and potential issues and enforces best practices. */
+           helps detect bugs and potential issues and enforces best practices. */
         <StrictMode>
             {/* Make variables in store available to entire app. */}
             <Provider store={store}>

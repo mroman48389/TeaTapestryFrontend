@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import { TransitionOverlay } from "./components/TransitionOverlay";
 import LandingPage from "./pages/LandingPage";
 import App from "./App";
+import { useAuth } from "@/hooks/logic/useAuth";
 
 /* Had to move content out of main.tsx into a React component in order to use hooks. */
 export function RootLayout() {
@@ -10,6 +11,13 @@ export function RootLayout() {
     /* Set up reference to call in the function below, since hooks can only be called at
        the top level of React components. */
     const navigate = useNavigate();
+
+    const { checkSession } = useAuth();
+
+    /* Check the user's auth status once when the app mounts. */
+    useEffect(() => {
+        checkSession();
+    }, [checkSession]);
 
     function triggerTransition(path: string) {
         setTransitioning(true);
@@ -26,8 +34,8 @@ export function RootLayout() {
             <TransitionOverlay active={transitioning} />
 
             <Routes>
-                <Route path="/" element={<LandingPage onNavigate={triggerTransition} />} />
-                <Route path="/*" element={<App onNavigate={triggerTransition} />} />
+                <Route path = "/" element = {<LandingPage onNavigate = {triggerTransition}/>} />
+                <Route path = "/*" element = {<App onNavigate = {triggerTransition}/>} />
             </Routes>
         </>
     );
