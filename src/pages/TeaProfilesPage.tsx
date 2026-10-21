@@ -20,8 +20,8 @@ import { motion, circOut } from "framer-motion";
 // import { login, logout } from "@/store/auth/authSlice";
 // import { AppDispatch } from "@/store/store";
 import { TeaProfilesResponse } from "@/types/serverResponses";
-import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
-import { TeaProfiles, TeaProfile } from "@/schemas/teaProfiles";
+import { TeaProfilesResponseSchema } from "@/schemas/teaProfilesSchema";
+import { TeaProfiles, TeaProfile } from "@/schemas/teaProfilesSchema";
 import { TeaProfileCardM } from "@/components/TeaProfileCard";
 const TeaProfileGrid = lazy(() =>
     import("@/components/TeaProfileGrid/TeaProfileGrid").then(mod => ({

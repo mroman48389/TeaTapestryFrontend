@@ -3,22 +3,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 
 import { 
-    selectIsLoggedIn,
+    selectStatus,
     selectUser,
-    selectIsInitializing,
     selectError
 } from "@/store/auth/authSelectors";
 import { 
-    checkSession as authCheckSession, 
-    logout as authLogout 
+    checkSessionThunk as authCheckSession, 
+    logoutThunk as authLogout 
 } from "@/store/auth/authSlice";
 
 export function useAuth() {
     const dispatch = useDispatch<AppDispatch>();
 
-    const isLoggedIn = useSelector(selectIsLoggedIn);
+    const status = useSelector(selectStatus);
     const user = useSelector(selectUser);
-    const isInitializing = useSelector(selectIsInitializing);
     const error = useSelector(selectError);
 
     /* () => dispatch(...) will be new function references every time
@@ -33,9 +31,8 @@ export function useAuth() {
     }, [dispatch]);
 
     return {
-        isLoggedIn,
+        status,
         user,
-        isInitializing,
         error,
         checkSession,
         logout,

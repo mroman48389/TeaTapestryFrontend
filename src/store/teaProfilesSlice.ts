@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { apiRequest } from "@/api/apiClient/apiClient";
 import { ApiError } from "@/api/errors/errors";
 import { TeaProfilesResponse } from "@/types/serverResponses";
-import { TeaProfilesResponseSchema } from "@/schemas/teaProfiles";
+import { TeaProfilesResponseSchema } from "@/schemas/teaProfilesSchema";
 
 /* Async thunk to fetch tea profiles. The pending, fulfilled, and rejected attributes
    it auto generates (the lifecycle of async requests) are handled by extraReducers.

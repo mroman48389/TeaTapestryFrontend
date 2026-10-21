@@ -3,8 +3,9 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 
-import { TeaProfile } from "@/schemas/teaProfiles";
-import { UserTeaProfileNotes, UserTeaProfileNotesSchema } from "@/schemas/userTeaProfileNotes";
+import { TeaProfile } from "@/schemas/teaProfilesSchema";
+import { UserTeaProfileNotesSchema } from "@/schemas/userTeaProfileNotesSchema";
+import { UserTeaProfileNotes } from "@/types/serverResponses";
 import { getLastMonthAndYear } from "@/utils/utils";
 import { useAuth } from "@/hooks/logic/useAuth";
 

@@ -24,5 +24,3 @@ export const UserTeaProfileNotesSchema = z.object({
     wet_leaf_aroma: z.string().default(""),
 });
 
-/* For typing user notes throughout the app. */
-export type UserTeaProfileNotes = z.infer<typeof UserTeaProfileNotesSchema>;

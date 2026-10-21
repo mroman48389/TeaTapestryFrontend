@@ -150,5 +150,8 @@ module.exports = {
         "!src/utils/waitForBackend.ts",
         "!src/api/query/queryFn.ts",
 
+        /* Manual testing pages for quick testing. */
+        "!src/pages/AuthTestingPage.tsx",
+
     ]
 };

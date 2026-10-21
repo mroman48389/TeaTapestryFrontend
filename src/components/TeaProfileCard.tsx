@@ -1,7 +1,7 @@
 import { memo } from "react";
 import clsx from "clsx";
 
-import { TeaProfile } from "@/schemas/teaProfiles";
+import { TeaProfile } from "@/schemas/teaProfilesSchema";
 // import WashiPaperBackground from "../assets/washi-paper-background-682x1024.jpg";
 import WashiPaperBackground from "../assets/washi-paper-background-682x1024.webp";
 import TeaLeaf from "../assets/camellia-sinensis-tea-leaf-1064x682.png";

@@ -99,6 +99,16 @@ export default function NavSidebarList(props: NavSidebarListProps) {
                     pageID={pageIDs.teaTerminology}
                     liClassName={liClassName}
                 />
+
+                {
+                    import.meta.env.DEV && 
+
+                    <NavListItem 
+                        onClick = {onNavClick}
+                        pageID = {pageIDs.authTesting}
+                        liClassName = {liClassName}
+                    />
+                }
             </ul>
         </>
     );

@@ -16,6 +16,11 @@ export const pageIDs = {
     whatsNew             : 'WHATS_NEW',
     contact              : 'CONTACT',
     logIn                : 'LOG_IN',
+    signUp               : 'SIGN_UP',
+    verifyEmail          : 'VERIFY_EMAIL',
+    resetPassword        : 'RESET_PASSWORD',
+
+    authTesting          : 'AUTH_TESTING',
 
     notFound             : 'NOT_FOUND',
 } as const;
@@ -110,6 +115,26 @@ export const Pages: Record<typeof pageIDs[PageKey], PageMeta> = {
     [pageIDs.logIn]: {
         title : 'Log in',
         path  : '/log-in',
+    },
+
+    [pageIDs.signUp]: {
+        title : 'Sign up',
+        path  : '/sign-up',
+    },
+
+    [pageIDs.verifyEmail]: {
+        title : 'Verify email',
+        path  : '/verify-email',
+    },
+
+    [pageIDs.resetPassword]: {
+        title : 'Reset password',
+        path  : '/reset-password',
+    },
+
+    [pageIDs.authTesting]: {
+        title : 'Auth testing',
+        path  : '/auth-testing',
     },
 
     [pageIDs.notFound]: {

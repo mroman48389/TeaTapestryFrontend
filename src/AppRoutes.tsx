@@ -17,7 +17,11 @@ const FAQsPage = lazy(() => import("./pages/FAQsPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const WhatsNewPage = lazy(() => import("./pages/WhatsNewPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
+const SignUpPage = lazy(() => import("./pages/SignUpPage"));
 const LogInPage = lazy(() => import("./pages/LogInPage"));
+const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
+const AuthTestingPage = lazy(() => import("./pages/AuthTestingPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 export function AppRoutes() {
@@ -64,7 +68,12 @@ export function AppRoutes() {
                 <Route path={Pages[pageIDs.about].path} element={<AboutPage />} />
                 <Route path={Pages[pageIDs.whatsNew].path} element={<WhatsNewPage />} />
                 <Route path={Pages[pageIDs.contact].path} element={<ContactPage />} />
+                <Route path={Pages[pageIDs.signUp].path} element={<SignUpPage />} />
                 <Route path={Pages[pageIDs.logIn].path} element={<LogInPage />} />
+                <Route path={Pages[pageIDs.verifyEmail].path} element={<VerifyEmailPage />} />
+                <Route path={Pages[pageIDs.resetPassword].path} element={<ResetPasswordPage />} />
+
+                <Route path={Pages[pageIDs.authTesting].path} element={<AuthTestingPage />} />
 
                 <Route path={Pages[pageIDs.notFound].path} element={<NotFoundPage />} />
             </Routes>

@@ -4,7 +4,7 @@ import { MemoryRouter, RouterProvider, createMemoryRouter } from "react-router-d
 import { Provider } from "react-redux";
 import { configureStore, Reducer } from "@reduxjs/toolkit";
 
-import { TeaProfile } from "@/schemas/teaProfiles";
+import { TeaProfile } from "@/schemas/teaProfilesSchema";
 
 interface RouterOptions {
     route?: string;
