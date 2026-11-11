@@ -1,6 +1,6 @@
 import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
-import WavingHelloImg from "../assets/teacup mascots/waving-teacup-looking-straight-on.webp";
+import WavingHelloImg from "../../assets/teacup mascots/waving-teacup-looking-straight-on.webp";
 
 export default function VerifyEmailPage() {
     const wavingHelloImg = 

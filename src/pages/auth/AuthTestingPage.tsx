@@ -32,8 +32,9 @@ export default function AuthTestingPage() {
 
     const email = "a";
     const displayName = "b";
-    const original_password = "c";
-    const new_password = "d"
+    const username = "c"
+    const original_password = "d";
+    const new_password = "e"
 
     const onCheckSession = async () => {
         try {
@@ -105,7 +106,8 @@ export default function AuthTestingPage() {
             const sessionUser = await dispatch(signupThunk({
                 email: email,
                 password: original_password,
-                display_name: displayName
+                display_name: displayName,
+                username: username,
             })).unwrap();
 
             setStatusMessage(
@@ -150,7 +152,7 @@ export default function AuthTestingPage() {
             /* .unwrap() extracts the resolved UserResponse payload or throws the rejected ApiError */
             const userData = await dispatch(
                 loginThunk({
-                    email: email,
+                    identifier: email,
                     password: pw,
                 })
             ).unwrap();

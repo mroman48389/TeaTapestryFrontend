@@ -3,6 +3,7 @@ import { useNavigate, Routes, Route } from "react-router-dom";
 import { TransitionOverlay } from "./components/TransitionOverlay";
 import LandingPage from "./pages/LandingPage";
 import App from "./App";
+import { AuthRoutes } from "./AuthRoutes";
 import { useAuth } from "@/hooks/logic/useAuth";
 
 /* Had to move content out of main.tsx into a React component in order to use hooks. */
@@ -35,6 +36,7 @@ export function RootLayout() {
 
             <Routes>
                 <Route path = "/" element = {<LandingPage onNavigate = {triggerTransition}/>} />
+                <Route path = "/auth/*" element = {<AuthRoutes onNavigate = {triggerTransition}/>} />
                 <Route path = "/*" element = {<App onNavigate = {triggerTransition}/>} />
             </Routes>
         </>

@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
-import { Pages, pageIDs } from "./constants/pages";
+import { Pages, pageIDs, routeSegments } from "./constants/pages";
 
 /* Optimization: Lazy load pages in routes so they're not all included in the main bundle when they
    don't need to be. We'll get a faster initial load and smoother user experience. */
@@ -17,11 +17,6 @@ const FAQsPage = lazy(() => import("./pages/FAQsPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const WhatsNewPage = lazy(() => import("./pages/WhatsNewPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
-const SignUpPage = lazy(() => import("./pages/SignUpPage"));
-const LogInPage = lazy(() => import("./pages/LogInPage"));
-const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage"));
-const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
-const AuthTestingPage = lazy(() => import("./pages/AuthTestingPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 export function AppRoutes() {
@@ -35,23 +30,27 @@ export function AppRoutes() {
     /* Wrap routes that both lazy load and fetch data with ErrorBoundary to protect the user from 
        ever seeing a blank white page. Only do this if the page is sufficiently complex, such as Tea Profiles.
        To test, in Chrome, do F12 --> Network --> Change No throttling to Offline --> Navigate to a page with
-       the ErrorBoundary. Change to 3G if you want to be sure to see the Loading message. */
+       the ErrorBoundary. Change to 3G if you want to be sure to see the Loading message. 
+       
+       These routes are nested and will use relative paths, so be sure to pass in the route segments instead
+       of the full paths. 
+    */
     return (
         <Suspense fallback={<p>Loading...</p>}>
             <Routes>
                 <Route
                     path="/"
-                    element={<Navigate to={Pages[pageIDs.teaProfiles].path} replace />}
+                    element={<Navigate to={routeSegments.teaProfiles} replace />}
                 />
 
-                <Route path={Pages[pageIDs.whatIsTea].path} element={<WhatIsTeaPage />} />
-                <Route path={Pages[pageIDs.whereDoesTeaComeFrom].path} element={<WhereDoesTeaComeFromPage />} />
-                <Route path={Pages[pageIDs.growingAndProcessing].path} element={<GrowingProcessingPage />} />
-                <Route path={Pages[pageIDs.brewingMethods].path} element={<BrewingMethodsPage />} />
-                <Route path={Pages[pageIDs.experiencingTea].path} element={<ExperiencingTeaPage />} />
+                <Route path={routeSegments.whatIsTea} element={<WhatIsTeaPage />} />
+                <Route path={routeSegments.whereDoesTeaComeFrom} element={<WhereDoesTeaComeFromPage />} />
+                <Route path={routeSegments.growingAndProcessing} element={<GrowingProcessingPage />} />
+                <Route path={routeSegments.brewingMethods} element={<BrewingMethodsPage />} />
+                <Route path={routeSegments.experiencingTea} element={<ExperiencingTeaPage />} />
 
                 <Route
-                    path={Pages[pageIDs.teaProfiles].path}
+                    path={routeSegments.teaProfiles}
                     element={
                         <GlobalErrorBoundary>
                             <Suspense fallback={<p>Loading tea profiles...</p>}>
@@ -61,19 +60,13 @@ export function AppRoutes() {
                     }
                 />
 
-                <Route path={Pages[pageIDs.teaware].path} element={<TeawarePage />} />
-                <Route path={Pages[pageIDs.teaTerminology].path} element={<TeaTerminologyPage />} />
-                <Route path={Pages[pageIDs.FAQs].path} element={<FAQsPage />} />
+                <Route path={routeSegments.teaware} element={<TeawarePage />} />
+                <Route path={routeSegments.teaTerminology} element={<TeaTerminologyPage />} />
+                <Route path={routeSegments.FAQs} element={<FAQsPage />} />
 
-                <Route path={Pages[pageIDs.about].path} element={<AboutPage />} />
-                <Route path={Pages[pageIDs.whatsNew].path} element={<WhatsNewPage />} />
-                <Route path={Pages[pageIDs.contact].path} element={<ContactPage />} />
-                <Route path={Pages[pageIDs.signUp].path} element={<SignUpPage />} />
-                <Route path={Pages[pageIDs.logIn].path} element={<LogInPage />} />
-                <Route path={Pages[pageIDs.verifyEmail].path} element={<VerifyEmailPage />} />
-                <Route path={Pages[pageIDs.resetPassword].path} element={<ResetPasswordPage />} />
-
-                <Route path={Pages[pageIDs.authTesting].path} element={<AuthTestingPage />} />
+                <Route path={routeSegments.about} element={<AboutPage />} />
+                <Route path={routeSegments.whatsNew} element={<WhatsNewPage />} />
+                <Route path={routeSegments.contact} element={<ContactPage />} />
 
                 <Route path={Pages[pageIDs.notFound].path} element={<NotFoundPage />} />
             </Routes>

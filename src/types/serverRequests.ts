@@ -2,6 +2,7 @@ export interface SignupRequest {
     email: string;
     password: string;
     display_name: string;
+    username: string;
 }
 
 export interface VerifyEmailRequest {
@@ -9,7 +10,7 @@ export interface VerifyEmailRequest {
 }
 
 export interface LoginRequest {
-    email: string;
+    identifier: string;
     password: string;
 }
 

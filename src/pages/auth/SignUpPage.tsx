@@ -1,6 +1,6 @@
-import UnderConstructionImg from "../assets/teacup mascots/construction-teacup.webp";
+import UnderConstructionImg from "../../assets/teacup mascots/construction-teacup.webp";
 
-export default function LogInPage() {
+export default function SignUpPage() {
     const underConstructionImg = 
         <div className="fade-in-component mt-10 flex flex-1 flex-col items-center">
             <h2 className="title--subheading text-center">

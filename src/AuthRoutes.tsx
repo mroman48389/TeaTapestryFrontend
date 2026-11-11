@@ -1,0 +1,68 @@
+import { Suspense, lazy } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { GlobalErrorBoundary } from "./components/GlobalErrorBoundary";
+import { Pages, pageIDs, routeSegments } from "./constants/pages";
+
+/* Optimization: Lazy load pages in routes so they're not all included in the main bundle when they
+   don't need to be. We'll get a faster initial load and smoother user experience. */
+const SignUpPage = lazy(() => import("./pages/auth/SignUpPage"));
+const LogInPage = lazy(() => import("./pages/auth/LogInPage"));
+const VerifyEmailPage = lazy(() => import("./pages/auth/VerifyEmailPage"));
+const RequestResetPasswordPage = lazy(() => import("./pages/auth/RequestPasswordResetPage"));
+const CompletePasswordResetPage = lazy(() => import("./pages/auth/CompletePasswordResetPage"));
+const PasswordResetExpiredPage = lazy(() => import("./pages/auth/PasswordResetExpiredPage"));
+const AuthTestingPage = lazy(() => import("./pages/auth/AuthTestingPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+
+type AuthRoutesProps = {
+    onNavigate: (path: string) => void;
+};
+
+export function AuthRoutes({ onNavigate }: AuthRoutesProps) {
+    /* Give certain pages a key tied to the current path so that the page will always freshly mount. This is
+       useful for complex pages like TeaProfilesPage, which have lots of state, lazy components, visibility
+       gates, refs, effects, observers, and logic that depends on mounting order. In this case, 
+       showCarousel's state relies on useVisibility()'s observer always firing on mount, which it was 
+       sometimes not doing. That was causing the carousel to not show sometimes. */
+    // const location = useLocation();
+
+    /* Wrap routes that both lazy load and fetch data with ErrorBoundary to protect the user from 
+       ever seeing a blank white page. Only do this if the page is sufficiently complex, such as Tea Profiles.
+       To test, in Chrome, do F12 --> Network --> Change No throttling to Offline --> Navigate to a page with
+       the ErrorBoundary. Change to 3G if you want to be sure to see the Loading message.
+       
+       These routes are nested and will use relative paths, so be sure to pass in the route segments instead
+       of the full paths. 
+    */
+    return (
+        <Suspense fallback = {<p>Loading...</p>}>
+            <Routes>
+                <Route
+                    path = "/"
+                    element = {<Navigate to={routeSegments.logIn} replace />}
+                />
+
+                <Route path = {routeSegments.signUp} element={<SignUpPage />} />
+
+                <Route
+                    path = {routeSegments.logIn}
+                    element = {
+                        <GlobalErrorBoundary>
+                            <Suspense fallback={<p>Loading tea profiles...</p>}>
+                                <LogInPage key = {location.pathname} onNavigate = {onNavigate}/>
+                            </Suspense>
+                        </GlobalErrorBoundary>
+                    }
+                />
+
+                <Route path={routeSegments.verifyEmail} element={<VerifyEmailPage />} />
+                <Route path={routeSegments.requestPasswordReset} element={<RequestResetPasswordPage />} />
+                <Route path={routeSegments.completePasswordReset} element={<CompletePasswordResetPage />} />
+                <Route path={routeSegments.passwordResetExpired} element={<PasswordResetExpiredPage />} />
+                <Route path={routeSegments.authTesting} element={<AuthTestingPage />} />
+
+                <Route path={Pages[pageIDs.notFound].path} element={<NotFoundPage />} />
+            </Routes>
+        </Suspense>
+    );
+}

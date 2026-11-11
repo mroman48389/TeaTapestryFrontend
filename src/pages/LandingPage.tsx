@@ -13,15 +13,16 @@ interface LandingPageProps {
 
 export default function LandingPage({ onNavigate }: LandingPageProps) {
     const [videoReady, setVideoReady] = useState(false);
-    const [showLoginExploreDialog, setShowLoginExploreDialog] = useState(false);
+    // const [showLoginExploreDialog, setShowLoginExploreDialog] = useState(false);
 
     const IS_VISUAL_TEST = getIsVisualTest();
 
     const handleExploreBtnClick = () => onNavigate(Pages[pageIDs.teaProfiles].path);
 
-    const handleLoginBtnClick = () => {
-        setShowLoginExploreDialog(true);
-    };
+    // const handleLoginBtnClick = () => {
+    //     setShowLoginExploreDialog(true);
+    // };
+    const handleLoginBtnClick = () => onNavigate(Pages[pageIDs.logIn].path)
 
     /* The container variants object controls the animation timing of the children elements.
        It controls when things move. If we wanted equal timing for the children, we could use:
@@ -234,7 +235,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                     transition={IS_VISUAL_TEST ? { duration: 0 } : { duration: 1.2, ease: "easeOut" }}
                 />
 
-                {showLoginExploreDialog && (
+                {/* {showLoginExploreDialog && (
                     <div 
                         className="animate-fadeIn absolute inset-0 z-2 flex items-center justify-center bg-black/40 backdrop-blur-sm"
                         role="dialog"
@@ -253,7 +254,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
                             </button>
                         </div>
                     </div>
-                )}
+                )} */}
             </main>
         </div>
     );

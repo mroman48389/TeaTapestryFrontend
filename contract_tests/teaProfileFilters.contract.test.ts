@@ -1,6 +1,6 @@
 const skip = !!process.env.CI;
 
-import { TeaProfilesResponseSchema } from "../src/schemas/teaProfiles";
+import { TeaProfilesResponseSchema } from "../src/schemas/teaProfilesSchema";
 
 /* 
     Validates that /api/v1/tea_profiles returns data matching 

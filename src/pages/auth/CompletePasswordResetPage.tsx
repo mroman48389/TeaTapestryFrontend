@@ -1,8 +1,8 @@
 import { HeroTitle } from "@/components/HeroTitle";
 import { Pages, pageIDs } from "@/constants/pages";
-import WavingHelloImg from "../assets/teacup mascots/waving-teacup-looking-straight-on.webp";
+import WavingHelloImg from "../../assets/teacup mascots/waving-teacup-looking-straight-on.webp";
 
-export default function ResetPasswordPage() {
+export default function CompletePasswordResetPage() {
     const wavingHelloImg = 
         <div className="fade-in-component mt-10 flex flex-1 flex-col items-center">
             <h2 className="title--subheading text-center">
@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
 
     return (
         <>
-            <HeroTitle>{Pages[pageIDs.resetPassword].title}</HeroTitle>
+            <HeroTitle>{Pages[pageIDs.completePasswordReset].title}</HeroTitle>
             {wavingHelloImg}
         </>
     );
