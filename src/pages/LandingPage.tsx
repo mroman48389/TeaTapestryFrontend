@@ -124,7 +124,7 @@ export default function LandingPage({ onNavigate }: LandingPageProps) {
 
     */
     return (
-        <div className="overflow-hidden] relative h-screen w-screen">
+        <div className="overflow-hidden relative h-screen w-screen">
             <header>
                 <div className="flex flex-col items-center pt-2 pr-2 pl-2 sm:flex-row sm:justify-between">
                     <div 

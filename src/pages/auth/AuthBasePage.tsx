@@ -1,5 +1,4 @@
 import TeaTapestryLogo from "../../assets/tea-tapestry-logo-400x150.svg";
-import { HeroTitle } from "@/components/HeroTitle";
 
 type AuthBasePageProps = {
     title: string;
@@ -15,17 +14,19 @@ export default function AuthBasePage({
 
     function handleNavigate(e: React.MouseEvent<HTMLAnchorElement>) {
         e.preventDefault();
-        onNavigate("/log-in");
+        onNavigate("/");
     };
 
     return (
-        <div className = "bg-sencha-green w-full h-full flex flex-col items-center gap-5">
+        <div className = "bg-sencha-green overflow-hidden h-screen w-screen flex flex-col items-center gap-5 p-5">
             <a href="/" onClick={handleNavigate}>
-                <img src = {TeaTapestryLogo} alt = "Tea Tapestry logo" width = {200} height = {75} className = "h-[75px] w-[200px]"/>
+                <img src = {TeaTapestryLogo} alt = "Tea Tapestry logo" width = {300} height = {113} className = "h-[113px] w-[300px]"/>
             </a>
 
-            <div className = "bg-white w-50">
-                <HeroTitle>{title}</HeroTitle>
+            <div className = "bg-white w-full max-w-sm p-10 rounded-2xl">
+                <h1 className="title--hero ">
+                    {title}
+                </h1>
                 {children}
             </div>
         </div>

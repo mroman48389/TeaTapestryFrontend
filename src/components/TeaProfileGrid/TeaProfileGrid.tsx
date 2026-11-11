@@ -8,6 +8,7 @@ import { UserTeaProfileNotesSchema } from "@/schemas/userTeaProfileNotesSchema";
 import { UserTeaProfileNotes } from "@/types/serverResponses";
 import { getLastMonthAndYear } from "@/utils/utils";
 import { useAuth } from "@/hooks/logic/useAuth";
+import { AUTH_STATUS } from "@/constants/auth";
 
 /**
  * Props for the TeaProfileGrid component.
@@ -27,7 +28,9 @@ export function TeaProfileGrid({ teaProfile }: TeaProfileGridProps) {
     const [addNotes, setAddNotes] = useState(false);
     const [notes, setNotes] = useState<UserTeaProfileNotes>(UserTeaProfileNotesSchema.parse({}));
 
-    const { isLoggedIn } = useAuth();
+    const { status } = useAuth();
+
+    const isLoggedIn = status === AUTH_STATUS.AUTHENTICATED;
 
     /* We make renderTextArea a generic function with a type parameter of K. "keyof UserTeaProfileNotes"
        is a union of all valid keys in UserTeaProfileNotes (i.e. : "alternative_names | subregions | ..."). 
