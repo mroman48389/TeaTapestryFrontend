@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import AuthBasePage from "./AuthBasePage";
 import { Pages, pageIDs } from "../../constants/pages";
+import WavingMascotImg from "../../assets/teacup mascots/waving-teacup-looking-straight-on.webp";
 
 type LoginPageProps = {
     onNavigate: (path: string) => void;
@@ -18,9 +19,13 @@ export default function LogInPage({ onNavigate }: LoginPageProps) {
     const navigate = useNavigate();
 
     return (
-        <AuthBasePage title = "Sign in" onNavigate={onNavigate}>
+        <AuthBasePage 
+            title = "Sign in" 
+            titleRightImage={<img src={WavingMascotImg} alt="Teacup with hardhat" width={135} height={150} className="w-33.75 h-37.5"/>}
+            onNavigate={onNavigate}
+        >
 
-            <p className="text--body mt-10">
+            <p className="text--body">
                 Username or Email
             </p>
 
@@ -55,6 +60,24 @@ export default function LogInPage({ onNavigate }: LoginPageProps) {
                     {maxChars - notes[userTeaProfileNotesField].length} characters left
                 </small> */}
             </div>
+
+            <p className="text--small mt-3">
+                Forgot your password? &nbsp;
+                
+                <a 
+                    className="underline cursor-pointer" 
+                    onClick={() => navigate(Pages[pageIDs.requestPasswordReset].path)}
+                >
+                    Click here to reset it.
+                </a> 
+            </p>
+
+            <button
+                className="auth-btn mt-10"
+                onClick={()=>{}}
+            >
+                Sign in
+            </button>
 
             <p className="text--small mt-10">
                 Don't have an account? &nbsp;

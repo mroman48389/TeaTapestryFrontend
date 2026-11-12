@@ -50,3 +50,23 @@
     /* Text */
     @apply font-bold text-body text-dark-mahogany-brown;
 }
+
+@utility auth-btn {
+    /* Layout and positioning. */
+    @apply inline-block w-full h-10 rounded-3xl;
+
+    @apply cursor-pointer;
+
+    @apply bg-sencha-green;
+
+    /* Text */
+    @apply font-bold text-body text-dark-mahogany-brown;
+
+    /* Effects. Make the button darker on hover. */
+    @apply transition-colors duration-200 ease-in-out;
+
+    &:hover {
+        background-color: color-mix(in srgb, var(--color-sencha-green), black 20%);
+        color: color-mix(in srgb, var(--color-dark-mahogany-brown), black 70%);
+    }
+}
