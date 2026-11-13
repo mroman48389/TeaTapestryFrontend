@@ -53,25 +53,25 @@ const NavListItem = React.forwardRef<HTMLLIElement, NavListItemProps>((props, re
                 
                 ? 
             
-                    <button
-                        className={`btn ${linkClassName}`}
-                        onClick={() => onClick?.()}
+                <button
+                    className={`btn ${linkClassName}`}
+                    onClick={() => onClick?.()}
                 >
-                        {itemName}
-                    </button> 
-                
+                    {itemName}
+                </button> 
+            
                 : 
                 
-                    <Link 
-                        ref={textRef as React.Ref<HTMLAnchorElement>} 
-                        className={`btn ${linkClassName}`}
-                        {...rest}
-                        to={pageLink} 
-                    // onClick={() => onSelectPage(pageID)} 
-                        onClick={() => onClick?.()}
+                <Link 
+                    ref={textRef as React.Ref<HTMLAnchorElement>} 
+                    className={`btn ${linkClassName}`}
+                    {...rest}
+                    to={pageLink} 
+                // onClick={() => onSelectPage(pageID)} 
+                    onClick={() => onClick?.()}
                 >
-                        {itemName}
-                    </Link>
+                    {itemName}
+                </Link>
             }
 
             {/* {(itemName === Pages[selectedPageID]?.title) ? <TwistedThreadsUnderline width={textWidth}/> : null} */}

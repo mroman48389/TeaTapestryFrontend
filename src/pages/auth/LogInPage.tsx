@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import AuthBasePage from "./AuthBasePage";
+import { PasswordInput } from "@/components/auth/PasswordInput";
 import { Pages, pageIDs } from "../../constants/pages";
 import WavingMascotImg from "../../assets/teacup mascots/waving-teacup-looking-straight-on.webp";
 
@@ -14,10 +15,9 @@ export default function LogInPage({ onNavigate }: LoginPageProps) {
     const [usernameOrEmail, setUsernameOrEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    /* Set up reference to call in the function below, since hooks can only be called at
-       the top level of React components. */
-    const navigate = useNavigate();
-
+    /* Note that we don't need a "Keep me signed / logged in" checkbox because we set up a 
+       refresh token to expire in 7 days automatically on the backend. 
+    */
     return (
         <AuthBasePage 
             title = "Sign in" 
@@ -31,7 +31,7 @@ export default function LogInPage({ onNavigate }: LoginPageProps) {
 
             <div className="flex flex-col gap-1">
                 <Input
-                    data-testid="username-email-textarea"
+                    data-testid="username-email-input"
                     className="h-10 mt-1 w-full resize-none overflow-auto"
                     maxLength={30}
                     onChange={(e) => setUsernameOrEmail(e.target.value)}
@@ -48,9 +48,9 @@ export default function LogInPage({ onNavigate }: LoginPageProps) {
             </p>
 
             <div className="flex flex-col gap-1">
-                <Input
-                    data-testid="password-textarea"
-                    className="h-10 mt-1 w-full resize-none overflow-auto"
+                <PasswordInput
+                    data-testid="password-input"
+                    className="h-10 mt-1 w-full resize-none"
                     maxLength={30}
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}
@@ -64,12 +64,12 @@ export default function LogInPage({ onNavigate }: LoginPageProps) {
             <p className="text--small mt-3">
                 Forgot your password? &nbsp;
                 
-                <a 
-                    className="underline cursor-pointer" 
-                    onClick={() => navigate(Pages[pageIDs.requestPasswordReset].path)}
+                <Link 
+                    className="link" 
+                    to={Pages[pageIDs.requestPasswordReset].path}
                 >
                     Click here to reset it.
-                </a> 
+                </Link> 
             </p>
 
             <button
@@ -82,12 +82,13 @@ export default function LogInPage({ onNavigate }: LoginPageProps) {
             <p className="text--small mt-10">
                 Don't have an account? &nbsp;
                 
-                <a 
-                    className="underline cursor-pointer" 
-                    onClick={() => navigate(Pages[pageIDs.signUp].path)}
+                <Link 
+                    className="link" 
+                    to={Pages[pageIDs.signUp].path}
+                    
                 >
                     Click here to sign up.
-                </a> 
+                </Link> 
             </p>
 
 

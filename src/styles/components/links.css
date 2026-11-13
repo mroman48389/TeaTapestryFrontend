@@ -1,0 +1,15 @@
+@utility link {
+    @apply underline;
+
+    @apply cursor-pointer;
+
+    /* Text */
+    @apply text-wood-bowl-brown;
+
+    /* Effects. Make the button darker on hover. */
+    @apply transition-colors duration-200 ease-in-out;
+
+    &:hover {
+        color: color-mix(in srgb, var(--color-wood-bowl-brown), black 50%);
+    }
+}

@@ -54,7 +54,7 @@ export default function AboutPage() {
                 Washi paper background used on tea profile cards by&nbsp;
                 
                 <a 
-                    className="underline" 
+                    className="link" 
                     target="_blank"
                     href="https://unsplash.com/@360floralflaves?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText" rel="noreferrer"
                 >
@@ -64,7 +64,7 @@ export default function AboutPage() {
                 &nbsp;on&nbsp; 
                 
                 <a 
-                    className="underline" 
+                    className="link" 
                     target="_blank"
                     href="https://unsplash.com/photos/a-person-riding-a-snowboard-down-a-snow-covered-slope-2nKcZGDHpEs?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText" rel="noreferrer"
                 >
@@ -81,7 +81,7 @@ export default function AboutPage() {
             <ul className="text-dark-mahogany-brown list-disc pt-3 pl-10">
                 <li>
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="http://www.videezy.com" 
                         rel="noreferrer"
@@ -92,7 +92,7 @@ export default function AboutPage() {
                     .&nbsp;Artist:&nbsp;
             
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.videezy.com/members/ohmratthpon" 
                         rel="noreferrer"
@@ -106,7 +106,7 @@ export default function AboutPage() {
                     Video by&nbsp;
             
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/@jaturapond-pungtong-1762405466/" 
                         rel="noreferrer"
@@ -117,7 +117,7 @@ export default function AboutPage() {
                     &nbsp;on&nbsp; 
                     
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/video/traditional-asian-tea-roasting-process-32586150/" 
                         rel="noreferrer"
@@ -132,7 +132,7 @@ export default function AboutPage() {
                     Video by&nbsp;
             
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/@tima-miroshnichenko/" 
                         rel="noreferrer"
@@ -143,7 +143,7 @@ export default function AboutPage() {
                     &nbsp;on&nbsp; 
                     
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/video/video-of-a-woman-tea-set-6540523/" 
                         rel="noreferrer"
@@ -158,7 +158,7 @@ export default function AboutPage() {
                     Video by&nbsp;
             
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/@rdne/" 
                         rel="noreferrer"
@@ -169,7 +169,7 @@ export default function AboutPage() {
                     &nbsp;on&nbsp; 
                     
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/video/traditional-tea-served-during-chinese-new-year-6691600/" 
                         rel="noreferrer"
@@ -184,7 +184,7 @@ export default function AboutPage() {
                     Video by&nbsp;
             
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/@roman-odintsov/" 
                         rel="noreferrer"
@@ -195,7 +195,7 @@ export default function AboutPage() {
                     &nbsp;on&nbsp; 
                     
                     <a 
-                        className="underline" 
+                        className="link" 
                         target="_blank"
                         href="https://www.pexels.com/video/a-person-pouring-tea-on-a-cup-8190636/" 
                         rel="noreferrer"
